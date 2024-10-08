@@ -2,12 +2,12 @@ package com.aventstack.chaintest.http;
 
 public enum HttpMethod {
 
-    DELETE("delete"),
-    GET("get"),
-    HEAD("head"),
-    OPTIONS("options"),
-    POST("post"),
-    PUT("put");
+    DELETE("DELETE"),
+    GET("GET"),
+    HEAD("HEAD"),
+    OPTIONS("OPTIONS"),
+    POST("POST"),
+    PUT("PUT");
 
     private final String _method;
 

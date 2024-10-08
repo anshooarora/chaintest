@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,6 +55,7 @@ public class Build implements ChainTestEntity {
         durationMs = endedAt.getTime() - startedAt.getTime();
     }
 
+    @JsonIgnore
     public void setEndedAt(long millis) {
         setEndedAt(new Date(millis));
     }
@@ -90,7 +92,6 @@ public class Build implements ChainTestEntity {
         this.stats = stats;
     }
 
-    @JsonIgnore
     public Set<Tag> getTags() {
         return tags;
     }
@@ -100,12 +101,18 @@ public class Build implements ChainTestEntity {
     }
 
     public void addTags(Set<String> tags) {
+        if (null == this.tags) {
+            this.tags = new HashSet<>();
+        }
         final List<Tag> t = tags.stream().map(Tag::new)
                 .collect(Collectors.toUnmodifiableList());
         this.tags.addAll(t);
     }
 
     public void addTags(List<String> tags) {
+        if (null == this.tags) {
+            this.tags = new HashSet<>();
+        }
         final List<Tag> t = tags.stream().map(Tag::new)
                 .collect(Collectors.toUnmodifiableList());
         this.tags.addAll(t);

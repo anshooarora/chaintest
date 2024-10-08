@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -146,12 +147,18 @@ public class Test implements ChainTestEntity {
     }
 
     public void addTags(Set<String> tags) {
+        if (null == this.tags) {
+            this.tags = new HashSet<>();
+        }
         final List<Tag> t = tags.stream().map(Tag::new)
                 .collect(Collectors.toUnmodifiableList());
         this.tags.addAll(t);
     }
 
     public void addTags(List<String> tags) {
+        if (null == this.tags) {
+            this.tags = new HashSet<>();
+        }
         final List<Tag> t = tags.stream().map(Tag::new)
                 .collect(Collectors.toUnmodifiableList());
         this.tags.addAll(t);
