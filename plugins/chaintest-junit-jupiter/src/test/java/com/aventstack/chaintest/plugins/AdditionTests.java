@@ -4,10 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(TestExecutionCallback.class)
-public class AdditionTests {
+public class AdditionTests extends RootTest {
 
     @Test
     @Tag("pos")
