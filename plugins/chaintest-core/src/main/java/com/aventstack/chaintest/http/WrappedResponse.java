@@ -4,31 +4,21 @@ import com.aventstack.chaintest.domain.ChainTestEntity;
 
 import java.net.http.HttpResponse;
 
-public class WrappedResponse<T extends ChainTestEntity> {
+public class WrappedResponse<T extends ChainTestEntity> extends BaseResponse<T> {
 
-    private T entity;
     private HttpResponse<T> response;
-    private ErrorResponse error;
 
     public WrappedResponse(final T entity, final HttpResponse<T> response) {
-        this.entity = entity;
+        super(entity);
         this.response = response;
     }
 
     public WrappedResponse(final T entity) {
-        this.entity = entity;
+        super(entity);
     }
 
     public WrappedResponse(final ErrorResponse error) {
-        this.error = error;
-    }
-
-    public T getEntity() {
-        return entity;
-    }
-
-    public void setEntity(T entity) {
-        this.entity = entity;
+        super(error);
     }
 
     public HttpResponse<T> getResponse() {
@@ -37,14 +27,6 @@ public class WrappedResponse<T extends ChainTestEntity> {
 
     public void setResponse(HttpResponse<T> response) {
         this.response = response;
-    }
-
-    public ErrorResponse getError() {
-        return error;
-    }
-
-    public void setError(ErrorResponse error) {
-        this.error = error;
     }
 
 }
