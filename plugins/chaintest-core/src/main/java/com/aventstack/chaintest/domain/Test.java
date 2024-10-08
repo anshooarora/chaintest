@@ -4,7 +4,6 @@ import com.aventstack.chaintest.util.ExceptionUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +18,8 @@ public class Test implements ChainTestEntity {
     private String name;
     private String description;
     private String className;
-    private Date startedAt = new Date();
-    private Date endedAt;
+    private long startedAt = System.currentTimeMillis();
+    private long endedAt;
     private long durationMs;
     private String result = Result.PASSED.getResult();
     private Set<Tag> tags;
@@ -97,29 +96,21 @@ public class Test implements ChainTestEntity {
         this.className = className;
     }
 
-    public void setStartedAt(Date startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public void setStartedAt(long millis) {
-        setStartedAt(new Date(millis));
-    }
-
-    public Date getStartedAt() {
+    public long getStartedAt() {
         return startedAt;
     }
 
-    public Date getEndedAt() {
+    public void setStartedAt(long startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public Long getEndedAt() {
         return endedAt;
     }
 
-    public void setEndedAt(Date endedAt) {
+    public void setEndedAt(Long endedAt) {
         this.endedAt = endedAt;
-        durationMs = endedAt.getTime() - startedAt.getTime();
-    }
-
-    public void setEndedAt(long millis) {
-        setEndedAt(new Date(millis));
+        setDurationMs(endedAt - startedAt);
     }
 
     public long getDurationMs() {
