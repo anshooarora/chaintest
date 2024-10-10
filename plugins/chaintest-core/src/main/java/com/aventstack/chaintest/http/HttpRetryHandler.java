@@ -39,7 +39,7 @@ public class HttpRetryHandler {
             collection.clear();
         } catch (final Exception ignored) {
             for (final CompletableFuture<HttpResponse<Test>> response : responses) {
-                response.thenAccept(x -> collection.values().removeIf(passed -> passed.getResponse() == response));
+                response.thenAccept(x -> collection.values().removeIf(r -> r.getResponse() == response));
             }
             for (final Map.Entry<String, WrappedResponseAsync<Test>> entry : collection.entrySet()) {
                 try {

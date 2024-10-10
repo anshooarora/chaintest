@@ -1,6 +1,5 @@
 package com.aventstack.chaintest.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.HashSet;
@@ -25,7 +24,7 @@ public class Build implements ChainTestEntity {
     private String commitMessage;
 
     public void complete(final Result result) {
-        setEndedAt(System.currentTimeMillis());
+        complete();
         setResult(result.getResult());
     }
 
@@ -53,7 +52,6 @@ public class Build implements ChainTestEntity {
         return endedAt;
     }
 
-    @JsonIgnore
     public void setEndedAt(Long endedAt) {
         this.endedAt = endedAt;
         setDurationMs(endedAt - startedAt);
@@ -133,7 +131,6 @@ public class Build implements ChainTestEntity {
         this.commitHash = commitHash;
     }
 
-    @JsonIgnore
     public String getGitTag() {
         return gitTag;
     }
