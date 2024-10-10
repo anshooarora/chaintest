@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ChainTestApiClient {
 
-    private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(10);
+    private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(1000);
     private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
 
     private final HttpClient _httpClient;
@@ -92,6 +92,7 @@ public class ChainTestApiClient {
     private <T extends ChainTestEntity> HttpRequest createRequest(final T entity, final HttpMethod method) throws IOException {
         final URI uri = getURI(entity);
         final String requestBody = _mapper.writeValueAsString(entity);
+        System.out.println(requestBody);
         return HttpRequest.newBuilder()
                 .uri(uri)
                 .timeout(_requestTimeout)
