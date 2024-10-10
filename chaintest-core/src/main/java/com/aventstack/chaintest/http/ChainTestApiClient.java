@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.http;
 
+import com.aventstack.chaintest.conf.Configuration;
 import com.aventstack.chaintest.domain.ChainTestEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -9,17 +10,40 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ChainTestApiClient {
 
-    private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(1000);
+    private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(30);
     private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
+    private static final String PROPERTY_SERVER_URL = "chaintest.server.url";
+    private static final String PROPERTY_CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
+    private static final String VERSION = "/api/v1/";
 
     private final HttpClient _httpClient;
     private final ObjectMapper _mapper;
     private final Duration _requestTimeout;
     private final URI _baseURI;
+
+    private Map<String, String> _config;
+
+    public ChainTestApiClient() throws IOException {
+        final Builder builder = builder().defaultBuilder();
+        _httpClient = builder.httpClient;
+        _mapper = builder.objectMapper;
+        _requestTimeout = builder.timeout;
+
+        final Configuration config = new Configuration();
+        config.load();
+        _config = config.getConfig();
+        final String serverURL = _config.get(PROPERTY_SERVER_URL);
+        if (null == serverURL || serverURL.isBlank()) {
+            throw new IllegalStateException("ChainTest endpoint was not provided by required property " + PROPERTY_SERVER_URL +
+                    ". No such property was found in classpath resources or system environment");
+        }
+        _baseURI = URI.create(serverURL).resolve(VERSION);
+    }
 
     public ChainTestApiClient(final Builder builder) {
         _httpClient = null == builder.httpClient
@@ -41,6 +65,10 @@ public class ChainTestApiClient {
 
     public ChainTestApiClient(final String url) {
         this(builder().defaultBuilder().withURI(URI.create(url)));
+    }
+
+    public Map<String, String> getConfig() {
+        return _config;
     }
 
     public static Builder builder() {
@@ -92,7 +120,6 @@ public class ChainTestApiClient {
     private <T extends ChainTestEntity> HttpRequest createRequest(final T entity, final HttpMethod method) throws IOException {
         final URI uri = getURI(entity);
         final String requestBody = _mapper.writeValueAsString(entity);
-        System.out.println(requestBody);
         return HttpRequest.newBuilder()
                 .uri(uri)
                 .timeout(_requestTimeout)
@@ -130,7 +157,7 @@ public class ChainTestApiClient {
         }
 
         public Builder withURI(final URI uri) {
-            this.uri = uri;
+            this.uri = uri.resolve(VERSION);
             return this;
         }
 
