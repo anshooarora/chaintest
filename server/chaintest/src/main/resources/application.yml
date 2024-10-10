@@ -1,0 +1,16 @@
+server:
+  port: 80
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none # [ validate, create, update, none, create-drop ]
+  datasource:
+    hikari:
+      maxLifeTime: 30000
+  main:
+    allow-bean-definition-overriding: true
+logging:
+  level:
+    com.aventstack: DEBUG
+    org.springframework: INFO
