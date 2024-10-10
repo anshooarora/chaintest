@@ -25,7 +25,7 @@ public class TestExecutionCallback
     private static final int MAX_RETRIES = 3;
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _tests = new ConcurrentHashMap<>();
 
-    private static ChainTestApiClient _client = new ChainTestApiClient(URI.create("http://localhost/"));
+    private static ChainTestApiClient _client = new ChainTestApiClient(URI.create("http://localhost/api/v1/"));
     private static Build _build = null;
 
     @Override
@@ -71,19 +71,20 @@ public class TestExecutionCallback
         final boolean hasTestFailures = _tests.values().stream()
                 .map(WrappedResponseAsync::getEntity)
                 .anyMatch(x -> x.getResult().equals(Result.FAILED.getResult()));
+
+        final HttpRetryHandler retryHandler = new HttpRetryHandler(_client, MAX_RETRIES);
+        retryHandler.retryWithAsync(_tests);
+
+        if (!_tests.isEmpty()) {
+            // handle
+        }
+
         final Result buildResult = hasTestFailures ? Result.FAILED : Result.PASSED;
         _build.complete(buildResult);
         final HttpResponse<Build> response = _client.send(_build, Build.class, HttpMethod.PUT);
         if (200 == response.statusCode()) {
             _build = response.body();
         } else {
-            // handle
-        }
-
-        final HttpRetryHandler retryHandler = new HttpRetryHandler(_client, MAX_RETRIES);
-        retryHandler.retryWithAsync(_tests);
-
-        if (!_tests.isEmpty()) {
             // handle
         }
     }
