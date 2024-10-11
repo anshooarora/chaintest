@@ -17,32 +17,47 @@ public class ChainTestApiClient {
 
     private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(30);
     private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
-    private static final String PROPERTY_SERVER_URL = "chaintest.server.url";
+    private static final String PROPERTY_SERVER_URL = "chaintest.host.url";
     private static final String PROPERTY_CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
-    private static final String VERSION = "/api/v1/";
+    private static final String PROPERTY_CLIENT_EXPECT_CONTINUE = "chaintest.client.expect-continue";
+    private static final String API_VERSION = "/api/v1/";
 
     private final HttpClient _httpClient;
     private final ObjectMapper _mapper;
-    private final Duration _requestTimeout;
     private final URI _baseURI;
 
     private Map<String, String> _config;
+    private Duration _requestTimeout;
+    private String _serverURL;
+    private boolean _expectContinue;
 
     public ChainTestApiClient() throws IOException {
         final Builder builder = builder().defaultBuilder();
         _httpClient = builder.httpClient;
         _mapper = builder.objectMapper;
         _requestTimeout = builder.timeout;
+        loadConfig();
+        _baseURI = URI.create(_serverURL).resolve(API_VERSION);
+    }
 
+    private void loadConfig() throws IOException {
         final Configuration config = new Configuration();
         config.load();
+
         _config = config.getConfig();
-        final String serverURL = _config.get(PROPERTY_SERVER_URL);
-        if (null == serverURL || serverURL.isBlank()) {
+        _serverURL = _config.get(PROPERTY_SERVER_URL);
+        if (null == _serverURL || _serverURL.isBlank()) {
             throw new IllegalStateException("ChainTest endpoint was not provided by required property " + PROPERTY_SERVER_URL +
                     ". No such property was found in classpath resources or system environment");
         }
-        _baseURI = URI.create(serverURL).resolve(VERSION);
+
+        final String timeout = _config.get(PROPERTY_CLIENT_REQUEST_TIMEOUT);
+        if (null != timeout && timeout.matches("\\d+")) {
+            _requestTimeout = Duration.ofSeconds(Integer.parseInt(timeout));
+        }
+
+        final String expectContinue = _config.get(PROPERTY_CLIENT_EXPECT_CONTINUE);
+        _expectContinue = Boolean.parseBoolean(expectContinue);
     }
 
     public ChainTestApiClient(final Builder builder) {
@@ -53,14 +68,26 @@ public class ChainTestApiClient {
         _requestTimeout = null == builder.timeout
                 ? DEFAULT_REQUEST_TIMEOUT : builder.timeout;
         _baseURI = builder.uri;
+        _expectContinue = builder.expectContinue;
 
         if (null == builder.uri) {
             throw new IllegalArgumentException("Missing argument: uri");
         }
     }
 
+    public ChainTestApiClient(final URI uri, final boolean loadExternalConfig) throws IOException {
+        this(builder().defaultBuilder().withURI(uri));
+        if (loadExternalConfig) {
+            loadConfig();
+        }
+    }
+
     public ChainTestApiClient(final URI uri) {
         this(builder().defaultBuilder().withURI(uri));
+    }
+
+    public ChainTestApiClient(final String url, final boolean loadExternalConfig) throws IOException {
+        this(URI.create(url), loadExternalConfig);
     }
 
     public ChainTestApiClient(final String url) {
@@ -122,6 +149,7 @@ public class ChainTestApiClient {
         final String requestBody = _mapper.writeValueAsString(entity);
         return HttpRequest.newBuilder()
                 .uri(uri)
+                .expectContinue(_expectContinue)
                 .timeout(_requestTimeout)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
@@ -140,6 +168,7 @@ public class ChainTestApiClient {
         private ObjectMapper objectMapper;
         private Duration timeout;
         private URI uri;
+        private boolean expectContinue;
 
         public Builder withHttpClient(final HttpClient client) {
             httpClient = client;
@@ -157,12 +186,17 @@ public class ChainTestApiClient {
         }
 
         public Builder withURI(final URI uri) {
-            this.uri = uri.resolve(VERSION);
+            this.uri = uri.resolve(API_VERSION);
             return this;
         }
 
         public Builder withURI(final String url) {
             withURI(URI.create(url));
+            return this;
+        }
+
+        public Builder withExpectContinue(final boolean expectContinue) {
+            this.expectContinue = expectContinue;
             return this;
         }
 
