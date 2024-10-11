@@ -4,6 +4,8 @@ import com.aventstack.chaintest.api.domain.Taggable;
 import com.aventstack.chaintest.api.stats.Stats;
 import com.aventstack.chaintest.api.tag.Tag;
 import com.aventstack.chaintest.api.test.Test;
+import com.aventstack.chaintest.api.workspace.Workspace;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
@@ -18,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -33,6 +36,11 @@ public class Build implements Taggable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "workspace_id", insertable = false)
+    @JsonBackReference
+    private Workspace workspace;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "build", referencedColumnName = "id")
@@ -62,11 +70,26 @@ public class Build implements Taggable {
     )
     private Set<Tag> tags;
 
+    @Column(name = "git_repo")
+    private String gitRepository;
+
+    @Column(name = "git_branch")
+    private String gitBranch;
+
+    @Column(name = "git_commit_hash")
+    private String gitCommitHash;
+
+    @Column(name = "git_tags")
+    private String gitTags;
+
+    @Column(name = "git_commit_message")
+    private String gitCommitMessage;
+
     public Build() { }
 
     public Build(final Test test) {
         startedAt = test.getStartedAt();
-        //tags = test.getTags();
+        tags = test.getTags();
         result = test.getResult();
     }
 

@@ -6,6 +6,7 @@ import com.aventstack.chaintest.api.tag.Tag;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +39,7 @@ public class Test implements Taggable {
     @Column(name = "build_id")
     private long buildId;
 
+    @CreatedDate
     @Column(name = "started", nullable = false)
     private long startedAt = System.currentTimeMillis();
 
