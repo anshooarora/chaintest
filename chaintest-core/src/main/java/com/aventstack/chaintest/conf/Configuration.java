@@ -3,10 +3,8 @@ package com.aventstack.chaintest.conf;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 /**
  * ChainTest allows you to load externalized configuration from properties files,
@@ -53,7 +51,7 @@ public class Configuration {
         loadFromProperties(_config, System.getProperties());
     }
 
-    private void loadFromClasspathResource(final Map<String, String> config, final String resource) throws IOException {
+    public void loadFromClasspathResource(final Map<String, String> config, final String resource) throws IOException {
         final Properties properties = new Properties();
         final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         if (null != is) {
@@ -62,11 +60,10 @@ public class Configuration {
         }
     }
 
-    private void loadFromProperties(final Map<String, String> config, final Properties properties) {
-        final List<String> keys = properties.stringPropertyNames().stream()
+    public void loadFromProperties(final Map<String, String> config, final Properties properties) {
+        properties.stringPropertyNames().stream()
                 .filter(x -> x.startsWith(APP_NAME))
-                .collect(Collectors.toUnmodifiableList());
-        keys.forEach(x -> config.put(x, properties.getProperty(x)));
+                .forEach(x -> config.put(x, properties.getProperty(x)));
     }
 
 }

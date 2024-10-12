@@ -45,7 +45,7 @@ public class TestExecutionCallback
     }
 
     private void loadConfig() {
-        final String maxRetries = _client.getConfig().get(PROPERTY_PLUGINS_MAX_RETRIES);
+        final String maxRetries = _client.config().get().get(PROPERTY_PLUGINS_MAX_RETRIES);
         if (null != maxRetries && !maxRetries.isBlank() && maxRetries.chars().allMatch(Character::isDigit)) {
             _maxRetries = Integer.parseInt(maxRetries);
         }

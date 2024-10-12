@@ -20,17 +20,17 @@ public class HttpRetryHandler {
         _maxRetryAttempts = maxRetryAttempts;
     }
 
-    public void retryWithAsync(final ConcurrentHashMap<String, WrappedResponseAsync<Test>> collection) {
+    public void sendWithRetriesAsync(final ConcurrentHashMap<String, WrappedResponseAsync<Test>> collection) {
         int retryAttempts = 0;
         while (!collection.isEmpty() && retryAttempts++ < _maxRetryAttempts) {
-            retryAsync(collection);
+            sendAsync(collection);
         }
         if (!collection.isEmpty()) {
             // handle
         }
     }
 
-    private void retryAsync(final ConcurrentHashMap<String, WrappedResponseAsync<Test>> collection) {
+    private void sendAsync(final ConcurrentHashMap<String, WrappedResponseAsync<Test>> collection) {
         final List<CompletableFuture<HttpResponse<Test>>> responses = collection.values().stream()
                 .map(WrappedResponseAsync::getResponse)
                 .collect(Collectors.toUnmodifiableList());

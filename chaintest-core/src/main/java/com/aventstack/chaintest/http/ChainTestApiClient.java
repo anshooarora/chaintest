@@ -26,7 +26,7 @@ public class ChainTestApiClient {
     private final ObjectMapper _mapper;
     private final URI _baseURI;
 
-    private Map<String, String> _config;
+    private Configuration _config;
     private Duration _requestTimeout;
     private String _serverURL;
     private boolean _expectContinue;
@@ -40,23 +40,23 @@ public class ChainTestApiClient {
         _baseURI = URI.create(_serverURL).resolve(API_VERSION);
     }
 
-    private void loadConfig() throws IOException {
-        final Configuration config = new Configuration();
-        config.load();
+    public void loadConfig() throws IOException {
+        _config = new Configuration();
+        _config.load();
 
-        _config = config.getConfig();
-        _serverURL = _config.get(PROPERTY_SERVER_URL);
+        final Map<String, String> config = _config.getConfig();
+        _serverURL = config.get(PROPERTY_SERVER_URL);
         if (null == _serverURL || _serverURL.isBlank()) {
             throw new IllegalStateException("ChainTest endpoint was not provided by required property " + PROPERTY_SERVER_URL +
                     ". No such property was found in classpath resources or system environment");
         }
 
-        final String timeout = _config.get(PROPERTY_CLIENT_REQUEST_TIMEOUT);
+        final String timeout = config.get(PROPERTY_CLIENT_REQUEST_TIMEOUT);
         if (null != timeout && timeout.matches("\\d+")) {
             _requestTimeout = Duration.ofSeconds(Integer.parseInt(timeout));
         }
 
-        final String expectContinue = _config.get(PROPERTY_CLIENT_EXPECT_CONTINUE);
+        final String expectContinue = config.get(PROPERTY_CLIENT_EXPECT_CONTINUE);
         _expectContinue = Boolean.parseBoolean(expectContinue);
     }
 
@@ -94,7 +94,7 @@ public class ChainTestApiClient {
         this(builder().defaultBuilder().withURI(URI.create(url)));
     }
 
-    public Map<String, String> getConfig() {
+    public Configuration config() {
         return _config;
     }
 
