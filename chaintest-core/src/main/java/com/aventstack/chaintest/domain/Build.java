@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class Build implements ChainTestEntity {
 
     private long id;
+    private String workspace;
     private long startedAt = System.currentTimeMillis();
     private long endedAt;
     private long durationMs;
@@ -18,10 +19,11 @@ public class Build implements ChainTestEntity {
     private String result;
     private Stats stats;
     private Set<Tag> tags;
-    private String branch;
-    private String commitHash;
-    private String gitTag;
-    private String commitMessage;
+    private String gitRepository;
+    private String gitBranch;
+    private String gitCommitHash;
+    private String gitTags;
+    private String gitCommitMessage;
 
     public void complete(final Result result) {
         complete();
@@ -38,6 +40,14 @@ public class Build implements ChainTestEntity {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 
     public long getStartedAt() {
@@ -115,35 +125,43 @@ public class Build implements ChainTestEntity {
         this.tags.addAll(t);
     }
 
-    public String getBranch() {
-        return branch;
+    public String getGitRepository() {
+        return gitRepository;
     }
 
-    public void setBranch(String branch) {
-        this.branch = branch;
+    public void setGitRepository(String gitRepository) {
+        this.gitRepository = gitRepository;
     }
 
-    public String getCommitHash() {
-        return commitHash;
+    public String getGitBranch() {
+        return gitBranch;
     }
 
-    public void setCommitHash(String commitHash) {
-        this.commitHash = commitHash;
+    public void setGitBranch(String gitBranch) {
+        this.gitBranch = gitBranch;
     }
 
-    public String getGitTag() {
-        return gitTag;
+    public String getGitCommitHash() {
+        return gitCommitHash;
     }
 
-    public void setGitTag(String gitTag) {
-        this.gitTag = gitTag;
+    public void setGitCommitHash(String gitCommitHash) {
+        this.gitCommitHash = gitCommitHash;
     }
 
-    public String getCommitMessage() {
-        return commitMessage;
+    public String getGitTags() {
+        return gitTags;
     }
 
-    public void setCommitMessage(String commitMessage) {
-        this.commitMessage = commitMessage;
+    public void setGitTags(String gitTags) {
+        this.gitTags = gitTags;
+    }
+
+    public String getGitCommitMessage() {
+        return gitCommitMessage;
+    }
+
+    public void setGitCommitMessage(String gitCommitMessage) {
+        this.gitCommitMessage = gitCommitMessage;
     }
 }
