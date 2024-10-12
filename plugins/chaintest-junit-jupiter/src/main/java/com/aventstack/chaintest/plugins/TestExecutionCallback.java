@@ -45,7 +45,7 @@ public class TestExecutionCallback
     }
 
     private void loadConfig() {
-        final String maxRetries = _client.config().get().get(PROPERTY_PLUGINS_MAX_RETRIES);
+        final String maxRetries = _client.config().getConfig().get(PROPERTY_PLUGINS_MAX_RETRIES);
         if (null != maxRetries && !maxRetries.isBlank() && maxRetries.chars().allMatch(Character::isDigit)) {
             _maxRetries = Integer.parseInt(maxRetries);
         }
@@ -84,7 +84,7 @@ public class TestExecutionCallback
                 .anyMatch(x -> x.getResult().equals(Result.FAILED.getResult()));
 
         final HttpRetryHandler retryHandler = new HttpRetryHandler(_client, _maxRetries);
-        retryHandler.retryWithAsync(_tests);
+        retryHandler.sendWithRetriesAsync(_tests);
 
         if (!_tests.isEmpty()) {
             // handle
