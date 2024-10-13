@@ -1,5 +1,8 @@
 package com.aventstack.chaintest.conf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -22,6 +25,7 @@ import java.util.Properties;
  */
 public class Configuration {
 
+    private static final Logger log = LoggerFactory.getLogger(Configuration.class);
     private static final String APP_NAME = "chaintest";
     private static final String[] RESOURCES = new String[] {
             "application.properties",
@@ -38,32 +42,36 @@ public class Configuration {
     }
 
     public void load() throws IOException {
+        log.trace("Starting load externalized configuration");
         for (final String resource : RESOURCES) {
-            loadFromClasspathResource(_config, resource);
+            loadFromClasspathResource(resource);
         }
 
         System.getenv().forEach((k, v) -> {
             if (k.startsWith(APP_NAME)) {
+                log.trace("Adding environment property " + k + " to configuration");
                 _config.put(k, v);
             }
         });
 
-        loadFromProperties(_config, System.getProperties());
+        loadFromProperties(System.getProperties());
     }
 
-    public void loadFromClasspathResource(final Map<String, String> config, final String resource) throws IOException {
+    public void loadFromClasspathResource(final String resource) throws IOException {
+        log.trace("Loading configuration from resource " + resource);
         final Properties properties = new Properties();
         final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         if (null != is) {
             properties.load(is);
-            loadFromProperties(config, properties);
+            loadFromProperties(properties);
         }
+        log.trace("Configuration entries after loading from resource " + resource + ": " + _config);
     }
 
-    public void loadFromProperties(final Map<String, String> config, final Properties properties) {
+    public void loadFromProperties(final Properties properties) {
         properties.stringPropertyNames().stream()
                 .filter(x -> x.startsWith(APP_NAME))
-                .forEach(x -> config.put(x, properties.getProperty(x)));
+                .forEach(x -> _config.put(x, properties.getProperty(x)));
     }
 
 }
