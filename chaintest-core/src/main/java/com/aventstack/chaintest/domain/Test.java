@@ -2,7 +2,6 @@ package com.aventstack.chaintest.domain;
 
 import com.aventstack.chaintest.util.ExceptionUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -18,9 +17,7 @@ public class Test implements ChainTestEntity {
     private long buildId;
     private String name;
     private String description;
-    @JsonProperty("ancestor")
     private String packageName;
-    @JsonProperty("parent")
     private String className;
     private long startedAt = System.currentTimeMillis();
     private long endedAt;

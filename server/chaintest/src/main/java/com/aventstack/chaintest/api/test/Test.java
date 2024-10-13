@@ -53,10 +53,10 @@ public class Test implements Taggable {
     private long durationMs;
 
     @Column
-    private String ancestor;
+    private String packageName;
 
     @Column
-    private String parent;
+    private String className;
 
     @Column
     @NotBlank(message = "Missing mandatory field 'name'")
@@ -76,8 +76,11 @@ public class Test implements Taggable {
     )
     private Set<Tag> tags;
 
-    @OneToMany(mappedBy = "tests", fetch = FetchType.LAZY)
-    private List<Test> tests;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Test parentTest;
+
+    @OneToMany(mappedBy = "parentTest", fetch = FetchType.LAZY)
+    private List<Test> children;
 
     @Column(columnDefinition = "TEXT")
     private String error;
