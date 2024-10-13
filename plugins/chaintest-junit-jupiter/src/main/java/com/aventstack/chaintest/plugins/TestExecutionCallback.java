@@ -5,7 +5,6 @@ import com.aventstack.chaintest.domain.Result;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.http.ChainTestApiClient;
 import com.aventstack.chaintest.http.HttpMethod;
-import com.aventstack.chaintest.http.HttpRetryHandler;
 import com.aventstack.chaintest.http.WrappedResponseAsync;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -21,13 +20,10 @@ public class TestExecutionCallback
         implements BeforeAllCallback, AfterAllCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
-    private static final int DEFAULT_MAX_RETRIES = 3;
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _tests = new ConcurrentHashMap<>();
-    private static final String PROPERTY_PLUGINS_MAX_RETRIES = "chaintest.plugins.max-retries";
 
     private static ChainTestApiClient _client;
     private static Build _build = null;
-    private static int _maxRetries = DEFAULT_MAX_RETRIES;
 
     @Override
     public void beforeAll(final ExtensionContext extensionContext) throws Exception {
@@ -35,19 +31,11 @@ public class TestExecutionCallback
             return;
         }
         _client = new ChainTestApiClient();
-        loadConfig();
 
         final Build build = new Build();
         final HttpResponse<Build> response = _client.send(build, Build.class);
         if (200 == response.statusCode()) {
             _build = response.body();
-        }
-    }
-
-    private void loadConfig() {
-        final String maxRetries = _client.config().getConfig().get(PROPERTY_PLUGINS_MAX_RETRIES);
-        if (null != maxRetries && !maxRetries.isBlank() && maxRetries.chars().allMatch(Character::isDigit)) {
-            _maxRetries = Integer.parseInt(maxRetries);
         }
     }
 
@@ -83,8 +71,7 @@ public class TestExecutionCallback
                 .map(WrappedResponseAsync::getEntity)
                 .anyMatch(x -> x.getResult().equals(Result.FAILED.getResult()));
 
-        final HttpRetryHandler retryHandler = new HttpRetryHandler(_client, _maxRetries);
-        retryHandler.sendWithRetriesAsync(_tests);
+        _client.retryHandler().sendWithRetriesAsync(_tests);
 
         if (!_tests.isEmpty()) {
             // handle

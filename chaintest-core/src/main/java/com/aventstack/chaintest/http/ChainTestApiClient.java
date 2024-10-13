@@ -3,6 +3,8 @@ package com.aventstack.chaintest.http;
 import com.aventstack.chaintest.conf.Configuration;
 import com.aventstack.chaintest.domain.ChainTestEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,23 +15,29 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+// TODO: allow send with retry for single build and test
 public class ChainTestApiClient {
+
+    private static final Logger log = LoggerFactory.getLogger(ChainTestApiClient.class);
 
     private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(30);
     private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
     private static final String PROPERTY_SERVER_URL = "chaintest.host.url";
     private static final String PROPERTY_CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
     private static final String PROPERTY_CLIENT_EXPECT_CONTINUE = "chaintest.client.expect-continue";
+    private static final String PROPERTY_CLIENT_MAX_RETRIES = "chaintest.client.max-retries";
     private static final String API_VERSION = "/api/v1/";
 
     private final HttpClient _httpClient;
     private final ObjectMapper _mapper;
     private final URI _baseURI;
+    private final HttpRetryHandler _retryHandler;
 
     private Configuration _config;
     private Duration _requestTimeout;
     private String _serverURL;
     private boolean _expectContinue;
+    private int _maxRetryAttempts;
 
     public ChainTestApiClient() throws IOException {
         final Builder builder = builder().defaultBuilder();
@@ -38,6 +46,7 @@ public class ChainTestApiClient {
         _requestTimeout = builder.timeout;
         loadConfig();
         _baseURI = URI.create(_serverURL).resolve(API_VERSION);
+        _retryHandler = new HttpRetryHandler(this, _maxRetryAttempts);
     }
 
     public void loadConfig() throws IOException {
@@ -58,6 +67,12 @@ public class ChainTestApiClient {
 
         final String expectContinue = config.get(PROPERTY_CLIENT_EXPECT_CONTINUE);
         _expectContinue = Boolean.parseBoolean(expectContinue);
+
+        final String maxRetries = config.get(PROPERTY_CLIENT_MAX_RETRIES);
+        _maxRetryAttempts = 0;
+        if (null != maxRetries && maxRetries.matches("\\d+")) {
+            _maxRetryAttempts = Integer.parseInt(maxRetries);
+        }
     }
 
     public ChainTestApiClient(final Builder builder) {
@@ -69,6 +84,8 @@ public class ChainTestApiClient {
                 ? DEFAULT_REQUEST_TIMEOUT : builder.timeout;
         _baseURI = builder.uri;
         _expectContinue = builder.expectContinue;
+        _maxRetryAttempts = builder.maxRetryAttempts;
+        _retryHandler = new HttpRetryHandler(this, _maxRetryAttempts);
 
         if (null == builder.uri) {
             throw new IllegalArgumentException("Missing argument: uri");
@@ -96,6 +113,10 @@ public class ChainTestApiClient {
 
     public Configuration config() {
         return _config;
+    }
+
+    public HttpRetryHandler retryHandler() {
+        return _retryHandler;
     }
 
     public static Builder builder() {
@@ -145,6 +166,7 @@ public class ChainTestApiClient {
     }
 
     private <T extends ChainTestEntity> HttpRequest createRequest(final T entity, final HttpMethod method) throws IOException {
+        log.trace("Creating request for entity " + entity.getClass().getName() + " with HTTPMethod." + method.getMethod());
         final URI uri = getURI(entity);
         final String requestBody = _mapper.writeValueAsString(entity);
         return HttpRequest.newBuilder()
@@ -169,6 +191,7 @@ public class ChainTestApiClient {
         private Duration timeout;
         private URI uri;
         private boolean expectContinue;
+        private int maxRetryAttempts;
 
         public Builder withHttpClient(final HttpClient client) {
             httpClient = client;
@@ -197,6 +220,11 @@ public class ChainTestApiClient {
 
         public Builder withExpectContinue(final boolean expectContinue) {
             this.expectContinue = expectContinue;
+            return this;
+        }
+
+        public Builder withMaxHttpRetryAttempts(final int maxRetryAttempts) {
+            this.maxRetryAttempts = maxRetryAttempts;
             return this;
         }
 

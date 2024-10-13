@@ -20,11 +20,17 @@ public class HttpRetryHandler {
     private final int _maxRetryAttempts;
 
     public HttpRetryHandler(final ChainTestApiClient client, final int maxRetryAttempts) {
+        log.debug("Creating HttpRetryHandler instance for " + maxRetryAttempts + " retry attempts");
+
         this._client = client;
         _maxRetryAttempts = maxRetryAttempts;
     }
 
     public void sendWithRetriesAsync(final ConcurrentHashMap<String, WrappedResponseAsync<Test>> collection) {
+        log.debug("Received collection of size " + collection.size() + ". Handler will " +
+                ((_maxRetryAttempts > 0)
+                        ? "retry for " + _maxRetryAttempts + " attempts on errors"
+                        : "will not retry on errors"));
         final int size = collection.size();
         int retryAttempts = 0;
         while (!collection.isEmpty() && retryAttempts++ <= _maxRetryAttempts) {

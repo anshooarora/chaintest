@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
-public class IntentionalFailureTests {
+public class IntentionalFailureTests extends RootTest {
 
     @Test
     @Tag("failure")
