@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,8 +18,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -32,11 +35,11 @@ public class Test implements Taggable {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "build_id", insertable = false, updatable = false)
+    @JoinColumn(name = "build", insertable = false, updatable = false)
     @JsonBackReference
     private Build build;
 
-    @Column(name = "build_id")
+    @Column(name = "build")
     private long buildId;
 
     @CreatedDate
@@ -47,7 +50,13 @@ public class Test implements Taggable {
     private long endedAt;
 
     @Column(name = "duration_ms")
-    private long durationMillis;
+    private long durationMs;
+
+    @Column
+    private String ancestor;
+
+    @Column
+    private String parent;
 
     @Column
     @NotBlank(message = "Missing mandatory field 'name'")
@@ -66,6 +75,9 @@ public class Test implements Taggable {
             inverseJoinColumns = { @JoinColumn(name = "tag") }
     )
     private Set<Tag> tags;
+
+    @OneToMany(mappedBy = "tests", fetch = FetchType.LAZY)
+    private List<Test> tests;
 
     @Column(columnDefinition = "TEXT")
     private String error;

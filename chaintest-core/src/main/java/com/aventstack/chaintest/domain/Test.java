@@ -2,6 +2,7 @@ package com.aventstack.chaintest.domain;
 
 import com.aventstack.chaintest.util.ExceptionUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -17,6 +18,9 @@ public class Test implements ChainTestEntity {
     private long buildId;
     private String name;
     private String description;
+    @JsonProperty("ancestor")
+    private String packageName;
+    @JsonProperty("parent")
     private String className;
     private long startedAt = System.currentTimeMillis();
     private long endedAt;
@@ -31,7 +35,10 @@ public class Test implements ChainTestEntity {
         setBuildId(buildId);
         setName(name);
         addTags(tags);
-        testClass.ifPresent(x -> setClassName(x.getName()));
+        testClass.ifPresent(x -> {
+            setClassName(x.getName());
+            setPackageName(x.getPackageName());
+        });
     }
 
     public Test(final long buildId, final Method method) {
@@ -41,7 +48,7 @@ public class Test implements ChainTestEntity {
     }
 
     public void complete() {
-        setEndedAt(System.currentTimeMillis());
+        complete(Optional.empty());
     }
 
     public void complete(final Optional<Throwable> error) {
@@ -86,6 +93,14 @@ public class Test implements ChainTestEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     public String getClassName() {

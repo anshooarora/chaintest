@@ -15,6 +15,7 @@ public class Build implements ChainTestEntity {
     private long startedAt = System.currentTimeMillis();
     private long endedAt;
     private long durationMs;
+    private final String testRunner = "junit-jupiter";
     private String name;
     private String result;
     private Stats stats;
@@ -73,6 +74,10 @@ public class Build implements ChainTestEntity {
 
     public void setDurationMs(long durationMs) {
         this.durationMs = durationMs;
+    }
+
+    public String getTestRunner() {
+        return testRunner;
     }
 
     public String getName() {
