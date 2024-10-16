@@ -15,7 +15,6 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-// TODO: allow send with retry for single build and test
 public class ChainTestApiClient {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestApiClient.class);

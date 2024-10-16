@@ -26,7 +26,10 @@ public class HttpRetryHandler {
         _maxRetryAttempts = maxRetryAttempts;
     }
 
-    public void sendWithRetriesAsync(final ConcurrentHashMap<String, WrappedResponseAsync<Test>> collection) {
+    public void sendWithRetriesAsync(final Map<String, WrappedResponseAsync<Test>> collection) {
+        if (collection.isEmpty()) {
+            return;
+        }
         log.debug("Received collection of size " + collection.size() + ". Handler will " +
                 ((_maxRetryAttempts > 0)
                         ? "retry for " + _maxRetryAttempts + " attempts on errors"
@@ -46,7 +49,7 @@ public class HttpRetryHandler {
         }
     }
 
-    private void sendAsync(final ConcurrentHashMap<String, WrappedResponseAsync<Test>> collection) {
+    private void sendAsync(final Map<String, WrappedResponseAsync<Test>> collection) {
         final List<CompletableFuture<HttpResponse<Test>>> responses = collection.values().stream()
                 .map(WrappedResponseAsync::getResponse)
                 .collect(Collectors.toUnmodifiableList());
