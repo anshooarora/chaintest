@@ -4,17 +4,17 @@ import com.aventstack.chaintest.util.ExceptionUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Test implements ChainTestEntity {
 
     private long id;
     private long buildId;
+    private long parentId;
     private String name;
     private String description;
     private String packageName;
@@ -28,7 +28,7 @@ public class Test implements ChainTestEntity {
 
     public Test() { }
 
-    public Test(final long buildId, final String name, final Optional<Class<?>> testClass, final Set<String> tags) {
+    public Test(final long buildId, final String name, final Optional<Class<?>> testClass, final Collection<String> tags) {
         setBuildId(buildId);
         setName(name);
         addTags(tags);
@@ -36,6 +36,32 @@ public class Test implements ChainTestEntity {
             setClassName(x.getName());
             setPackageName(x.getPackageName());
         });
+    }
+
+    public Test(final long buildId, final String name, final Optional<Class<?>> testClass) {
+        setBuildId(buildId);
+        setName(name);
+        testClass.ifPresent(x -> {
+            setClassName(x.getName());
+            setPackageName(x.getPackageName());
+        });
+    }
+
+    public Test(final long buildId, final String name, final Collection<String> tags) {
+        setBuildId(buildId);
+        setName(name);
+        addTags(tags);
+    }
+
+    public Test(final long buildId, final String name) {
+        setBuildId(buildId);
+        setName(name);
+    }
+
+    public Test(final long buildId, final Method method, final Collection<String> tags) {
+        this.buildId = buildId;
+        this.name = method.getName();
+        this.className = method.getDeclaringClass().getName();
     }
 
     public Test(final long buildId, final Method method) {
@@ -74,6 +100,14 @@ public class Test implements ChainTestEntity {
 
     public void setBuildId(long buildId) {
         this.buildId = buildId;
+    }
+
+    public long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(long parentId) {
+        this.parentId = parentId;
     }
 
     public String getName() {
@@ -149,22 +183,12 @@ public class Test implements ChainTestEntity {
         this.tags = tags;
     }
 
-    public void addTags(Set<String> tags) {
+    public void addTags(Collection<String> tags) {
         if (null == this.tags) {
             this.tags = new HashSet<>();
         }
-        final List<Tag> t = tags.stream().map(Tag::new)
-                .collect(Collectors.toUnmodifiableList());
-        this.tags.addAll(t);
-    }
-
-    public void addTags(List<String> tags) {
-        if (null == this.tags) {
-            this.tags = new HashSet<>();
-        }
-        final List<Tag> t = tags.stream().map(Tag::new)
-                .collect(Collectors.toUnmodifiableList());
-        this.tags.addAll(t);
+        tags.stream().map(Tag::new)
+                .forEach(this.tags::add);
     }
 
     public String getError() {
