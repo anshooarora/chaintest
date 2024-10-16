@@ -4,17 +4,20 @@ import com.aventstack.chaintest.util.ExceptionUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Test implements ChainTestEntity {
 
+    private static final Object lock = new Object();
+
     private long id;
     private long buildId;
-    private long parentId;
     private String name;
     private String description;
     private String packageName;
@@ -25,6 +28,7 @@ public class Test implements ChainTestEntity {
     private String result = Result.PASSED.getResult();
     private Set<Tag> tags;
     private String error;
+    private List<Test> children;
 
     public Test() { }
 
@@ -100,14 +104,6 @@ public class Test implements ChainTestEntity {
 
     public void setBuildId(long buildId) {
         this.buildId = buildId;
-    }
-
-    public long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(long parentId) {
-        this.parentId = parentId;
     }
 
     public String getName() {
@@ -197,6 +193,27 @@ public class Test implements ChainTestEntity {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public List<Test> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Test> children) {
+        this.children = children;
+    }
+
+    public void addChild(final Test child) {
+        if (null == children) {
+            synchronized (lock) {
+                if (null == children) {
+                    children = new ArrayList<>();
+                }
+            }
+        }
+        synchronized (lock) {
+            children.add(child);
+        }
     }
 
 }

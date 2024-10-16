@@ -15,7 +15,7 @@ public class Build implements ChainTestEntity {
     private long startedAt = System.currentTimeMillis();
     private long endedAt;
     private long durationMs;
-    private final String testRunner = "junit-jupiter";
+    private String testRunner;
     private String name;
     private String result;
     private Stats stats;
@@ -25,6 +25,12 @@ public class Build implements ChainTestEntity {
     private String gitCommitHash;
     private String gitTags;
     private String gitCommitMessage;
+
+    public Build() { }
+
+    public Build(final String testRunner) {
+        this.testRunner = testRunner;
+    }
 
     public void complete(final Result result) {
         complete();
