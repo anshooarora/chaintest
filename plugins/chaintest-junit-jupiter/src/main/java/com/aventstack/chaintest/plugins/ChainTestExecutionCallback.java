@@ -22,6 +22,7 @@ public class ChainTestExecutionCallback
         implements BeforeAllCallback, AfterAllCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestExecutionCallback.class);
+    private static final String JUNIT_JUPITER = "junit-jupiter";
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _tests = new ConcurrentHashMap<>();
 
@@ -37,7 +38,7 @@ public class ChainTestExecutionCallback
         _client = new ChainTestApiClient();
 
         log.trace("Starting new build, but events will only be sent to API if build is successfully created");
-        final Build build = new Build();
+        final Build build = new Build(JUNIT_JUPITER);
         final HttpResponse<Build> response = _client.send(build, Build.class);
         log.debug("Create build API returned responseCode: " + response.statusCode());
         if (200 == response.statusCode()) {
