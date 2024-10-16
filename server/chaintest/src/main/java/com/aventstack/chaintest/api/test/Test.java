@@ -4,10 +4,12 @@ import com.aventstack.chaintest.api.build.Build;
 import com.aventstack.chaintest.api.domain.Taggable;
 import com.aventstack.chaintest.api.tag.Tag;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,11 +23,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
 
 @Data
-@ToString(exclude = "build")
+@ToString(exclude = { "build", "parent" })
 @Entity
 @Table(name = "test")
 public class Test implements Taggable {
@@ -77,10 +79,12 @@ public class Test implements Taggable {
     private Set<Tag> tags;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Test parentTest;
+    @JoinColumn(name = "parent", referencedColumnName = "id")
+    @JsonIgnore
+    private Test parent;
 
-    @OneToMany(mappedBy = "parentTest", fetch = FetchType.LAZY)
-    private List<Test> children;
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private Collection<Test> children;
 
     @Column(columnDefinition = "TEXT")
     private String error;

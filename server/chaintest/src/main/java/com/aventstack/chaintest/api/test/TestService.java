@@ -51,8 +51,19 @@ public class TestService {
             throw new MissingBuildPropertyException("Mandatory field [buildId] was not provided for this test");
         }
         tagService.associateTagsIfPresent(test);
+        makeParentChildRel(test, 0);
         log.debug("Saving test " + test + " for buildId: " + test.getBuildId());
         return repository.save(test);
+    }
+
+    private void makeParentChildRel(final Test test, final int depth) {
+        if (null != test.getChildren() && !test.getChildren().isEmpty()) {
+            for (final Test child : test.getChildren()) {
+                child.setParent(test);
+                child.setDepth(depth + 1);
+                makeParentChildRel(child, depth + 1);
+            }
+        }
     }
 
     @Transactional
