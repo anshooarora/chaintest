@@ -1,10 +1,11 @@
 package com.aventstack.chaintest.api.build;
 
 import com.aventstack.chaintest.api.domain.Taggable;
-import com.aventstack.chaintest.api.stats.Stats;
+import com.aventstack.chaintest.api.runstats.RunStats;
 import com.aventstack.chaintest.api.tag.Tag;
 import com.aventstack.chaintest.api.test.Test;
 import com.aventstack.chaintest.api.workspace.Workspace;
+import com.aventstack.chaintest.api.tagstats.TagStats;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -42,9 +43,13 @@ public class Build implements Taggable {
     @JsonBackReference
     private Workspace workspace;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "build", referencedColumnName = "id")
-    private Stats stats;
+    @OneToOne(mappedBy = "build", cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY, optional = false)
+    private RunStats runStats;
+
+    @OneToMany
+    @JoinColumn(name = "build_id")
+    private Set<TagStats> tagStats;
 
     @Column(name = "started", nullable = false)
     private long startedAt;
@@ -64,7 +69,7 @@ public class Build implements Taggable {
     @Column
     private String result;
 
-    @OneToMany(mappedBy = "build")
+    @OneToMany(mappedBy = "id")
     @JsonIgnore
     private List<Test> tests;
 

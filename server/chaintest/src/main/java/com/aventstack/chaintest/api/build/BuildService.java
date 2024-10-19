@@ -1,6 +1,8 @@
 package com.aventstack.chaintest.api.build;
 
+import com.aventstack.chaintest.api.runstats.RunStatsService;
 import com.aventstack.chaintest.api.tag.TagService;
+import com.aventstack.chaintest.api.tagstats.TagStatsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,6 +24,12 @@ public class BuildService {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private RunStatsService runStatsService;
+
+    @Autowired
+    private TagStatsService tagStatsService;
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
     public Page<Build> findAll(final Pageable pageable) {
@@ -48,6 +56,8 @@ public class BuildService {
     public Build update(final Build build) {
         log.info("Saving build " + build);
         tagService.associateTagsIfPresent(build);
+        runStatsService.associateRunStats(build);
+        tagStatsService.associateTagStats(build);
         repository.findById(build.getId()).ifPresentOrElse(
                 x -> repository.save(build),
                 () -> { throw new BuildNotFoundException("Build with ID " + build.getId() + " was not found"); }

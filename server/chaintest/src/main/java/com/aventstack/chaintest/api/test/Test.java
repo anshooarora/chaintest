@@ -37,11 +37,11 @@ public class Test implements Taggable {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "build", insertable = false, updatable = false)
+    @JoinColumn(name = "build_id", insertable = false, updatable = false)
     @JsonBackReference
     private Build build;
 
-    @Column(name = "build")
+    @Column(name = "build_id")
     private long buildId;
 
     @CreatedDate
@@ -79,7 +79,7 @@ public class Test implements Taggable {
     private Set<Tag> tags;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent", referencedColumnName = "id")
+    @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @JsonIgnore
     private Test parent;
 
