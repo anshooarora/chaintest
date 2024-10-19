@@ -15,6 +15,7 @@ public class Build implements ChainTestEntity {
     private long startedAt = System.currentTimeMillis();
     private long endedAt;
     private long durationMs;
+    private ExecutionStage executionStage;
     private String testRunner;
     private String name;
     private String result;
@@ -82,9 +83,19 @@ public class Build implements ChainTestEntity {
         this.durationMs = durationMs;
     }
 
+    public ExecutionStage getExecutionStage() {
+        return executionStage;
+    }
+
+    public void setExecutionStage(ExecutionStage executionStage) {
+        this.executionStage = executionStage;
+    }
+
     public String getTestRunner() {
         return testRunner;
     }
+
+    public void setTestRunner(String testRunner) { this.testRunner = testRunner; }
 
     public String getName() {
         return name;
