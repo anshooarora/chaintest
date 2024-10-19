@@ -14,7 +14,6 @@ import lombok.ToString;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,12 +42,11 @@ public class Build implements Taggable {
     @JsonBackReference
     private Workspace workspace;
 
-    @OneToOne(mappedBy = "build", cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY, optional = false)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "")
+    @JoinColumn(name = "run_stats_id", referencedColumnName = "id")
     private RunStats runStats;
 
-    @OneToMany
-    @JoinColumn(name = "build_id")
+    @OneToMany(mappedBy = "build", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TagStats> tagStats;
 
     @Column(name = "started", nullable = false)

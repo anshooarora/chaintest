@@ -1,7 +1,5 @@
 package com.aventstack.chaintest.api.tagstats;
 
-import com.aventstack.chaintest.api.build.Build;
-import com.aventstack.chaintest.api.test.MissingBuildPropertyException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,9 +30,6 @@ public class TagStatsService {
     @Transactional
     @CachePut(value = "tagStat", key = "#tagStat.id")
     public TagStats create(final TagStats stats) {
-        if (0L == stats.getBuildId()) {
-            throw new MissingBuildPropertyException("Missing buildId for TagStats");
-        }
         return repository.save(stats);
     }
 
@@ -59,16 +54,4 @@ public class TagStatsService {
         log.info("TagStats with ID " + id + " deleted");
     }
 
-    public void associateTagStats(final Build build) {
-        if (null != build.getTagStats()) {
-            for (TagStats stat : build.getTagStats()) {
-                stat.setBuild(build);
-                if (stat.getId() == 0) {
-                    create(stat);
-                } else {
-                    update(stat);
-                }
-            }
-        }
-    }
 }

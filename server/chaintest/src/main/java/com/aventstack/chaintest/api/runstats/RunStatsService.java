@@ -1,7 +1,5 @@
 package com.aventstack.chaintest.api.runstats;
 
-import com.aventstack.chaintest.api.build.Build;
-import com.aventstack.chaintest.api.test.MissingBuildPropertyException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,9 +30,6 @@ public class RunStatsService {
     @Transactional
     @CachePut(value = "runStat", key = "#runStat.id")
     public RunStats create(final RunStats stats) {
-        if (0L == stats.getBuildId()) {
-            throw new MissingBuildPropertyException("Missing buildId for RunStats");
-        }
         return repository.save(stats);
     }
 
@@ -57,17 +52,6 @@ public class RunStatsService {
         log.info("Deleting RunStats with ID " + id);
         repository.deleteById(id);
         log.info("RunStats with ID " + id + " deleted");
-    }
-
-    public void associateRunStats(final Build build) {
-        if (null != build.getRunStats()) {
-            build.getRunStats().setBuild(build);
-            if (build.getRunStats().getId() == 0) {
-                create(build.getRunStats());
-            } else {
-                update(build.getRunStats());
-            }
-        }
     }
 
 }

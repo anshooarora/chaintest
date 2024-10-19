@@ -56,8 +56,6 @@ public class BuildService {
     public Build update(final Build build) {
         log.info("Saving build " + build);
         tagService.associateTagsIfPresent(build);
-        runStatsService.associateRunStats(build);
-        tagStatsService.associateTagStats(build);
         repository.findById(build.getId()).ifPresentOrElse(
                 x -> repository.save(build),
                 () -> { throw new BuildNotFoundException("Build with ID " + build.getId() + " was not found"); }
