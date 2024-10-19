@@ -32,11 +32,14 @@ public class Tag {
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (null == obj) {
             return false;
+        }
+        if (!(obj instanceof Tag)) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
         }
         return null != name && name.equalsIgnoreCase(((Tag) obj).getName());
     }
