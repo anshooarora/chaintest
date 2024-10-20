@@ -46,7 +46,7 @@ public class Build implements Taggable {
     @JoinColumn(name = "run_stats_id", referencedColumnName = "id")
     private RunStats runStats;
 
-    @OneToMany(mappedBy = "build", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
     private Set<TagStats> tagStats;
 
     @Column(name = "started", nullable = false)

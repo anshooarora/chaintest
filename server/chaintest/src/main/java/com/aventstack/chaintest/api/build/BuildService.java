@@ -14,22 +14,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 @Transactional(readOnly = true)
 public class BuildService {
 
-    @Autowired
     private BuildRepository repository;
-
-    @Autowired
     private TagService tagService;
 
     @Autowired
-    private RunStatsService runStatsService;
-
-    @Autowired
-    private TagStatsService tagStatsService;
+    public BuildService(final BuildRepository repository, final TagService tagService) {
+        this.repository = repository;
+        this.tagService = tagService;
+    }
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
     public Page<Build> findAll(final Pageable pageable) {
@@ -47,6 +46,9 @@ public class BuildService {
     @CachePut(value = "build", key = "#build.id")
     public Build create(final Build build) {
         tagService.associateTagsIfPresent(build);
+        if (null != build.getTagStats()) {
+            build.getTagStats().forEach(x -> x.setBuild(build));
+        }
         return repository.save(build);
     }
 
@@ -56,8 +58,21 @@ public class BuildService {
     public Build update(final Build build) {
         log.info("Saving build " + build);
         tagService.associateTagsIfPresent(build);
-        repository.findById(build.getId()).ifPresentOrElse(
-                x -> repository.save(build),
+        final Optional<Build> findResult = repository.findById(build.getId());
+        findResult.ifPresentOrElse(
+                present -> {
+                    if (null != build.getRunStats()) {
+                        build.getRunStats().setId(present.getRunStats().getId());
+                    }
+                    if (null != build.getTagStats()) {
+                        build.getTagStats().forEach(t -> {
+                            t.setBuild(build);
+                            present.getTagStats().stream().filter(p -> p.getName().equals(t.getName()))
+                                    .findAny().ifPresent(p -> t.setId(p.getId()));
+                        });
+                    }
+                    repository.save(build);
+                },
                 () -> { throw new BuildNotFoundException("Build with ID " + build.getId() + " was not found"); }
         );
         return build;

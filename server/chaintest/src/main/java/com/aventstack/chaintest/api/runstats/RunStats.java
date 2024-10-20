@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.api.runstats;
 
 import com.aventstack.chaintest.api.build.Build;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -26,6 +27,7 @@ public class RunStats {
     private long id;
 
     @OneToOne(mappedBy = "runStats")
+    @JsonIgnore
     private Build build;
 
     private int total;
