@@ -2,10 +2,12 @@ package com.aventstack.chaintest.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Build implements ChainTestEntity {
@@ -18,8 +20,10 @@ public class Build implements ChainTestEntity {
     private ExecutionStage executionStage;
     private String testRunner;
     private String name;
-    private String result;
-    private Stats stats;
+    private String result = Result.PASSED.getResult();
+    private RunStats runStats;
+    private Set<TagStats> tagStats;
+    private static final ConcurrentHashMap<String, TagStats> tagStatsMonitor = new ConcurrentHashMap<>();
     private Set<Tag> tags;
     private String gitRepository;
     private String gitBranch;
@@ -33,13 +37,37 @@ public class Build implements ChainTestEntity {
         this.testRunner = testRunner;
     }
 
+    public void updateStats(final Test test) {
+        if (null == runStats || null == tagStats) {
+            synchronized (this) {
+                if (null == runStats) {
+                    runStats = new RunStats(id);
+                }
+                if (null == tagStats) {
+                    tagStats = ConcurrentHashMap.newKeySet();
+                }
+            }
+        }
+
+        runStats.update(test);
+        for (final Tag tag : test.getTags()) {
+            if (!tagStatsMonitor.containsKey(tag.getName())) {
+                final TagStats ts = new TagStats(id);
+                ts.setName(tag.getName());
+                tagStats.add(ts);
+                tagStatsMonitor.put(tag.getName(), ts);
+            }
+            tagStatsMonitor.get(tag.getName()).update(test);
+        }
+    }
+
     public void complete(final Result result) {
-        complete();
+        setEndedAt(System.currentTimeMillis());
         setResult(result.getResult());
     }
 
     public void complete() {
-        setEndedAt(System.currentTimeMillis());
+        complete(Result.valueOf(result));
     }
 
     public long getId() {
@@ -113,12 +141,25 @@ public class Build implements ChainTestEntity {
         this.result = result;
     }
 
-    public Stats getStats() {
-        return stats;
+    public RunStats getRunStats() {
+        return runStats;
     }
 
-    public void setStats(Stats stats) {
-        this.stats = stats;
+    public void setRunStats(final RunStats runStats) {
+        this.runStats = runStats;
+    }
+
+    public Set<TagStats> getTagStats() {
+        return tagStats;
+    }
+
+    public void setTagStats(final Set<TagStats> tagStats) {
+        this.tagStats = tagStats;
+    }
+
+    public void setEndedAt(long endedAt) {
+        this.endedAt = endedAt;
+        this.durationMs = endedAt - startedAt;
     }
 
     public Set<Tag> getTags() {
@@ -129,22 +170,28 @@ public class Build implements ChainTestEntity {
         this.tags = tags;
     }
 
-    public void addTags(Set<String> tags) {
-        if (null == this.tags) {
-            this.tags = new HashSet<>();
-        }
-        final List<Tag> t = tags.stream().map(Tag::new)
-                .collect(Collectors.toUnmodifiableList());
-        this.tags.addAll(t);
+    public void addTags(final List<String> tags) {
+        final Stream<Tag> t = tags.stream().map(Tag::new);
+        addTags(t);
     }
 
-    public void addTags(List<String> tags) {
+    public void addTags(final Set<String> tags) {
+        final Stream<Tag> t = tags.stream().map(Tag::new);
+        addTags(t);
+    }
+
+    public void addTags(Collection<Tag> tags) {
         if (null == this.tags) {
             this.tags = new HashSet<>();
         }
-        final List<Tag> t = tags.stream().map(Tag::new)
-                .collect(Collectors.toUnmodifiableList());
-        this.tags.addAll(t);
+        this.tags.addAll(tags);
+    }
+
+    public void addTags(Stream<Tag> tags) {
+        if (null == this.tags) {
+            this.tags = new HashSet<>();
+        }
+        tags.forEach(this.tags::add);
     }
 
     public String getGitRepository() {

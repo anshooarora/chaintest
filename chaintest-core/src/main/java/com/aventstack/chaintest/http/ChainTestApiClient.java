@@ -21,10 +21,10 @@ public class ChainTestApiClient {
 
     private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(30);
     private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
-    private static final String PROPERTY_SERVER_URL = "chaintest.host.url";
-    private static final String PROPERTY_CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
-    private static final String PROPERTY_CLIENT_EXPECT_CONTINUE = "chaintest.client.expect-continue";
-    private static final String PROPERTY_CLIENT_MAX_RETRIES = "chaintest.client.max-retries";
+    public static final String PROPERTY_SERVER_URL = "chaintest.host.url";
+    public static final String PROPERTY_CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
+    public static final String PROPERTY_CLIENT_EXPECT_CONTINUE = "chaintest.client.expect-continue";
+    public static final String PROPERTY_CLIENT_MAX_RETRIES = "chaintest.client.max-retries";
     private static final String API_VERSION = "/api/v1/";
 
     private final HttpClient _httpClient;
@@ -168,6 +168,7 @@ public class ChainTestApiClient {
         log.trace("Creating request for entity " + entity.getClass().getName() + " with HTTPMethod." + method.getMethod());
         final URI uri = getURI(entity);
         final String requestBody = _mapper.writeValueAsString(entity);
+        log.debug("Created request for entity " + entity.getClass().getSimpleName() + " with body: " + requestBody);
         return HttpRequest.newBuilder()
                 .uri(uri)
                 .expectContinue(_expectContinue)

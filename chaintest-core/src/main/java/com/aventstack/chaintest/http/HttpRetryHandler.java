@@ -9,7 +9,6 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class HttpRetryHandler {
@@ -26,7 +25,7 @@ public class HttpRetryHandler {
         _maxRetryAttempts = maxRetryAttempts;
     }
 
-    public void sendWithRetriesAsync(final Map<String, WrappedResponseAsync<Test>> collection) {
+    public void sendWithRetries(final Map<String, WrappedResponseAsync<Test>> collection) {
         if (collection.isEmpty()) {
             return;
         }

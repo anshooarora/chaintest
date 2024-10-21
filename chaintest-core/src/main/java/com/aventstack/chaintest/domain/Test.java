@@ -6,10 +6,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Test implements ChainTestEntity {
@@ -28,12 +30,22 @@ public class Test implements ChainTestEntity {
     private String result = Result.PASSED.getResult();
     private Set<Tag> tags;
     private String error;
-    private List<Test> children;
+    private volatile List<Test> children;
+    private UUID clientId = UUID.randomUUID();
 
     public Test() { }
 
     public Test(final long buildId, final String name, final Optional<Class<?>> testClass, final Collection<String> tags) {
         setBuildId(buildId);
+        setName(name);
+        addTags(tags);
+        testClass.ifPresent(x -> {
+            setClassName(x.getName());
+            setPackageName(x.getPackageName());
+        });
+    }
+
+    public Test(final String name, final Optional<Class<?>> testClass, final Collection<String> tags) {
         setName(name);
         addTags(tags);
         testClass.ifPresent(x -> {
@@ -51,8 +63,21 @@ public class Test implements ChainTestEntity {
         });
     }
 
+    public Test(final String name, final Optional<Class<?>> testClass) {
+        setName(name);
+        testClass.ifPresent(x -> {
+            setClassName(x.getName());
+            setPackageName(x.getPackageName());
+        });
+    }
+
     public Test(final long buildId, final String name, final Collection<String> tags) {
         setBuildId(buildId);
+        setName(name);
+        addTags(tags);
+    }
+
+    public Test(final String name, final Collection<String> tags) {
         setName(name);
         addTags(tags);
     }
@@ -62,14 +87,28 @@ public class Test implements ChainTestEntity {
         setName(name);
     }
 
+    public Test(final String name) {
+        setName(name);
+    }
+
     public Test(final long buildId, final Method method, final Collection<String> tags) {
-        this.buildId = buildId;
+        setBuildId(buildId);
+        this.name = method.getName();
+        this.className = method.getDeclaringClass().getName();
+    }
+
+    public Test(final Method method, final Collection<String> tags) {
         this.name = method.getName();
         this.className = method.getDeclaringClass().getName();
     }
 
     public Test(final long buildId, final Method method) {
-        this.buildId = buildId;
+        setBuildId(buildId);
+        this.name = method.getName();
+        this.className = method.getDeclaringClass().getName();
+    }
+
+    public Test(final Method method) {
         this.name = method.getName();
         this.className = method.getDeclaringClass().getName();
     }
@@ -207,13 +246,21 @@ public class Test implements ChainTestEntity {
         if (null == children) {
             synchronized (lock) {
                 if (null == children) {
-                    children = new ArrayList<>();
+                    children = Collections.synchronizedList(new ArrayList<>());
                 }
             }
         }
         synchronized (lock) {
             children.add(child);
         }
+    }
+
+    public UUID getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
     }
 
 }
