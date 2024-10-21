@@ -23,14 +23,16 @@ public class TestService {
 
     private static final ConcurrentHashMap<UUID, Long> BUILD_INFO = new ConcurrentHashMap<>();
 
-    @Autowired
-    private TestRepository repository;
+    private final TestRepository repository;
+    private final TagService tagService;
 
     @Autowired
-    private TagService tagService;
-
-    @Autowired
-    private BuildService buildService;
+    public TestService(final TestRepository repository,
+                       final TagService tagService,
+                       final BuildService buildService) {
+        this.repository = repository;
+        this.tagService = tagService;
+    }
 
     @Cacheable(value = "tests", unless = "#result == null || #result.size == 0")
     public Page<Test> findAll(final Pageable pageable) {
