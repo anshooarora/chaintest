@@ -1,8 +1,6 @@
 package com.aventstack.chaintest.api.build;
 
-import com.aventstack.chaintest.api.runstats.RunStatsService;
 import com.aventstack.chaintest.api.tag.TagService;
-import com.aventstack.chaintest.api.tagstats.TagStatsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -34,7 +32,6 @@ public class BuildService {
     public Page<Build> findAll(final Pageable pageable) {
         return repository.findAll(pageable);
     }
-
     @Cacheable(value = "build", key = "#id")
     public Build findById(final long id) {
         return repository.findById(id)
@@ -62,7 +59,11 @@ public class BuildService {
         findResult.ifPresentOrElse(
                 present -> {
                     if (null != build.getRunStats()) {
-                        build.getRunStats().setId(present.getRunStats().getId());
+                        if (null != present.getRunStats()) {
+                            build.getRunStats().setId(present.getRunStats().getId());
+                        } else {
+                            build.getRunStats().setBuild(build);
+                        }
                     }
                     if (null != build.getTagStats()) {
                         build.getTagStats().forEach(t -> {
