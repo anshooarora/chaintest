@@ -63,9 +63,10 @@ public class ChainPluginService {
             final HttpResponse<Build> response = _client.send(_build, Build.class, httpMethod);
             log.debug("Create build API returned responseCode: " + response.statusCode());
             if (200 == response.statusCode()) {
-                if (0L == _build.getId()){
+                if (0L == _build.getId()) {
                     CALLBACK_INVOKED.set(true);
                     _build = response.body();
+                    _build.init();
                     log.debug("All tests in this run will be associated with buildId: " + _build.getId());
                 }
                 return;
@@ -89,9 +90,9 @@ public class ChainPluginService {
         }
     }
 
-    public Test afterTest(final Test test) throws IOException {
+    public void afterTest(final Test test) throws IOException {
         if (!CALLBACK_INVOKED.get()) {
-            return test;
+            return;
         }
         _tests.putIfAbsent(test.getClientId(), test);
         _build.updateStats(test);
@@ -100,7 +101,6 @@ public class ChainPluginService {
         final WrappedResponseAsync<Test> wrapper = new WrappedResponseAsync<>(test);
         _wrappedResponses.put(test.getClientId().toString(), wrapper);
         wrapper.setResponse(_client.sendAsync(wrapper.getEntity(), Test.class));
-        return test;
     }
 
     private void updateAttributes(final Test test) {

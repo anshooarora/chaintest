@@ -22,9 +22,9 @@ public class Build implements ChainTestEntity {
     private String name;
     private String result = Result.PASSED.getResult();
     private RunStats runStats;
-    private Set<TagStats> tagStats;
+    private Set<TagStats> tagStats = ConcurrentHashMap.newKeySet();
     private static final ConcurrentHashMap<String, TagStats> tagStatsMonitor = new ConcurrentHashMap<>();
-    private Set<Tag> tags;
+    private Set<Tag> tags = ConcurrentHashMap.newKeySet();
     private String gitRepository;
     private String gitBranch;
     private String gitCommitHash;
@@ -37,27 +37,22 @@ public class Build implements ChainTestEntity {
         this.testRunner = testRunner;
     }
 
-    public void updateStats(final Test test) {
-        if (null == runStats || null == tagStats) {
-            synchronized (this) {
-                if (null == runStats) {
-                    runStats = new RunStats(id);
-                }
-                if (null == tagStats) {
-                    tagStats = ConcurrentHashMap.newKeySet();
-                }
-            }
-        }
+    public void init() {
+        runStats = new RunStats(id);
+    }
 
+    public void updateStats(final Test test) {
         runStats.update(test);
-        for (final Tag tag : test.getTags()) {
-            if (!tagStatsMonitor.containsKey(tag.getName())) {
-                final TagStats ts = new TagStats(id);
-                ts.setName(tag.getName());
-                tagStats.add(ts);
-                tagStatsMonitor.put(tag.getName(), ts);
+        if (null != test.getTags()) {
+            for (final Tag tag : test.getTags()) {
+                if (!tagStatsMonitor.containsKey(tag.getName())) {
+                    final TagStats ts = new TagStats(id);
+                    ts.setName(tag.getName());
+                    tagStats.add(ts);
+                    tagStatsMonitor.put(tag.getName(), ts);
+                }
+                tagStatsMonitor.get(tag.getName()).update(test);
             }
-            tagStatsMonitor.get(tag.getName()).update(test);
         }
     }
 
@@ -171,27 +166,29 @@ public class Build implements ChainTestEntity {
     }
 
     public void addTags(final List<String> tags) {
-        final Stream<Tag> t = tags.stream().map(Tag::new);
-        addTags(t);
+        if (null != tags) {
+            final Stream<Tag> t = tags.stream().map(Tag::new);
+            addTags(t);
+        }
     }
 
     public void addTags(final Set<String> tags) {
-        final Stream<Tag> t = tags.stream().map(Tag::new);
-        addTags(t);
+        if (null != tags) {
+            final Stream<Tag> t = tags.stream().map(Tag::new);
+            addTags(t);
+        }
     }
 
     public void addTags(Collection<Tag> tags) {
-        if (null == this.tags) {
-            this.tags = new HashSet<>();
+        if (null != tags) {
+            this.tags.addAll(tags);
         }
-        this.tags.addAll(tags);
     }
 
     public void addTags(Stream<Tag> tags) {
-        if (null == this.tags) {
-            this.tags = new HashSet<>();
+        if (null != tags) {
+            tags.forEach(this.tags::add);
         }
-        tags.forEach(this.tags::add);
     }
 
     public String getGitRepository() {

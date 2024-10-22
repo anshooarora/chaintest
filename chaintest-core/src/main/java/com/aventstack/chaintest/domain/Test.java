@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Test implements ChainTestEntity {
@@ -38,7 +39,21 @@ public class Test implements ChainTestEntity {
     public Test(final long buildId, final String name, final Optional<Class<?>> testClass, final Collection<String> tags) {
         setBuildId(buildId);
         setName(name);
-        addTags(tags);
+        if (null != tags) {
+            addTags(tags);
+        }
+        testClass.ifPresent(x -> {
+            setClassName(x.getName());
+            setPackageName(x.getPackageName());
+        });
+    }
+
+    public Test(final long buildId, final String name, final Optional<Class<?>> testClass, final Stream<String> tags) {
+        setBuildId(buildId);
+        setName(name);
+        if (null != tags) {
+            tags.forEach(this::addTag);
+        }
         testClass.ifPresent(x -> {
             setClassName(x.getName());
             setPackageName(x.getPackageName());
@@ -46,45 +61,39 @@ public class Test implements ChainTestEntity {
     }
 
     public Test(final String name, final Optional<Class<?>> testClass, final Collection<String> tags) {
-        setName(name);
-        addTags(tags);
-        testClass.ifPresent(x -> {
-            setClassName(x.getName());
-            setPackageName(x.getPackageName());
-        });
+        this(0L, name, testClass, tags);
+    }
+
+    public Test(final String name, final Optional<Class<?>> testClass, final Stream<String> tags) {
+        this(0L, name, testClass, tags);
     }
 
     public Test(final long buildId, final String name, final Optional<Class<?>> testClass) {
-        setBuildId(buildId);
-        setName(name);
-        testClass.ifPresent(x -> {
-            setClassName(x.getName());
-            setPackageName(x.getPackageName());
-        });
+        this(buildId, name, testClass, Stream.empty());
     }
 
     public Test(final String name, final Optional<Class<?>> testClass) {
-        setName(name);
-        testClass.ifPresent(x -> {
-            setClassName(x.getName());
-            setPackageName(x.getPackageName());
-        });
+        this(0L, name, testClass);
     }
 
     public Test(final long buildId, final String name, final Collection<String> tags) {
-        setBuildId(buildId);
-        setName(name);
-        addTags(tags);
+        this(buildId, name, Optional.empty(), tags);
+    }
+
+    public Test(final long buildId, final String name, final Stream<String> tags) {
+        this(buildId, name, Optional.empty(), tags);
     }
 
     public Test(final String name, final Collection<String> tags) {
-        setName(name);
-        addTags(tags);
+        this(0L, name, tags);
+    }
+
+    public Test(final String name, final Stream<String> tags) {
+        this(0L, name, tags);
     }
 
     public Test(final long buildId, final String name) {
-        setBuildId(buildId);
-        setName(name);
+        this(buildId, name, Stream.empty());
     }
 
     public Test(final String name) {
@@ -92,25 +101,19 @@ public class Test implements ChainTestEntity {
     }
 
     public Test(final long buildId, final Method method, final Collection<String> tags) {
-        setBuildId(buildId);
-        this.name = method.getName();
-        this.className = method.getDeclaringClass().getName();
+        this(buildId, method.getName(), tags);
     }
 
     public Test(final Method method, final Collection<String> tags) {
-        this.name = method.getName();
-        this.className = method.getDeclaringClass().getName();
+        this(0L, method, tags);
     }
 
     public Test(final long buildId, final Method method) {
-        setBuildId(buildId);
-        this.name = method.getName();
-        this.className = method.getDeclaringClass().getName();
+        this(buildId, method.getName());
     }
 
     public Test(final Method method) {
-        this.name = method.getName();
-        this.className = method.getDeclaringClass().getName();
+        this(0L, method);
     }
 
     public void complete() {
@@ -224,6 +227,13 @@ public class Test implements ChainTestEntity {
         }
         tags.stream().map(Tag::new)
                 .forEach(this.tags::add);
+    }
+
+    public void addTag(String tag) {
+        if (null == this.tags) {
+            this.tags = new HashSet<>();
+        }
+        this.tags.add(new Tag(tag));
     }
 
     public String getError() {
