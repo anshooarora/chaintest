@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.api.tag;
 
 import com.aventstack.chaintest.api.domain.Taggable;
+import com.aventstack.chaintest.api.test.Test;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -96,6 +97,11 @@ public class TagService {
             for (final Tag tag : tags) {
                 final Tag created = findByName(tag.getName()).orElse(create(tag));
                 tag.setId(created.getId());
+            }
+            if (taggable instanceof Test) {
+                for (final Test test : ((Test)taggable).getChildren()) {
+                    associateTagsIfPresent(test);
+                }
             }
         }
     }
