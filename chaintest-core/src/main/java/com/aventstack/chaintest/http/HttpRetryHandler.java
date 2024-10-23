@@ -57,11 +57,14 @@ public class HttpRetryHandler {
             collection.clear();
         } catch (final Exception ignored) {
             for (final CompletableFuture<HttpResponse<Test>> response : responses) {
-                response.thenAccept(x -> collection.values().removeIf(r -> r.getResponse() == response))
-                        .exceptionally(e -> {
-                            log.debug("Failed to transfer test", e);
-                            return null;
-                        });
+                response.thenAccept(x -> {
+                    log.debug("Create test API returned responseCode: " + x.statusCode());
+                    collection.values().removeIf(r -> r.getResponse() == response);
+                })
+                .exceptionally(e -> {
+                    log.debug("Failed to transfer test", e);
+                    return null;
+                });
             }
             for (final Map.Entry<String, WrappedResponseAsync<Test>> entry : collection.entrySet()) {
                 try {
