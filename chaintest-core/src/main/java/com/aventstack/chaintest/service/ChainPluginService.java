@@ -66,7 +66,6 @@ public class ChainPluginService {
                 if (0L == _build.getId()) {
                     CALLBACK_INVOKED.set(true);
                     _build = response.body();
-                    _build.init();
                     log.debug("All tests in this run will be associated with buildId: " + _build.getId());
                 }
                 return;

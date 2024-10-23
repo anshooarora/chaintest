@@ -135,7 +135,7 @@ public class ChainTestApiClient {
     public <T extends ChainTestEntity> HttpResponse<T> send(final T entity, final Class<T> clazz, final HttpMethod method)
             throws IOException, InterruptedException {
         final HttpRequest request = createRequest(entity, method);
-        return _httpClient.send(request, new JsonMappedBodyHandler<>(clazz));
+        return _httpClient.send(request, new JsonMappedBodyHandler<>(clazz, _mapper));
     }
 
     public <T extends ChainTestEntity> HttpResponse<T> send(final T entity, final Class<T> clazz)
@@ -156,7 +156,7 @@ public class ChainTestApiClient {
     public <T extends ChainTestEntity> CompletableFuture<HttpResponse<T>> sendAsync(final T entity, final Class<T> clazz, final HttpMethod method)
             throws IOException {
         final HttpRequest request = createRequest(entity, method);
-        return _httpClient.sendAsync(request, new JsonMappedBodyHandler<>(clazz));
+        return _httpClient.sendAsync(request, new JsonMappedBodyHandler<>(clazz, _mapper));
     }
 
     public <T extends ChainTestEntity> CompletableFuture<HttpResponse<T>> sendAsync(final T entity, final Class<T> clazz)

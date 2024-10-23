@@ -10,9 +10,11 @@ import java.nio.charset.StandardCharsets;
 public class JsonMappedBodyHandler<T> implements HttpResponse.BodyHandler<T> {
 
     private final Class<T> _clazz;
+    private final ObjectMapper _objectMapper;
 
-    public JsonMappedBodyHandler(final Class<T> clazz) {
+    public JsonMappedBodyHandler(final Class<T> clazz, final ObjectMapper objectMapper) {
         _clazz = clazz;
+        _objectMapper = objectMapper;
     }
 
     @Override
@@ -21,8 +23,7 @@ public class JsonMappedBodyHandler<T> implements HttpResponse.BodyHandler<T> {
         return HttpResponse.BodySubscribers.mapping(bodySubscriber,
                 (final String body) -> {
                     try {
-                        final ObjectMapper objectMapper = new ObjectMapper();
-                        return objectMapper.readValue(body, _clazz);
+                        return _objectMapper.readValue(body, _clazz);
                     } catch (IOException e) {
                         throw new UncheckedIOException(e);
                     }
