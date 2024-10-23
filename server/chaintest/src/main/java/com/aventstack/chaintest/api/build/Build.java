@@ -22,7 +22,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.List;
 import java.util.Set;
@@ -42,9 +41,8 @@ public class Build implements Taggable {
     @JsonBackReference
     private Workspace workspace;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "")
-    @JoinColumn(name = "run_stats_id", referencedColumnName = "id")
-    private RunStats runStats;
+    @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
+    private Set<RunStats> runStats;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
     private Set<TagStats> tagStats;
