@@ -32,6 +32,7 @@ public class Test implements ChainTestEntity {
     private Set<Tag> tags;
     private String error;
     private volatile List<Test> children;
+    private int depth;
     private UUID clientId = UUID.randomUUID();
 
     public Test() { }
@@ -260,9 +261,16 @@ public class Test implements ChainTestEntity {
                 }
             }
         }
-        synchronized (lock) {
-            children.add(child);
-        }
+        child.setDepth(depth + 1);
+        children.add(child);
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     public UUID getClientId() {
