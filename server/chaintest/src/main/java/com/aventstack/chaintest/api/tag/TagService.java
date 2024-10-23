@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,8 +100,11 @@ public class TagService {
                 tag.setId(created.getId());
             }
             if (taggable instanceof Test) {
-                for (final Test test : ((Test)taggable).getChildren()) {
-                    associateTagsIfPresent(test);
+                final Collection<Test> nodes = ((Test)taggable).getChildren();
+                if (null != nodes) {
+                    for (final Test test : nodes) {
+                        associateTagsIfPresent(test);
+                    }
                 }
             }
         }

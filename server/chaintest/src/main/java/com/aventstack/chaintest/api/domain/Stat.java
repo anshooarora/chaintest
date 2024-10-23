@@ -1,42 +1,33 @@
-package com.aventstack.chaintest.api.tagstats;
+package com.aventstack.chaintest.api.domain;
 
-import com.aventstack.chaintest.api.build.Build;
+import com.aventstack.chaintest.api.runstats.RunStats;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.hibernate.annotations.DiscriminatorOptions;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
-@ToString(exclude = "build")
 @Entity
-@EqualsAndHashCode
-@DiscriminatorOptions(force = true)
-@Table(name = "tag_stats")
-public class TagStats {
+@Table(name = "stats")
+public class Stat {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Exclude
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "build_id")
+    @JoinColumn(name = "run_stats_id")
     @EqualsAndHashCode.Exclude
     @JsonIgnore
-    private Build build;
+    private RunStats runStats;
 
-    private String name;
+    private int depth;
     private int total;
     private int passed;
     private int failed;
