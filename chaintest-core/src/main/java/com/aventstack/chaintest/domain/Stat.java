@@ -3,21 +3,7 @@ package com.aventstack.chaintest.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TagStats {
-
-    private String name;
-
-    public TagStats() {
-        super();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+public class Stat {
 
     private int depth;
     private int total;
@@ -25,6 +11,9 @@ public class TagStats {
     private int failed;
     private int skipped;
 
+    public Stat(final int depth) {
+        this.depth = depth;
+    }
 
     public void update(final Test test) {
         total++;

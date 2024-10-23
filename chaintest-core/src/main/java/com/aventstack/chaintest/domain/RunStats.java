@@ -1,9 +1,11 @@
 package com.aventstack.chaintest.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RunStats {
 
-    private long id;
-    private long buildId;
+    private int depth;
     private int total;
     private int passed;
     private int failed;
@@ -11,11 +13,11 @@ public class RunStats {
 
     public RunStats() { }
 
-    public RunStats(final long buildId) {
-        this.buildId = buildId;
+    public RunStats(final int depth) {
+        setDepth((depth));
     }
 
-    public synchronized void update(final Test test) {
+    public void update(final Test test) {
         total++;
         if (Result.PASSED.getResult().equalsIgnoreCase(test.getResult())) {
             ++passed;
@@ -26,20 +28,12 @@ public class RunStats {
         }
     }
 
-    public long getId() {
-        return id;
+    public int getDepth() {
+        return depth;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getBuildId() {
-        return buildId;
-    }
-
-    public void setBuildId(long buildId) {
-        this.buildId = buildId;
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     public int getTotal() {
@@ -73,5 +67,4 @@ public class RunStats {
     public void setSkipped(int skipped) {
         this.skipped = skipped;
     }
-
 }

@@ -3,7 +3,6 @@ package com.aventstack.chaintest.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,9 +20,9 @@ public class Build implements ChainTestEntity {
     private String testRunner;
     private String name;
     private String result = Result.PASSED.getResult();
-    private RunStats runStats;
-    private Set<TagStats> tagStats = ConcurrentHashMap.newKeySet();
-    private static final ConcurrentHashMap<String, TagStats> tagStatsMonitor = new ConcurrentHashMap<>();
+    private final Set<RunStats> runStats = ConcurrentHashMap.newKeySet();
+    private final Set<TagStats> tagStats = ConcurrentHashMap.newKeySet();
+    private final ConcurrentHashMap<String, TagStats> tagStatsMonitor = new ConcurrentHashMap<>();
     private Set<Tag> tags = ConcurrentHashMap.newKeySet();
     private String gitRepository;
     private String gitBranch;
@@ -37,16 +36,16 @@ public class Build implements ChainTestEntity {
         this.testRunner = testRunner;
     }
 
-    public void init() {
-        runStats = new RunStats(id);
-    }
-
     public void updateStats(final Test test) {
-        runStats.update(test);
+        final RunStats stat = runStats.stream()
+                .filter(x -> x.getDepth() == test.getDepth())
+                .findAny().orElseGet(() -> addDepth(test.getDepth()));
+        stat.update(test);
+
         if (null != test.getTags()) {
             for (final Tag tag : test.getTags()) {
                 if (!tagStatsMonitor.containsKey(tag.getName())) {
-                    final TagStats ts = new TagStats(id);
+                    final TagStats ts = new TagStats();
                     ts.setName(tag.getName());
                     tagStats.add(ts);
                     tagStatsMonitor.put(tag.getName(), ts);
@@ -54,6 +53,12 @@ public class Build implements ChainTestEntity {
                 tagStatsMonitor.get(tag.getName()).update(test);
             }
         }
+    }
+
+    private RunStats addDepth(final int depth) {
+        final RunStats stat = new RunStats(depth);
+        runStats.add(stat);
+        return stat;
     }
 
     public void complete(final Result result) {
@@ -136,20 +141,12 @@ public class Build implements ChainTestEntity {
         this.result = result;
     }
 
-    public RunStats getRunStats() {
+    public Set<RunStats> getRunStats() {
         return runStats;
-    }
-
-    public void setRunStats(final RunStats runStats) {
-        this.runStats = runStats;
     }
 
     public Set<TagStats> getTagStats() {
         return tagStats;
-    }
-
-    public void setTagStats(final Set<TagStats> tagStats) {
-        this.tagStats = tagStats;
     }
 
     public void setEndedAt(long endedAt) {
