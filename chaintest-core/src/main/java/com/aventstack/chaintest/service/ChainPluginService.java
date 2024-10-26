@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -75,6 +76,10 @@ public class ChainPluginService {
     }
 
     public void flush() {
+        if (!CALLBACK_INVOKED.get()) {
+            return;
+        }
+
         final boolean hasTestFailures = _tests.values().stream()
                 .anyMatch(x -> x.getResult().equals(Result.FAILED.getResult()));
         final Result buildResult = hasTestFailures ? Result.FAILED : Result.PASSED;
@@ -89,10 +94,12 @@ public class ChainPluginService {
         }
     }
 
-    public void afterTest(final Test test) throws IOException {
+    public void afterTest(final Test test, final Optional<Throwable> t) throws IOException {
         if (!CALLBACK_INVOKED.get()) {
             return;
         }
+
+        test.complete(t);
         _tests.putIfAbsent(test.getClientId(), test);
         _build.updateStats(test);
         updateAttributes(test);
@@ -100,6 +107,14 @@ public class ChainPluginService {
         final WrappedResponseAsync<Test> wrapper = new WrappedResponseAsync<>(test);
         _wrappedResponses.put(test.getClientId().toString(), wrapper);
         wrapper.setResponse(_client.sendAsync(wrapper.getEntity(), Test.class));
+    }
+
+    public void afterTest(final Test test, final Throwable t) throws IOException {
+        afterTest(test, Optional.of(t));
+    }
+
+    public void afterTest(final Test test) throws IOException {
+        afterTest(test, Optional.empty());
     }
 
     private void updateAttributes(final Test test) {
