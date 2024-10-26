@@ -1,7 +1,8 @@
 package com.aventstack.chaintest.api.build;
 
-import com.aventstack.chaintest.api.runstats.RunStats;
+import com.aventstack.chaintest.api.runstats.RunStatsService;
 import com.aventstack.chaintest.api.tag.TagService;
+import com.aventstack.chaintest.api.tagstats.TagStatsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -20,13 +21,18 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class BuildService {
 
-    private BuildRepository repository;
-    private TagService tagService;
+    private final BuildRepository repository;
+    private final TagService tagService;
+    private final RunStatsService runStatsService;
+    private final TagStatsService tagStatsService;
 
     @Autowired
-    public BuildService(final BuildRepository repository, final TagService tagService) {
+    public BuildService(final BuildRepository repository, final TagService tagService,
+                        final RunStatsService runStatsService, final TagStatsService tagStatsService) {
         this.repository = repository;
         this.tagService = tagService;
+        this.runStatsService = runStatsService;
+        this.tagStatsService = tagStatsService;
     }
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
@@ -45,9 +51,8 @@ public class BuildService {
     @CachePut(value = "build", key = "#build.id")
     public Build create(final Build build) {
         tagService.associateTagsIfPresent(build);
-        if (null != build.getTagStats()) {
-            build.getTagStats().forEach(x -> x.setBuild(build));
-        }
+        runStatsService.assignBuildInfo(build, null);
+        tagStatsService.assignBuildInfo(build, null);
         return repository.save(build);
     }
 
@@ -59,25 +64,9 @@ public class BuildService {
         tagService.associateTagsIfPresent(build);
         final Optional<Build> findResult = repository.findById(build.getId());
         findResult.ifPresentOrElse(
-                present -> {
-                    if (null != build.getRunStats() && null != present.getRunStats()) {
-                        for (final RunStats stats : build.getRunStats()) {
-                            final Optional<RunStats> container = present.getRunStats().stream()
-                                    .filter(x -> x.getDepth() == stats.getDepth()).findAny();
-                            container.ifPresentOrElse(runStats -> {
-                                stats.setId(runStats.getId());
-                                stats.setBuild(build);
-                            },
-                            () -> stats.setBuild(build));
-                        }
-                    }
-                    if (null != build.getTagStats()) {
-                        build.getTagStats().forEach(t -> {
-                            t.setBuild(build);
-                            present.getTagStats().stream().filter(p -> p.getName().equals(t.getName()))
-                                    .findAny().ifPresent(p -> t.setId(p.getId()));
-                        });
-                    }
+                persisted -> {
+                    runStatsService.assignBuildInfo(build, persisted);
+                    tagStatsService.assignBuildInfo(build, persisted);
                     repository.save(build);
                 },
                 () -> { throw new BuildNotFoundException("Build with ID " + build.getId() + " was not found"); }

@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.api.tagstats;
 
+import com.aventstack.chaintest.api.build.Build;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -52,6 +53,21 @@ public class TagStatsService {
         log.info("Deleting TagStats with ID " + id);
         repository.deleteById(id);
         log.info("TagStats with ID " + id + " deleted");
+    }
+
+    public void assignBuildInfo(final Build httpRequestBody, final Build persisted) {
+        if (null != httpRequestBody.getTagStats()) {
+            for (final TagStats stats : httpRequestBody.getTagStats()) {
+                if (null != persisted && null != persisted.getTagStats()) {
+                    httpRequestBody.getTagStats().forEach(t -> {
+                        t.setBuild(httpRequestBody);
+                        persisted.getTagStats().stream().filter(p -> p.getName().equals(t.getName()))
+                                .findAny().ifPresent(p -> t.setId(p.getId()));
+                    });
+                }
+                stats.setBuild(httpRequestBody);
+            }
+        }
     }
 
 }

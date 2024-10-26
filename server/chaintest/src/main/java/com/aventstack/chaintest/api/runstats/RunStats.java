@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.hibernate.annotations.DiscriminatorOptions;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import javax.persistence.Table;
 @ToString(exclude = "build")
 @Entity
 @EqualsAndHashCode
+@DiscriminatorOptions(force = true)
 @Table(name = "run_stats")
 public class RunStats {
 

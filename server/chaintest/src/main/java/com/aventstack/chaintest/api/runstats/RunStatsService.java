@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.api.runstats;
 
+import com.aventstack.chaintest.api.build.Build;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -52,6 +53,19 @@ public class RunStatsService {
         log.info("Deleting RunStats with ID " + id);
         repository.deleteById(id);
         log.info("RunStats with ID " + id + " deleted");
+    }
+
+    public void assignBuildInfo(final Build httpRequestBody, final Build persisted) {
+        if (null != httpRequestBody.getRunStats()) {
+            for (final RunStats stats : httpRequestBody.getRunStats()) {
+                if (null != persisted && null != persisted.getRunStats()) {
+                    final Optional<RunStats> container = persisted.getRunStats().stream()
+                            .filter(x -> x.getDepth() == stats.getDepth()).findAny();
+                    container.ifPresent(runStats -> stats.setId(runStats.getId()));
+                }
+                stats.setBuild(httpRequestBody);
+            }
+        }
     }
 
 }
