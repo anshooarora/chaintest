@@ -40,6 +40,9 @@ public class HttpRetryHandler {
                 log.debug("Retrying " + (retryAttempts - 1) + " of " + _maxRetryAttempts + " times");
             }
             sendAsync(collection);
+            try {
+                Thread.sleep(5000L);
+            } catch (final InterruptedException ignored) { }
         }
         if (!collection.isEmpty()) {
             log.error("Failed to transfer " + collection.size() + " of " + size + " tests. Make sure " +
@@ -57,13 +60,12 @@ public class HttpRetryHandler {
             collection.clear();
         } catch (final Exception ignored) {
             for (final CompletableFuture<HttpResponse<Test>> response : responses) {
-                response.thenAccept(x -> {
-                    log.debug("Create test API returned responseCode: " + x.statusCode());
-                    collection.values().removeIf(r -> r.getResponse() == response);
-                })
-                .exceptionally(e -> {
+                response.exceptionally(e -> {
                     log.debug("Failed to transfer test", e);
                     return null;
+                }).thenAccept(x -> {
+                    log.debug("Create test API returned responseCode: " + x.statusCode());
+                    collection.values().removeIf(r -> r.getResponse() == response);
                 });
             }
             for (final Map.Entry<String, WrappedResponseAsync<Test>> entry : collection.entrySet()) {
