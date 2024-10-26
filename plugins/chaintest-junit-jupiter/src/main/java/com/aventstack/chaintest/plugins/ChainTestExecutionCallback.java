@@ -39,8 +39,7 @@ public class ChainTestExecutionCallback
         final Test test = new Test(context.getDisplayName(),
                 context.getTestClass(),
                 context.getTags());
-        test.complete(context.getExecutionException());
-        _service.afterTest(test);
+        _service.afterTest(test, context.getExecutionException());
         log.trace("Ended test " + test.getName() + " with status " + test.getResult());
     }
 
