@@ -56,6 +56,9 @@ public class Build implements Taggable {
     @Column(name = "duration")
     private long durationMs;
 
+    @Column(name = "execution_stage")
+    private String executionStage;
+
     @Column(name = "testrunner")
     private String testRunner;
 
