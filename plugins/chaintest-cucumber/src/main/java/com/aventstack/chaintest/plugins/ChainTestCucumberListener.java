@@ -28,14 +28,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 public class ChainTestCucumberListener implements EventListener {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestCucumberListener.class);
     private static final String CUCUMBER_JVM = "cucumber-jvm";
-    private static final AtomicBoolean READY = new AtomicBoolean();
 
     private final Map<UUID, Test> _scenarios = new HashMap<>();
     private final Map<URI, Test> _features = new HashMap<>();
@@ -44,7 +42,7 @@ public class ChainTestCucumberListener implements EventListener {
     public ChainTestCucumberListener(final String ignored) {
         try {
             _service = new ChainPluginService(CUCUMBER_JVM);
-            READY.set(_service.start());
+            _service.start();
         } catch (final IOException e) {
             log.error("Failed to start plugin service", e);
         }
@@ -52,7 +50,7 @@ public class ChainTestCucumberListener implements EventListener {
 
     @Override
     public void setEventPublisher(final EventPublisher publisher) {
-        if (READY.get()) {
+        if (_service.ready()) {
             publisher.registerHandlerFor(TestSourceRead.class, testSourceReadHandler);
             publisher.registerHandlerFor(TestCaseStarted.class, caseStartedHandler);
             publisher.registerHandlerFor(TestCaseFinished.class, caseFinishedHandler);
@@ -137,7 +135,7 @@ public class ChainTestCucumberListener implements EventListener {
             log.debug("Preparing to finalize and send Feature [" + entry.getValue().getName() + "]: " + entry.getKey());
             try {
                 _service.afterTest(entry.getValue());
-                Thread.sleep(10);
+                Thread.sleep(10L);
             } catch (final Exception e) {
                 log.debug("An exception occurred while sending test", e);
             }
