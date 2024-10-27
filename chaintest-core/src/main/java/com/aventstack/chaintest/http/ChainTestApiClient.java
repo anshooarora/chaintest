@@ -22,9 +22,9 @@ public class ChainTestApiClient {
     private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(30);
     private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
     public static final String PROPERTY_SERVER_URL = "chaintest.host.url";
-    public static final String PROPERTY_CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
-    public static final String PROPERTY_CLIENT_EXPECT_CONTINUE = "chaintest.client.expect-continue";
-    public static final String PROPERTY_CLIENT_MAX_RETRIES = "chaintest.client.max-retries";
+    public static final String CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
+    public static final String CLIENT_EXPECT_CONTINUE = "chaintest.client.expect-continue";
+    public static final String CLIENT_MAX_RETRIES = "chaintest.client.max-retries";
     private static final String API_VERSION = "/api/v1/";
 
     private final HttpClient _httpClient;
@@ -59,15 +59,15 @@ public class ChainTestApiClient {
                     ". No such property was found in classpath resources or system environment");
         }
 
-        final String timeout = config.get(PROPERTY_CLIENT_REQUEST_TIMEOUT);
+        final String timeout = config.get(CLIENT_REQUEST_TIMEOUT);
         if (null != timeout && timeout.matches("\\d+")) {
             _requestTimeout = Duration.ofSeconds(Integer.parseInt(timeout));
         }
 
-        final String expectContinue = config.get(PROPERTY_CLIENT_EXPECT_CONTINUE);
+        final String expectContinue = config.get(CLIENT_EXPECT_CONTINUE);
         _expectContinue = Boolean.parseBoolean(expectContinue);
 
-        final String maxRetries = config.get(PROPERTY_CLIENT_MAX_RETRIES);
+        final String maxRetries = config.get(CLIENT_MAX_RETRIES);
         _maxRetryAttempts = 0;
         if (null != maxRetries && maxRetries.matches("\\d+")) {
             _maxRetryAttempts = Integer.parseInt(maxRetries);

@@ -1,6 +1,6 @@
 package com.aventstack.chaintest.domain;
 
-import com.aventstack.chaintest.util.ExceptionUtil;
+import com.aventstack.chaintest.util.ExceptionsUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.lang.reflect.Method;
@@ -124,7 +124,7 @@ public class Test implements ChainTestEntity {
     public void complete(final Optional<Throwable> error) {
         setEndedAt(System.currentTimeMillis());
         error.ifPresent(x -> {
-            this.error = ExceptionUtil.readStackTrace(x);
+            this.error = ExceptionsUtil.readStackTrace(x);
             this.result = Result.FAILED.getResult();
         });
     }

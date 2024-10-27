@@ -37,6 +37,10 @@ public class Configuration {
 
     private final Map<String, String> _config = new HashMap<>();
 
+    public String get(final String prop) {
+        return _config.get(prop);
+    }
+
     public Map<String, String> getConfig() {
         return _config;
     }

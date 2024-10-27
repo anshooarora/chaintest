@@ -40,9 +40,11 @@ public class HttpRetryHandler {
                 log.debug("Retrying " + (retryAttempts - 1) + " of " + _maxRetryAttempts + " times");
             }
             sendAsync(collection);
-            try {
-                Thread.sleep(5000L);
-            } catch (final InterruptedException ignored) { }
+            if (!collection.isEmpty()) {
+                try {
+                    Thread.sleep(5000L);
+                } catch (final InterruptedException ignored) {}
+            }
         }
         if (!collection.isEmpty()) {
             log.error("Failed to transfer " + collection.size() + " of " + size + " tests. Make sure " +

@@ -3,7 +3,7 @@ package com.aventstack.chaintest.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class ExceptionUtil {
+public class ExceptionsUtil {
 
     public static String readStackTrace(final Throwable e) {
         final StringWriter sw = new StringWriter();
