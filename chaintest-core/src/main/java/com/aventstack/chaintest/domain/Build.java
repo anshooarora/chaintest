@@ -16,7 +16,7 @@ public class Build implements ChainTestEntity {
     private long startedAt = System.currentTimeMillis();
     private long endedAt;
     private long durationMs;
-    private ExecutionStage executionStage;
+    private ExecutionStage executionStage = ExecutionStage.IN_PROGRESS;
     private String testRunner;
     private String name;
     private String result = Result.PASSED.getResult();
@@ -39,7 +39,7 @@ public class Build implements ChainTestEntity {
     public void updateStats(final Test test) {
         final RunStats stat = runStats.stream()
                 .filter(x -> x.getDepth() == test.getDepth())
-                .findAny().orElseGet(() -> addDepth(test.getDepth()));
+                .findAny().orElseGet(() -> addRunStatsDepth(test.getDepth()));
         stat.update(test);
 
         if (null != test.getTags()) {
@@ -55,7 +55,7 @@ public class Build implements ChainTestEntity {
         }
     }
 
-    private RunStats addDepth(final int depth) {
+    private RunStats addRunStatsDepth(final int depth) {
         final RunStats stat = new RunStats(depth);
         runStats.add(stat);
         return stat;

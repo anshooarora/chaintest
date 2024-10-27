@@ -3,7 +3,7 @@ package com.aventstack.chaintest.domain;
 public enum ExecutionStage {
 
     IN_PROGRESS("In Progress"),
-    COMPLETED("Completed"),
+    FINISHED("Finished"),
     ERROR("Error");
 
     private final String _executionStage;

@@ -33,7 +33,7 @@ public class ChainTestExecutionCallback
 
     @Override
     public void afterTestExecution(final ExtensionContext context) throws Exception {
-        if (null == _service.getBuild()) {
+        if (!_service.ready()) {
             return;
         }
         final Test test = new Test(context.getDisplayName(),
@@ -45,7 +45,7 @@ public class ChainTestExecutionCallback
 
     @Override
     public void afterAll(final ExtensionContext extensionContext) {
-        if (null == _service.getBuild()) {
+        if (!_service.ready()) {
             return;
         }
         log.trace("Executing afterAll hook");

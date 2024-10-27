@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.service;
 
 import com.aventstack.chaintest.domain.Build;
+import com.aventstack.chaintest.domain.ExecutionStage;
 import com.aventstack.chaintest.domain.Result;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.http.ChainTestApiClient;
@@ -22,6 +23,7 @@ public class ChainPluginService {
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _wrappedResponses = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<UUID, Test> _tests = new ConcurrentHashMap<>();
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
+    public static ChainPluginService INSTANCE;
 
     private final ChainTestApiClient _client;
     private final String _testRunner;
@@ -30,12 +32,17 @@ public class ChainPluginService {
 
     public ChainPluginService(final ChainTestApiClient client, final String testRunner) {
         _client = client;
-        _maxRetries = Math.max(Integer.parseInt(_client.config().getConfig().get(ChainTestApiClient.PROPERTY_CLIENT_MAX_RETRIES)), 0);
+        _maxRetries = Math.max(Integer.parseInt(_client.config().get(ChainTestApiClient.CLIENT_MAX_RETRIES)), 0);
         _testRunner = testRunner;
+        INSTANCE = this;
     }
 
     public ChainPluginService(final String testRunner) throws IOException {
         this(new ChainTestApiClient(), testRunner);
+    }
+
+    public boolean ready() {
+        return CALLBACK_INVOKED.get();
     }
 
     public ChainTestApiClient getClient() {
@@ -46,17 +53,15 @@ public class ChainPluginService {
         return _build;
     }
 
-    public boolean start() {
+    public void start() {
         log.trace("Starting new build, but events will only be sent to API if build is successfully created");
         _build = new Build(_testRunner);
         try {
             trySendBuild(HttpMethod.POST);
-            return true;
         } catch (final IOException | InterruptedException e) {
             log.error("Failed to send Build. PluginService will shutdown and " +
                     "future events will be ignored", e);
         }
-        return false;
     }
 
     private void trySendBuild(final HttpMethod httpMethod) throws IOException, InterruptedException {
@@ -75,8 +80,13 @@ public class ChainPluginService {
         }
     }
 
+    public void finish() {
+        _build.setExecutionStage(ExecutionStage.FINISHED);
+        flush();
+    }
+
     public void flush() {
-        if (!CALLBACK_INVOKED.get()) {
+        if (!ready()) {
             return;
         }
 
@@ -94,12 +104,12 @@ public class ChainPluginService {
         }
     }
 
-    public void afterTest(final Test test, final Optional<Throwable> t) throws IOException {
-        if (!CALLBACK_INVOKED.get()) {
+    public void afterTest(final Test test, final Optional<Throwable> throwable) throws IOException {
+        if (!ready()) {
             return;
         }
 
-        test.complete(t);
+        test.complete(throwable);
         _tests.putIfAbsent(test.getClientId(), test);
         _build.updateStats(test);
         updateAttributes(test);
