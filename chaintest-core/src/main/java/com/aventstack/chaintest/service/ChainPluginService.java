@@ -58,25 +58,32 @@ public class ChainPluginService {
         _build = new Build(_testRunner);
         try {
             trySendBuild(HttpMethod.POST);
-        } catch (final IOException | InterruptedException e) {
-            log.error("Failed to send Build. PluginService will shutdown and " +
+        } catch (final Exception e) {
+            log.debug("Failed to send Build. PluginService will shutdown and " +
                     "future events will be ignored", e);
         }
     }
 
     private void trySendBuild(final HttpMethod httpMethod) throws IOException, InterruptedException {
         for (int i = 0; i <= _maxRetries; i++) {
-            final HttpResponse<Build> response = _client.send(_build, Build.class, httpMethod);
-            log.debug("Create build API returned responseCode: " + response.statusCode());
-            if (200 == response.statusCode()) {
-                if (0L == _build.getId()) {
-                    CALLBACK_INVOKED.set(true);
-                    _build = response.body();
-                    log.debug("All tests in this run will be associated with buildId: " + _build.getId());
+            try {
+                final HttpResponse<Build> response = _client.send(_build, Build.class, httpMethod);
+                log.debug("Create build API returned responseCode: " + response.statusCode());
+                if (200 == response.statusCode()) {
+                    if (0L == _build.getId()) {
+                        CALLBACK_INVOKED.set(true);
+                        _build = response.body();
+                        log.debug("All tests in this run will be associated with buildId: " + _build.getId());
+                    }
+                    return;
                 }
-                return;
+            } catch (final IOException | InterruptedException e) {
+                if (i == _maxRetries) {
+                    throw e;
+                }
+                log.debug("An exception occurred while sending Build", e);
+                Thread.sleep(100);
             }
-            Thread.sleep(100);
         }
     }
 
@@ -99,7 +106,7 @@ public class ChainPluginService {
             trySendBuild(HttpMethod.PUT);
         } catch (final IOException | InterruptedException e) {
             CALLBACK_INVOKED.set(false);
-            log.error("Failed to send Build. PluginService will shutdown and " +
+            log.debug("Failed to send Build. PluginService will shutdown and " +
                     "future events will be ignored", e);
         }
     }
