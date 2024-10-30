@@ -1,11 +1,14 @@
 package com.aventstack.chaintest.http;
 
+import com.aventstack.chaintest.domain.ChainTestEntity;
 import com.aventstack.chaintest.domain.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -23,6 +26,40 @@ public class HttpRetryHandler {
 
         this._client = client;
         _maxRetryAttempts = maxRetryAttempts;
+    }
+
+    public <T extends ChainTestEntity> HttpResponse<T> trySend(final T entity, final Class<T> clazz, final HttpMethod httpMethod,
+                                                       final int maxRetryAttempts) throws IOException, InterruptedException {
+        for (int i = 0; i <= maxRetryAttempts; i++) {
+            if (i > 0) {
+                log.trace("Retry: " + i);
+            }
+            try {
+                final HttpResponse<T> response = _client.send(entity, clazz, httpMethod);
+                log.debug("Create API returned responseCode: " + response.statusCode());
+                if (200 == response.statusCode()) {
+                    return response;
+                }
+            } catch (final IOException | InterruptedException e) {
+                if (e instanceof ConnectException) {
+                    log.debug("Failed to connect to the ChainTest service", e);
+                } else if (e instanceof HttpTimeoutException) {
+                    log.debug("Timed out while waiting for ChainTest service response", e);
+                } else {
+                    log.debug("An exception occurred while sending entity", e);
+                }
+                if (i == maxRetryAttempts) {
+                    throw e;
+                }
+            }
+            Thread.sleep(1_000L);
+        }
+        return null;
+    }
+
+    public <T extends ChainTestEntity> HttpResponse<T> trySend(final T entity, final Class<T> clazz, final HttpMethod httpMethod)
+            throws IOException, InterruptedException {
+        return trySend(entity, clazz, httpMethod, _maxRetryAttempts);
     }
 
     public void sendWithRetries(final Map<String, WrappedResponseAsync<Test>> collection) {
