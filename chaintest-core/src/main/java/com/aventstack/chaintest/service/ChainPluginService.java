@@ -57,7 +57,6 @@ public class ChainPluginService {
     public void start() {
         log.trace("Starting new build, but events will only be sent to API if build is successfully created");
 
-
         final int projectId = Integer.parseInt(_client.config().get(PROJECT_ID));
         final String projectName = _client.config().getConfig().getOrDefault(PROJECT_NAME, "");
         if (projectId > 0) {
