@@ -1,12 +1,12 @@
-package com.aventstack.chaintest.api.workspace;
+package com.aventstack.chaintest.api.project;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class WorkspaceNotFoundException extends RuntimeException {
+public class ProjectNotFoundException extends RuntimeException {
 
-    public WorkspaceNotFoundException(final String s) {
+    public ProjectNotFoundException(final String s) {
         super(s);
     }
 

@@ -1,4 +1,4 @@
-package com.aventstack.chaintest.api.workspace;
+package com.aventstack.chaintest.api.project;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,30 +16,31 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/workspaces")
-public class WorkspaceController {
+@RequestMapping("/projects")
+public class ProjectController {
     
     @Autowired
-    private WorkspaceService service;
+    private ProjectService service;
 
     @GetMapping
-    public ResponseEntity<Page<Workspace>> findAll(final Pageable pageable) {
+    public ResponseEntity<Page<Project>> findAll(final Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Workspace> find(@PathVariable final int id) {
-        return ResponseEntity.ok(service.findById(id));
+    public ResponseEntity<Project> find(@PathVariable final int id) {
+        return ResponseEntity.ok(service.findById(id)
+                .orElseThrow(() -> new ProjectNotFoundException("Not found")));
     }
 
     @PostMapping
-    public Workspace create(@Valid @RequestBody final Workspace workspace) {
-        return service.create(workspace);
+    public Project create(@Valid @RequestBody final Project project) {
+        return service.create(project);
     }
 
     @PutMapping
-    public ResponseEntity<Workspace> update(@Valid @RequestBody final Workspace workspace) {
-        return ResponseEntity.ok(service.update(workspace));
+    public ResponseEntity<Project> update(@Valid @RequestBody final Project project) {
+        return ResponseEntity.ok(service.update(project));
     }
 
     @DeleteMapping("/{id}")

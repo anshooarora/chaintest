@@ -1,7 +1,5 @@
-package com.aventstack.chaintest.api.workspace;
+package com.aventstack.chaintest.api.project;
 
-import com.aventstack.chaintest.api.build.Build;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,15 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import java.util.List;
 
 @Data
-@ToString(exclude = "builds")
+@ToString()
 @Entity
-@Table(name = "workspace")
-public class Workspace {
+@Table(name = "projects")
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +29,9 @@ public class Workspace {
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "workspace")
-    @JsonIgnore
-    private List<Build> builds;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = System.currentTimeMillis();
+    }
 
 }
