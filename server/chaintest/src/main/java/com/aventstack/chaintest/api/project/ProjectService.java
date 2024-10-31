@@ -27,8 +27,9 @@ public class ProjectService {
     }
 
     @Cacheable(value = "project", key = "#id")
-    public Optional<Project> findById(final int id) {
-        return repository.findById(id);
+    public Project findById(final int id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ProjectNotFoundException("Project with ID " + id + " was not found"));
     }
 
     @Cacheable(value = "project", key = "#name")

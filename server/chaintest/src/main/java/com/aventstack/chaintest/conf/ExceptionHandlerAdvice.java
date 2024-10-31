@@ -21,8 +21,7 @@ public class ExceptionHandlerAdvice {
             ProjectNotFoundException.class
     })
     public final ResponseEntity<ErrorResponse> handleException(final Exception ex, final WebRequest request) {
-        log.error("Handling exception: " + ex.getClass().getSimpleName());
-
+        log.error("Handling exception: {}", ex.getClass().getSimpleName());
         final HttpHeaders headers = new HttpHeaders();
         final HttpStatus status = HttpStatus.NOT_FOUND;
         request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, ex, WebRequest.SCOPE_REQUEST);

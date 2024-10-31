@@ -1,6 +1,5 @@
 package com.aventstack.chaintest.api.build;
 
-import com.aventstack.chaintest.api.project.ProjectNotFoundException;
 import com.aventstack.chaintest.api.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,11 +38,6 @@ public class BuildController {
 
     @PostMapping
     public Build create(@Valid @RequestBody final Build build) {
-        if (build.getProjectId() > 0) {
-            projectService.findById(build.getProjectId())
-                    .orElseThrow(() -> new ProjectNotFoundException("Not found"));;
-        }
-
         return service.create(build);
     }
 

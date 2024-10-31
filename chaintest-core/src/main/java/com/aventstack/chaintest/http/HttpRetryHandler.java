@@ -40,7 +40,7 @@ public class HttpRetryHandler {
                 if (200 == response.statusCode()) {
                     return response;
                 } else if (400 <= response.statusCode() && 499 >= response.statusCode()) {
-                    log.error("Failed to save {} due to a client-side error, received response code : {}",
+                    log.error("Failed to save entity {} due to a client-side error, received response code : {}",
                             clazz.getSimpleName(), response.statusCode());
                     return response;
                 }

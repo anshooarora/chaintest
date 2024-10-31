@@ -29,8 +29,7 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Project> find(@PathVariable final int id) {
-        return ResponseEntity.ok(service.findById(id)
-                .orElseThrow(() -> new ProjectNotFoundException("Not found")));
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping

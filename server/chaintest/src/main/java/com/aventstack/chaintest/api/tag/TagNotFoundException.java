@@ -1,10 +1,8 @@
 package com.aventstack.chaintest.api.tag;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.aventstack.chaintest.api.domain.exception.BaseNotFoundException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class TagNotFoundException extends RuntimeException {
+public class TagNotFoundException extends BaseNotFoundException {
 
     public TagNotFoundException(final String s) {
         super(s);

@@ -1,7 +1,6 @@
 package com.aventstack.chaintest.api.build;
 
 import com.aventstack.chaintest.api.project.Project;
-import com.aventstack.chaintest.api.project.ProjectNotFoundException;
 import com.aventstack.chaintest.api.project.ProjectService;
 import com.aventstack.chaintest.api.runstats.RunStatsService;
 import com.aventstack.chaintest.api.tag.TagService;
@@ -60,8 +59,7 @@ public class BuildService {
         runStatsService.assignBuildInfo(build, null);
         tagStatsService.assignBuildInfo(build, null);
         if (build.getProjectId() > 0) {
-            projectService.findById(build.getProjectId())
-                    .orElseThrow(() -> new ProjectNotFoundException("Not found"));
+            projectService.findById(build.getProjectId());
         } else if (null != build.getProjectName() && !build.getProjectName().isBlank()) {
             final Optional<Project> container = projectService.findByName(build.getProjectName());
             container.ifPresentOrElse(

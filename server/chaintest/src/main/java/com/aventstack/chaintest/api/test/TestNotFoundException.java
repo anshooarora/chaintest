@@ -1,10 +1,8 @@
 package com.aventstack.chaintest.api.test;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.aventstack.chaintest.api.domain.exception.BaseNotFoundException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class TestNotFoundException extends RuntimeException {
+public class TestNotFoundException extends BaseNotFoundException {
 
     public TestNotFoundException(final String s) {
         super(s);
