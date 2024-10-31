@@ -4,7 +4,7 @@ import com.aventstack.chaintest.api.domain.Taggable;
 import com.aventstack.chaintest.api.runstats.RunStats;
 import com.aventstack.chaintest.api.tag.Tag;
 import com.aventstack.chaintest.api.test.Test;
-import com.aventstack.chaintest.api.workspace.Workspace;
+import com.aventstack.chaintest.api.project.Project;
 import com.aventstack.chaintest.api.tagstats.TagStats;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,6 +23,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.List;
 import java.util.Set;
 
@@ -36,10 +37,11 @@ public class Build implements Taggable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "workspace_id", insertable = false)
-    @JsonBackReference
-    private Workspace workspace;
+    @Column(name = "project_id")
+    private int projectId;
+
+    @Transient
+    private String projectName;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
     private Set<RunStats> runStats;

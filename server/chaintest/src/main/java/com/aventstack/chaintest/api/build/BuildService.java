@@ -1,5 +1,8 @@
 package com.aventstack.chaintest.api.build;
 
+import com.aventstack.chaintest.api.project.Project;
+import com.aventstack.chaintest.api.project.ProjectNotFoundException;
+import com.aventstack.chaintest.api.project.ProjectService;
 import com.aventstack.chaintest.api.runstats.RunStatsService;
 import com.aventstack.chaintest.api.tag.TagService;
 import com.aventstack.chaintest.api.tagstats.TagStatsService;
@@ -25,14 +28,17 @@ public class BuildService {
     private final TagService tagService;
     private final RunStatsService runStatsService;
     private final TagStatsService tagStatsService;
+    private final ProjectService projectService;
 
     @Autowired
     public BuildService(final BuildRepository repository, final TagService tagService,
-                        final RunStatsService runStatsService, final TagStatsService tagStatsService) {
+                        final RunStatsService runStatsService, final TagStatsService tagStatsService,
+                        final ProjectService projectService) {
         this.repository = repository;
         this.tagService = tagService;
         this.runStatsService = runStatsService;
         this.tagStatsService = tagStatsService;
+        this.projectService = projectService;
     }
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
@@ -53,6 +59,20 @@ public class BuildService {
         tagService.associateTagsIfPresent(build);
         runStatsService.assignBuildInfo(build, null);
         tagStatsService.assignBuildInfo(build, null);
+        if (build.getProjectId() > 0) {
+            projectService.findById(build.getProjectId())
+                    .orElseThrow(() -> new ProjectNotFoundException("Not found"));
+        } else if (null != build.getProjectName() && !build.getProjectName().isBlank()) {
+            final Optional<Project> container = projectService.findByName(build.getProjectName());
+            container.ifPresentOrElse(
+                    p -> build.setProjectId(p.getId()),
+                    () -> {
+                        final Project project = new Project();
+                        project.setName(build.getProjectName());
+                        projectService.create(project);
+                        build.setProjectId(project.getId());
+                    });
+        }
         return repository.save(build);
     }
 

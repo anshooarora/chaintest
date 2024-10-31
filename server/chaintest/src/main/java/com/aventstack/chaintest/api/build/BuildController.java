@@ -1,5 +1,7 @@
 package com.aventstack.chaintest.api.build;
 
+import com.aventstack.chaintest.api.project.ProjectNotFoundException;
+import com.aventstack.chaintest.api.project.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,9 @@ public class BuildController {
     @Autowired
     private BuildService service;
 
+    @Autowired
+    private ProjectService projectService;
+
     @GetMapping
     public ResponseEntity<Page<Build>> findAll(final Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
@@ -34,6 +39,11 @@ public class BuildController {
 
     @PostMapping
     public Build create(@Valid @RequestBody final Build build) {
+        if (build.getProjectId() > 0) {
+            projectService.findById(build.getProjectId())
+                    .orElseThrow(() -> new ProjectNotFoundException("Not found"));;
+        }
+
         return service.create(build);
     }
 
