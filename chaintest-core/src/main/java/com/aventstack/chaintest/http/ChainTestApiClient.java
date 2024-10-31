@@ -114,6 +114,10 @@ public class ChainTestApiClient {
         return _config;
     }
 
+    public ObjectMapper objectMapper() {
+        return _mapper;
+    }
+
     public HttpRetryHandler retryHandler() {
         return _retryHandler;
     }

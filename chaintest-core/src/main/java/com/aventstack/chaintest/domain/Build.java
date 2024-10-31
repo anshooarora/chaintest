@@ -12,7 +12,8 @@ import java.util.stream.Stream;
 public class Build implements ChainTestEntity {
 
     private long id;
-    private String workspace;
+    private int projectId;
+    private String projectName;
     private long startedAt = System.currentTimeMillis();
     private long endedAt;
     private long durationMs;
@@ -31,6 +32,16 @@ public class Build implements ChainTestEntity {
     private String gitCommitMessage;
 
     public Build() { }
+
+    public Build(final int projectId, final String testRunner) {
+        this.projectId = projectId;
+        this.testRunner = testRunner;
+    }
+
+    public Build(final String projectName, final String testRunner) {
+        this.projectName = projectName;
+        this.testRunner = testRunner;
+    }
 
     public Build(final String testRunner) {
         this.testRunner = testRunner;
@@ -78,12 +89,20 @@ public class Build implements ChainTestEntity {
         this.id = id;
     }
 
-    public String getWorkspace() {
-        return workspace;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setWorkspace(String workspace) {
-        this.workspace = workspace;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public long getStartedAt() {

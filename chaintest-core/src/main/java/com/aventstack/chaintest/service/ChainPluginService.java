@@ -20,9 +20,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ChainPluginService {
 
     private static final Logger log = LoggerFactory.getLogger(ChainPluginService.class);
+    private static final String PROJECT_ID = "chaintest.project.id";
+    private static final String PROJECT_NAME = "chaintest.project.name";
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _wrappedResponses = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<UUID, Test> _tests = new ConcurrentHashMap<>();
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
+
     public static ChainPluginService INSTANCE;
 
     private final ChainTestApiClient _client;
@@ -53,7 +56,18 @@ public class ChainPluginService {
 
     public void start() {
         log.trace("Starting new build, but events will only be sent to API if build is successfully created");
-        _build = new Build(_testRunner);
+
+
+        final int projectId = Integer.parseInt(_client.config().get(PROJECT_ID));
+        final String projectName = _client.config().getConfig().getOrDefault(PROJECT_NAME, "");
+        if (projectId > 0) {
+            _build = new Build(projectId, _testRunner);
+        } else if (!projectName.isBlank()) {
+            _build = new Build(projectName, _testRunner);
+        } else {
+            _build = new Build(_testRunner);
+        }
+
         try {
             final HttpResponse<Build> response = _client.retryHandler().trySend(_build, Build.class, HttpMethod.POST);
             if (200 == response.statusCode()) {
