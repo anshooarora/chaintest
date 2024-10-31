@@ -62,7 +62,7 @@ public class ChainTestCucumberListener implements EventListener {
     }
 
     private final EventHandler<TestSourceRead> testSourceReadHandler = event -> {
-        log.trace("Received TestSourceRead event for URI: " + event.getUri());
+        log.trace("Received TestSourceRead event for URI: {}", event.getUri());
         if (!_features.containsKey(event.getUri())) {
             final Optional<Feature> container = parseFeature(event);
             container.ifPresent(feature -> {
@@ -85,22 +85,22 @@ public class ChainTestCucumberListener implements EventListener {
             final Optional<Envelope> envelope = parser.parse(Paths.get(event.getUri().getPath()))
                     .findAny();
             if (envelope.isEmpty() || envelope.get().getGherkinDocument().isEmpty()) {
-                log.error("No features were found in " + event.getUri());
+                log.error("No features were found in {}", event.getUri());
                 return Optional.empty();
             }
             final GherkinDocument document = envelope.get().getGherkinDocument().get();
             if (document.getFeature().isEmpty()) {
-                log.error("Feature file " + event.getUri() + " does not contain a Feature");
+                log.error("Feature file {} does not contain a Feature", event.getUri());
             }
             return document.getFeature();
         } catch (final IOException e) {
-            log.error("Failed to load feature file " + event.getUri(), e);
+            log.error("Failed to load feature file {}", event.getUri(), e);
         }
         return Optional.empty();
     }
 
     private final EventHandler<TestCaseStarted> caseStartedHandler = event -> {
-        log.debug("Scenario start: " + event.getTestCase().getName());
+        log.debug("Scenario start: {}", event.getTestCase().getName());
         final Test scenario = new Test(event.getTestCase().getName(),
                 Optional.of(event.getClass()),
                 event.getTestCase().getTags());
@@ -109,14 +109,14 @@ public class ChainTestCucumberListener implements EventListener {
     };
 
     private final EventHandler<TestCaseFinished> caseFinishedHandler = event -> {
-        log.debug("Scenario end: " + event.getTestCase().getName());
+        log.debug("Scenario end: {}", event.getTestCase().getName());
         final Test scenario = _scenarios.get(event.getTestCase().getId());
         scenario.complete(event.getResult().getError());
         scenario.setResult(event.getResult().getStatus().name());
     };
 
     private final EventHandler<TestStepFinished> stepFinishedHandler = event -> {
-        log.debug("Step: " + event.getTestCase().getName());
+        log.debug("Step: {}", event.getTestCase().getName());
         final Test step = new Test(((PickleStepTestStep) event.getTestStep()).getStep().getText(),
                 Optional.of(event.getClass()));
         _scenarios.get(event.getTestCase().getId()).addChild(step);
@@ -132,7 +132,7 @@ public class ChainTestCucumberListener implements EventListener {
 
     private final EventHandler<TestRunFinished> runFinishedHandler = event -> {
         for (final Map.Entry<URI, Test> entry : _features.entrySet()) {
-            log.debug("Preparing to finalize and send Feature [" + entry.getValue().getName() + "]: " + entry.getKey());
+            log.debug("Preparing to finalize and send Feature [{}]: {}", entry.getValue().getName(), entry.getKey());
             try {
                 _service.afterTest(entry.getValue());
                 Thread.sleep(10L);
@@ -140,7 +140,7 @@ public class ChainTestCucumberListener implements EventListener {
                 log.debug("An exception occurred while sending test", e);
             }
         }
-        _service.flush();
+        _service.finish();
     };
 
 }
