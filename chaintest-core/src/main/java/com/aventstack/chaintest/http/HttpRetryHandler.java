@@ -22,7 +22,7 @@ public class HttpRetryHandler {
     private final int _maxRetryAttempts;
 
     public HttpRetryHandler(final ChainTestApiClient client, final int maxRetryAttempts) {
-        log.debug("Creating HttpRetryHandler instance for " + maxRetryAttempts + " retry attempts");
+        log.debug("Creating HttpRetryHandler instance for {} retry attempts", maxRetryAttempts);
 
         this._client = client;
         _maxRetryAttempts = maxRetryAttempts;
@@ -32,12 +32,16 @@ public class HttpRetryHandler {
                                                        final int maxRetryAttempts) throws IOException, InterruptedException {
         for (int i = 0; i <= maxRetryAttempts; i++) {
             if (i > 0) {
-                log.trace("Retry: " + i);
+                log.trace("Retry: {}", i);
             }
             try {
                 final HttpResponse<T> response = _client.send(entity, clazz, httpMethod);
-                log.debug("Create API returned responseCode: " + response.statusCode());
+                log.debug("Create API returned responseCode: {}", response.statusCode());
                 if (200 == response.statusCode()) {
+                    return response;
+                } else if (400 <= response.statusCode() && 499 >= response.statusCode()) {
+                    log.error("Failed to save {} due to a client-side error, received response code : {}",
+                            clazz.getSimpleName(), response.statusCode());
                     return response;
                 }
             } catch (final IOException | InterruptedException e) {
@@ -66,10 +70,9 @@ public class HttpRetryHandler {
         if (collection.isEmpty()) {
             return;
         }
-        log.debug("Received collection of size " + collection.size() + ". Handler will " +
-                ((_maxRetryAttempts > 0)
-                        ? "retry for " + _maxRetryAttempts + " attempts on errors"
-                        : "will not retry on errors"));
+        log.debug("Received collection of size {}. Handler will {}", collection.size(), (_maxRetryAttempts > 0)
+                ? "retry for " + _maxRetryAttempts + " attempts on errors"
+                : "will not retry on errors");
         final int size = collection.size();
         int retryAttempts = 0;
         while (!collection.isEmpty() && retryAttempts++ <= _maxRetryAttempts) {
@@ -84,9 +87,9 @@ public class HttpRetryHandler {
             }
         }
         if (!collection.isEmpty()) {
-            log.error("Failed to transfer " + collection.size() + " of " + size + " tests. Make sure " +
-                    "the ChainTest API is UP, ensure client-side logging is enabled or investigate API logs " +
-                    "to find the underlying cause.");
+            log.error("Failed to transfer {} of {} tests. Make sure " +
+                    "the ChainTest API is UP, ensure client-side logging is enabled or investigate API " +
+                    "logs to find the underlying cause.", collection.size(), size);
         }
     }
 
