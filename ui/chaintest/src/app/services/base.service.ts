@@ -17,9 +17,10 @@ export abstract class BaseService<T> {
     this._api_endpoint = new URL(this._path, environment.apiURL);
   }
 
-  findAll(page: number = 0, pageSize: number = 20): Observable<Page<T>> {
+  findAll(page: number = 0, pageSize: number = 20, sort: string = 'desc'): Observable<Page<T>> {
     const params = new HttpParams()
       .set('page', page)
+      .set('sort', 'id,' + sort)
       .set('size', pageSize);
     return this.http.get<Page<T>>(this._api_endpoint.href, { params: params });
   }
