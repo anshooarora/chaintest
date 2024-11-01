@@ -1,0 +1,74 @@
+<div class="page">
+  <app-header />
+
+  <!-- main-content -->
+  <div class="main-content app-content">
+      <div class="page-header">
+          <div class="container-fluid">
+              <div class="d-flex">
+                  <h4>Projects</h4>
+              </div>
+          </div>
+      </div>
+
+      <div class="main-container container-fluid">
+          <div class="mt-3 mb-3 d-flex justify-content-between">
+              <button type="button" class="btn btn-outline-light btn-sm">
+                  <i class="bi bi-funnel"></i> Add Filters
+              </button>
+              <button type="button" class="btn btn-outline-light btn-sm">
+                  Showing 9 per page
+              </button>
+          </div>
+
+          <div class="row" *ngIf="projects && projects.content.length">
+            <div class="col-4" *ngFor="let project of projects.content">
+              <div class="card card-custom no-bg">
+                <div class="card-header">
+                  <h5 class="mb-0">{{project.name}}</h5>
+                  <div class="ms-auto">
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-4">
+                      <small class="card-text-sm text-muted mb-1">Builds</small>
+                      <h6>124</h6>
+                    </div> 
+                    <div class="col-8"> 
+                      <small class="card-text-sm text-muted mb-1">Last Build</small>
+                      <h6>1 day ago</h6>
+                    </div> 
+                  </div>
+                </div>
+                <div class="card-footer no-bg">
+                  <div class="d-flex flex-row">
+                    <div class="status-bar status-success"></div>
+                    <div class="status-bar status-success"></div>
+                    <div class="status-bar status-success"></div>
+                    <div class="status-bar status-success"></div>
+                    <div class="status-bar status-success"></div>
+                    <div class="status-bar status-success"></div>
+                    <div class="status-bar status-success"></div>
+                    <div class="status-bar status-failure"></div>
+                    <div class="status-bar status-success"></div>
+                    <div class="status-bar status-success"></div>
+                    <div class="status-bar status-success"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="my-5">
+              <nav aria-label="Page navigation" class="pagination-style-2">
+
+              </nav>
+            </div>
+          </div>
+      </div>
+  </div>
+  <!-- /main-content -->
+
+  <app-footer />
+</div>

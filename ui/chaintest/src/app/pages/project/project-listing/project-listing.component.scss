@@ -1,0 +1,18 @@
+.status-bar {
+  width: 5px;
+  height: 20px;
+  margin-left: 3px;
+  border-radius: 5px;
+
+  &.status-success {
+    background-color: rgb(127, 209, 113);
+  }
+
+  &.status-failure {
+    background-color: rgb(233, 79, 83);
+  }
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
