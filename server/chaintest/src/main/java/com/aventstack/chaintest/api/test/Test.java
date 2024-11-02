@@ -78,6 +78,9 @@ public class Test implements Taggable {
     )
     private Set<Tag> tags;
 
+    @JsonIgnore
+    private transient Set<String> tag;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @JsonIgnore
@@ -88,5 +91,15 @@ public class Test implements Taggable {
 
     @Column(columnDefinition = "TEXT")
     private String error;
+
+    public void addChildRel() {
+        if (null != getChildren() && !getChildren().isEmpty()) {
+            for (final Test child : getChildren()) {
+                child.setParent(this);
+                child.setDepth(depth + 1);
+                child.addChildRel();
+            }
+        }
+    }
 
 }

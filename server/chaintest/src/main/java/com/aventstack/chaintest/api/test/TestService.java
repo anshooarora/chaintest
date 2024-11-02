@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,8 +36,16 @@ public class TestService {
     }
 
     @Cacheable(value = "tests", unless = "#result == null || #result.size == 0")
-    public Page<Test> findAll(final Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Test> findAll(final String name, final Integer buildId, final Set<String> tags, final String error, final Pageable pageable) {
+        final Test test = new Test();
+        test.setName(name);
+        test.setBuildId(buildId == null ? 0 : buildId);
+        if (null != tags) {
+            test.setTag(tags);
+        }
+        test.setError(error);
+        final TestSpec spec = new TestSpec(test);
+        return repository.findAll(spec, pageable);
     }
 
     @Cacheable(value = "test", key = "#id")
@@ -53,19 +62,9 @@ public class TestService {
             throw new MissingBuildPropertyException("Mandatory field [buildId] was not provided for this test");
         }
         tagService.associateTagsIfPresent(test);
-        makeParentChildRel(test, 0);
+        test.addChildRel();
         log.debug("Saving test " + test + " for buildId: " + test.getBuildId());
         return repository.save(test);
-    }
-
-    private void makeParentChildRel(final Test test, final int depth) {
-        if (null != test.getChildren() && !test.getChildren().isEmpty()) {
-            for (final Test child : test.getChildren()) {
-                child.setParent(test);
-                child.setDepth(depth + 1);
-                makeParentChildRel(child, depth + 1);
-            }
-        }
     }
 
     @Transactional
