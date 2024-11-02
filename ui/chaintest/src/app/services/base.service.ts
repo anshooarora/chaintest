@@ -9,20 +9,24 @@ import { Page } from '../model/page.model';
 })
 export abstract class BaseService<T> {
 
-  private _path: string;
-  private _api_endpoint: URL;  
+  protected _path: string;
+  protected _api_endpoint: URL;  
 
-  protected constructor(uri: string, private http: HttpClient) {
+  protected constructor(uri: string, protected http: HttpClient) {
     this._path = environment.apiVersion + uri;
     this._api_endpoint = new URL(this._path, environment.apiURL);
   }
 
-  findAll(page: number = 0, pageSize: number = 20, sort: string = 'desc'): Observable<Page<T>> {
+  query(params: HttpParams): Observable<Page<T>> {
+    return this.http.get<Page<T>>(this._api_endpoint.href, { params: params });
+  }
+
+  findAll(page: number = 0, pageSize: number = 20, sort: string = 'asc'): Observable<Page<T>> {
     const params = new HttpParams()
       .set('page', page)
       .set('sort', 'id,' + sort)
       .set('size', pageSize);
-    return this.http.get<Page<T>>(this._api_endpoint.href, { params: params });
+    return this.query(params);
   }
 
   find(id: number) {
