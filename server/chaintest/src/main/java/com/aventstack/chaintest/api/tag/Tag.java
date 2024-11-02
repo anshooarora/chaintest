@@ -39,4 +39,10 @@ public class Tag {
     @JsonIgnore
     private List<Test> tests;
 
+    public Tag() { }
+
+    public Tag(final String name) {
+        this.name = name;
+    }
+
 }
