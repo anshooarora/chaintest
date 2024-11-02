@@ -30,6 +30,10 @@ public class TestSpec implements Specification<Test> {
             predicates.add(cb.equal(root.get(Test_.buildId), _test.getBuildId()));
         }
 
+        if (null != _test.getDepth()) {
+            predicates.add(cb.equal(root.get(Test_.depth), _test.getDepth()));
+        }
+
         if (null != _test.getTags() && !_test.getTags().isEmpty()) {
             predicates.add(root.get(Test_.tags.getName()).in(_test.getTag()));
         }
