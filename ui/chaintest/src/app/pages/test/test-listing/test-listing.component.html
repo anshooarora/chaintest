@@ -1,0 +1,15 @@
+<div *ngIf="page && page.content">
+  <div *ngFor="let feature of page.content">
+    {{feature.name}}
+    <div *ngIf="feature.children">
+      <div *ngFor="let scenario of feature.children">
+        &nbsp; &nbsp; {{scenario.name}}
+        <div *ngIf="scenario.children">
+          <div *ngFor="let step of scenario.children">
+            &nbsp; &nbsp; &nbsp; &nbsp; {{step.name}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
