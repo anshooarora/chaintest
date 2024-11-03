@@ -72,7 +72,7 @@ public class ChainPluginService {
             if (200 == response.statusCode()) {
                 _build = response.body();
                 CALLBACK_INVOKED.set(true);
-                log.debug("All tests in this run will be associated with buildId: " + _build.getId());
+                log.debug("All tests in this run will be associated with buildId: {}", _build.getId());
             }
         } catch (final Exception e) {
             log.debug("Failed to send Build. PluginService will shutdown and " +

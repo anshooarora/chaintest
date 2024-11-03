@@ -14,18 +14,44 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static com.aventstack.chaintest.http.ChainTestApiClient.CLIENT_MAX_RETRIES;
+import static com.aventstack.chaintest.http.ChainTestApiClient.CLIENT_RETRY_INTERVAL;
+import static com.aventstack.chaintest.http.ChainTestApiClient.CLIENT_THROW_AFTER_RETRY_ATTEMPTS_EXCEEDED;
+
 public class HttpRetryHandler {
 
     private static final Logger log = LoggerFactory.getLogger(HttpRetryHandler.class);
 
+    public static final int MAX_RETRY_ATTEMPTS = 3;
+    public static final long RETRY_INTERVAL = 1000L;
+
     private final ChainTestApiClient _client;
     private final int _maxRetryAttempts;
+    private final long _retryIntervalMs;
+    private final boolean _throwAfterMaxRetryAttempts;
 
-    public HttpRetryHandler(final ChainTestApiClient client, final int maxRetryAttempts) {
-        log.debug("Creating HttpRetryHandler instance for {} retry attempts", maxRetryAttempts);
-
+    public HttpRetryHandler(final ChainTestApiClient client, final Map<String, String> config) {
         this._client = client;
+
+        final String maxRetries = config.get(CLIENT_MAX_RETRIES);
+        _maxRetryAttempts = null != maxRetries && maxRetries.matches("\\d+")
+                ? Integer.parseInt(maxRetries) : MAX_RETRY_ATTEMPTS;
+        log.debug("Creating HttpRetryHandler instance for {} retry attempts", _maxRetryAttempts);
+
+        final String retryInterval = config.get(CLIENT_RETRY_INTERVAL);
+        _retryIntervalMs = null != retryInterval && retryInterval.matches("\\d+")
+                ? Integer.parseInt(retryInterval) : RETRY_INTERVAL;
+
+        final String throwAfterMaxRetryAttempts = config.get(CLIENT_THROW_AFTER_RETRY_ATTEMPTS_EXCEEDED);
+        _throwAfterMaxRetryAttempts = Boolean.parseBoolean(throwAfterMaxRetryAttempts);
+    }
+
+    public HttpRetryHandler(final ChainTestApiClient client, final int maxRetryAttempts,
+                            final long retryIntervalMs, final boolean throwAfterMaxRetryAttempts) {
+        _client = client;
         _maxRetryAttempts = maxRetryAttempts;
+        _retryIntervalMs = retryIntervalMs;
+        _throwAfterMaxRetryAttempts = throwAfterMaxRetryAttempts;
     }
 
     public <T extends ChainTestEntity> HttpResponse<T> trySend(final T entity, final Class<T> clazz, final HttpMethod httpMethod,
@@ -53,10 +79,13 @@ public class HttpRetryHandler {
                     log.debug("An exception occurred while sending entity", e);
                 }
                 if (i == maxRetryAttempts) {
-                    throw e;
+                    if (_throwAfterMaxRetryAttempts) {
+                        throw e;
+                    }
+                    break;
                 }
             }
-            Thread.sleep(1_000L);
+            Thread.sleep(_retryIntervalMs);
         }
         return null;
     }
@@ -77,19 +106,23 @@ public class HttpRetryHandler {
         int retryAttempts = 0;
         while (!collection.isEmpty() && retryAttempts++ <= _maxRetryAttempts) {
             if (retryAttempts > 1) {
-                log.debug("Retrying " + (retryAttempts - 1) + " of " + _maxRetryAttempts + " times");
+                log.debug("Retrying {} of {} times", retryAttempts - 1, _maxRetryAttempts);
             }
             sendAsync(collection);
             if (!collection.isEmpty()) {
                 try {
-                    Thread.sleep(5000L);
+                    Thread.sleep(_retryIntervalMs);
                 } catch (final InterruptedException ignored) {}
             }
         }
         if (!collection.isEmpty()) {
-            log.error("Failed to transfer {} of {} tests. Make sure " +
+            final String message = String.format("Failed to transfer %d of %d tests. Make sure " +
                     "the ChainTest API is UP, ensure client-side logging is enabled or investigate API " +
-                    "logs to find the underlying cause.", collection.size(), size);
+            "logs to find the underlying cause.", collection.size(), size);
+            log.error(message);
+            if (_throwAfterMaxRetryAttempts) {
+                throw new IllegalStateException(message);
+            }
         }
     }
 
@@ -106,7 +139,7 @@ public class HttpRetryHandler {
                     log.debug("Failed to transfer test", e);
                     return null;
                 }).thenAccept(x -> {
-                    log.debug("Create test API returned responseCode: " + x.statusCode());
+                    log.debug("Create test API returned responseCode: {}", x.statusCode());
                     collection.values().removeIf(r -> r.getResponse() == response);
                 });
             }

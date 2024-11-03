@@ -31,7 +31,7 @@ export class BuildListingComponent implements OnInit {
   }
 
   findBuilds(page: number = 0, pageSize: number = 5): void {
-    this._buildService.findAll(page, pageSize)
+    this._buildService.findAll(page, pageSize, 'id,desc')
       .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: (builds: Page<Build>) => {

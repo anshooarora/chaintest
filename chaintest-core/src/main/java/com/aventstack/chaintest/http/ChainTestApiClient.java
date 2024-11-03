@@ -25,6 +25,9 @@ public class ChainTestApiClient {
     public static final String CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
     public static final String CLIENT_EXPECT_CONTINUE = "chaintest.client.expect-continue";
     public static final String CLIENT_MAX_RETRIES = "chaintest.client.max-retries";
+    public static final String CLIENT_RETRY_INTERVAL = "chaintest.client.retry-interval-ms";
+    public static final String CLIENT_THROW_AFTER_RETRY_ATTEMPTS_EXCEEDED = "chaintest.client.throw-after-retry-attempts-exceeded";
+
     private static final String API_VERSION = "/api/v1/";
 
     private final HttpClient _httpClient;
@@ -36,7 +39,6 @@ public class ChainTestApiClient {
     private Duration _requestTimeout;
     private String _serverURL;
     private boolean _expectContinue;
-    private int _maxRetryAttempts;
 
     public ChainTestApiClient() throws IOException {
         final Builder builder = builder().defaultBuilder();
@@ -45,7 +47,7 @@ public class ChainTestApiClient {
         _requestTimeout = builder.timeout;
         loadConfig();
         _baseURI = URI.create(_serverURL).resolve(API_VERSION);
-        _retryHandler = new HttpRetryHandler(this, _maxRetryAttempts);
+        _retryHandler = new HttpRetryHandler(this, _config.getConfig());
     }
 
     public void loadConfig() throws IOException {
@@ -55,8 +57,8 @@ public class ChainTestApiClient {
         final Map<String, String> config = _config.getConfig();
         _serverURL = config.get(PROPERTY_SERVER_URL);
         if (null == _serverURL || _serverURL.isBlank()) {
-            throw new IllegalStateException("ChainTest endpoint was not provided by required property " + PROPERTY_SERVER_URL +
-                    ". No such property was found in classpath resources or system environment");
+            throw new IllegalStateException("ChainTest endpoint was not provided by property " + PROPERTY_SERVER_URL +
+                    ". No such property was found in classpath resources or system env");
         }
 
         final String timeout = config.get(CLIENT_REQUEST_TIMEOUT);
@@ -66,15 +68,12 @@ public class ChainTestApiClient {
 
         final String expectContinue = config.get(CLIENT_EXPECT_CONTINUE);
         _expectContinue = Boolean.parseBoolean(expectContinue);
-
-        final String maxRetries = config.get(CLIENT_MAX_RETRIES);
-        _maxRetryAttempts = 0;
-        if (null != maxRetries && maxRetries.matches("\\d+")) {
-            _maxRetryAttempts = Integer.parseInt(maxRetries);
-        }
     }
 
     public ChainTestApiClient(final Builder builder) {
+        if (null == builder.uri) {
+            throw new IllegalArgumentException("Missing argument: uri");
+        }
         _httpClient = null == builder.httpClient
                 ? HttpClient.newHttpClient() : builder.httpClient;
         _mapper = null == builder.objectMapper
@@ -83,12 +82,11 @@ public class ChainTestApiClient {
                 ? DEFAULT_REQUEST_TIMEOUT : builder.timeout;
         _baseURI = builder.uri;
         _expectContinue = builder.expectContinue;
-        _maxRetryAttempts = builder.maxRetryAttempts;
-        _retryHandler = new HttpRetryHandler(this, _maxRetryAttempts);
-
-        if (null == builder.uri) {
-            throw new IllegalArgumentException("Missing argument: uri");
-        }
+        final int maxRetryAttempts = builder.maxRetryAttempts == -1
+                ? HttpRetryHandler.MAX_RETRY_ATTEMPTS : builder.maxRetryAttempts;
+        final long retryIntervalMs = builder.retryIntervalMs == -1L
+                ? HttpRetryHandler.RETRY_INTERVAL : builder.retryIntervalMs;
+        _retryHandler = new HttpRetryHandler(this, maxRetryAttempts, retryIntervalMs, builder.throwAfterMaxRetryAttempts);
     }
 
     public ChainTestApiClient(final URI uri, final boolean loadExternalConfig) throws IOException {
@@ -195,7 +193,9 @@ public class ChainTestApiClient {
         private Duration timeout;
         private URI uri;
         private boolean expectContinue;
-        private int maxRetryAttempts;
+        private int maxRetryAttempts = -1;
+        private long retryIntervalMs = -1L;
+        private boolean throwAfterMaxRetryAttempts = true;
 
         public Builder withHttpClient(final HttpClient client) {
             httpClient = client;
@@ -229,6 +229,16 @@ public class ChainTestApiClient {
 
         public Builder withMaxHttpRetryAttempts(final int maxRetryAttempts) {
             this.maxRetryAttempts = maxRetryAttempts;
+            return this;
+        }
+
+        public Builder withRetryIntervalMs(final long retryIntervalMs) {
+            this.retryIntervalMs = retryIntervalMs;
+            return this;
+        }
+
+        public Builder withThrowAfterMaxRetryAttempts(final boolean throwAfterMaxRetryAttempts) {
+            this.throwAfterMaxRetryAttempts = throwAfterMaxRetryAttempts;
             return this;
         }
 
