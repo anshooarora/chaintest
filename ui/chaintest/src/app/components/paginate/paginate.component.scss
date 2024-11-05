@@ -1,0 +1,19 @@
+.pagination-wrapper {
+  .pagination {
+    .page-item {
+      margin: 0 0.25rem;
+      .page-link {
+        border: 0 !important;
+        font-size: .8125rem;
+      }
+      &.active {
+        .page-link {
+          color: var(--primary-color);
+          border-bottom: 2px solid var(--primary-color) !important;
+          background: none;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
