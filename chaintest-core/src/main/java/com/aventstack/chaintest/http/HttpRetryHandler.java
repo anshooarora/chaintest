@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.aventstack.chaintest.http.ChainTestApiClient.CLIENT_MAX_RETRIES;
 import static com.aventstack.chaintest.http.ChainTestApiClient.CLIENT_RETRY_INTERVAL;
@@ -95,59 +93,63 @@ public class HttpRetryHandler {
         return trySend(entity, clazz, httpMethod, _maxRetryAttempts);
     }
 
-    public void sendWithRetries(final Map<String, WrappedResponseAsync<Test>> collection) {
+    public synchronized Map<String, WrappedResponseAsync<Test>> sendWithRetries(final Map<String, WrappedResponseAsync<Test>> collection) {
         if (collection.isEmpty()) {
-            return;
+            return collection;
         }
         log.debug("Received collection of size {}. Handler will {}", collection.size(), (_maxRetryAttempts > 0)
                 ? "retry for " + _maxRetryAttempts + " attempts on errors"
                 : "will not retry on errors");
         final int size = collection.size();
         int retryAttempts = 0;
-        while (!collection.isEmpty() && retryAttempts++ <= _maxRetryAttempts) {
+        final ConcurrentHashMap<String, WrappedResponseAsync<Test>> failures = new ConcurrentHashMap<>(collection);
+        while (!failures.isEmpty() && retryAttempts++ <= _maxRetryAttempts) {
             if (retryAttempts > 1) {
                 log.debug("Retrying {} of {} times", retryAttempts - 1, _maxRetryAttempts);
             }
-            sendAsync(collection);
-            if (!collection.isEmpty()) {
+            failures.forEach((k, v) -> v.setError(null));
+            trySendAsyncCollection(failures);
+            if (!failures.isEmpty()) {
                 try {
                     Thread.sleep(_retryIntervalMs);
                 } catch (final InterruptedException ignored) {}
             }
         }
-        if (!collection.isEmpty()) {
+        if (!failures.isEmpty()) {
             final String message = String.format("Failed to transfer %d of %d tests. Make sure " +
                     "the ChainTest API is UP, ensure client-side logging is enabled or investigate API " +
-            "logs to find the underlying cause.", collection.size(), size);
+            "logs to find the underlying cause.", failures.size(), size);
             log.error(message);
             if (_throwAfterMaxRetryAttempts) {
                 throw new IllegalStateException(message);
             }
         }
+        return failures;
     }
 
-    private void sendAsync(final Map<String, WrappedResponseAsync<Test>> collection) {
-        final List<CompletableFuture<HttpResponse<Test>>> responses = collection.values().stream()
-                .map(WrappedResponseAsync::getResponse)
-                .collect(Collectors.toUnmodifiableList());
-        try {
-            CompletableFuture.allOf(responses.toArray(CompletableFuture[]::new)).join();
-            collection.clear();
-        } catch (final Exception ignored) {
-            for (final CompletableFuture<HttpResponse<Test>> response : responses) {
-                response.exceptionally(e -> {
-                    log.debug("Failed to transfer test", e);
-                    return null;
-                }).thenAccept(x -> {
-                    log.debug("Create test API returned responseCode: {}", x.statusCode());
-                    collection.values().removeIf(r -> r.getResponse() == response);
-                });
-            }
-            for (final Map.Entry<String, WrappedResponseAsync<Test>> entry : collection.entrySet()) {
+    private void trySendAsyncCollection(final Map<String, WrappedResponseAsync<Test>> collection) {
+        for (final Map.Entry<String, WrappedResponseAsync<Test>> entry : collection.entrySet()) {
+            final boolean completed = entry.getValue().getResponseFuture().isDone();
+            if (!completed) {
                 try {
-                    entry.getValue().setResponse(_client.sendAsync(entry.getValue().getEntity(), Test.class));
-                } catch (final IOException ignore) { }
+                    entry.getValue().getResponseFuture().join();
+                } catch (final Exception ignored) { }
             }
+            final HttpResponse<Test> response = entry.getValue().getResponse();
+            if (null != response) {
+                if (200 == response.statusCode()) {
+                    collection.entrySet().removeIf(x -> x.getKey().equals(entry.getKey()));
+                    continue;
+                } if (400 <= response.statusCode() && 499 >= response.statusCode()) {
+                    log.error("Failed to persist entity {} due to a client-side error, received response code : {}",
+                            Test.class.getSimpleName(), response.statusCode());
+                }
+            }
+        }
+        for (final Map.Entry<String, WrappedResponseAsync<Test>> entry : collection.entrySet()) {
+            try {
+                entry.getValue().setResponseFuture(_client.sendAsync(entry.getValue().getEntity(), Test.class));
+            } catch (final IOException ignore) { }
         }
     }
 

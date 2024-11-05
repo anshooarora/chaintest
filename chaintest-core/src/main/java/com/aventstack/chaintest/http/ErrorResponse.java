@@ -4,12 +4,27 @@ import java.util.Date;
 
 public class ErrorResponse {
 
+    private Throwable throwable;
     private Date timestamp;
     private int status;
     private String error;
     private String trace;
     private String message;
     private String path;
+
+    public ErrorResponse() { }
+
+    public ErrorResponse(final Throwable t) {
+        throwable = t;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
+    }
+
+    public void setThrowable(Throwable throwable) {
+        this.throwable = throwable;
+    }
 
     public Date getTimestamp() {
         return timestamp;

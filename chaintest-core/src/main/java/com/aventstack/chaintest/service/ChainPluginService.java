@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -94,12 +95,15 @@ public class ChainPluginService {
                 .anyMatch(x -> x.getResult().equals(Result.FAILED.getResult()));
         final Result buildResult = hasTestFailures ? Result.FAILED : Result.PASSED;
         _build.complete(buildResult);
-        _client.retryHandler().sendWithRetries(_wrappedResponses);
+        final Map<String, WrappedResponseAsync<Test>> failures = _client.retryHandler().sendWithRetries(_wrappedResponses);
         try {
+            if (!failures.isEmpty()) {
+                throw new IllegalStateException("Failed to transfer " + failures.size() + " tests");
+            }
             _client.retryHandler().trySend(_build, Build.class, HttpMethod.PUT);
         } catch (final Exception e) {
             CALLBACK_INVOKED.set(false);
-            log.debug("Failed to send Build. PluginService will shutdown and " +
+            log.debug("Failed to send test(s) or build. PluginService will shutdown and " +
                     "future events will be ignored", e);
         }
     }
@@ -116,7 +120,7 @@ public class ChainPluginService {
 
         final WrappedResponseAsync<Test> wrapper = new WrappedResponseAsync<>(test);
         _wrappedResponses.put(test.getClientId().toString(), wrapper);
-        wrapper.setResponse(_client.sendAsync(wrapper.getEntity(), Test.class));
+        wrapper.setResponseFuture(_client.sendAsync(wrapper.getEntity(), Test.class));
     }
 
     public void afterTest(final Test test, final Throwable t) throws IOException {

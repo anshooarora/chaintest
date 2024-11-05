@@ -5,13 +5,13 @@ import com.aventstack.chaintest.domain.ChainTestEntity;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 
-public class WrappedResponseAsync<T extends ChainTestEntity> extends BaseResponse<T> {
+public class WrappedResponseAsync<T extends ChainTestEntity> extends WrappedResponse<T> {
 
-    private CompletableFuture<HttpResponse<T>> response;
+    private CompletableFuture<HttpResponse<T>> responseFuture;
 
     public WrappedResponseAsync(final T entity, final CompletableFuture<HttpResponse<T>> response) {
         super(entity);
-        this.response = response;
+        this.responseFuture = response;
     }
 
     public WrappedResponseAsync(final T entity) {
@@ -22,12 +22,19 @@ public class WrappedResponseAsync<T extends ChainTestEntity> extends BaseRespons
         super(error);
     }
 
-    public CompletableFuture<HttpResponse<T>> getResponse() {
-        return response;
+    public CompletableFuture<HttpResponse<T>> getResponseFuture() {
+        return responseFuture;
     }
 
-    public void setResponse(CompletableFuture<HttpResponse<T>> response) {
-        this.response = response;
+    public void setResponseFuture(CompletableFuture<HttpResponse<T>> responseFuture) {
+        responseFuture.whenComplete((res, e) -> {
+            if (null != e) {
+                setError(new ErrorResponse(e));
+            } else {
+                setResponse(res);
+            }
+        });
+        this.responseFuture = responseFuture;
     }
 
 }
