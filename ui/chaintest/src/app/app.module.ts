@@ -10,6 +10,7 @@ import { BuildListingComponent } from './pages/build/build-listing/build-listing
 import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ProjectListingComponent } from './pages/project/project-listing/project-listing.component';
+import { TestListingComponent } from './pages/test/test-listing/test-listing.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ProjectListingComponent } from './pages/project/project-listing/project
     BuildListingComponent,
     FooterComponent,
     HeaderComponent,
-    ProjectListingComponent
+    ProjectListingComponent,
+    TestListingComponent
   ],
   imports: [
     BrowserModule,
