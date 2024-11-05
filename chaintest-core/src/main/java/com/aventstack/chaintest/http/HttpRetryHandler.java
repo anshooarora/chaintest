@@ -104,14 +104,11 @@ public class HttpRetryHandler {
         int retryAttempts = 0;
         final ConcurrentHashMap<String, WrappedResponseAsync<Test>> failures = new ConcurrentHashMap<>(collection);
         while (!failures.isEmpty() && retryAttempts++ <= _maxRetryAttempts) {
-            if (retryAttempts > 1) {
-                log.debug("Retrying {} of {} times", retryAttempts - 1, _maxRetryAttempts);
-            }
-            failures.forEach((k, v) -> v.setError(null));
             trySendAsyncCollection(failures);
-            if (!failures.isEmpty()) {
+            if (!failures.isEmpty() && retryAttempts <= _maxRetryAttempts) {
                 try {
                     Thread.sleep(_retryIntervalMs);
+                    log.debug("Retrying {} of {} times", retryAttempts, _maxRetryAttempts);
                 } catch (final InterruptedException ignored) {}
             }
         }
@@ -128,6 +125,7 @@ public class HttpRetryHandler {
     }
 
     private void trySendAsyncCollection(final Map<String, WrappedResponseAsync<Test>> collection) {
+        collection.forEach((k, v) -> v.setError(null));
         for (final Map.Entry<String, WrappedResponseAsync<Test>> entry : collection.entrySet()) {
             final boolean completed = entry.getValue().getResponseFuture().isDone();
             if (!completed) {
@@ -143,6 +141,7 @@ public class HttpRetryHandler {
                 } if (400 <= response.statusCode() && 499 >= response.statusCode()) {
                     log.error("Failed to persist entity {} due to a client-side error, received response code : {}",
                             Test.class.getSimpleName(), response.statusCode());
+                    return;
                 }
             }
         }
