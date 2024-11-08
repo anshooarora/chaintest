@@ -23,7 +23,6 @@ public class Test implements ChainTestEntity {
     private long buildId;
     private String name;
     private String description;
-    private String packageName;
     private String className;
     private long startedAt = System.currentTimeMillis();
     private long endedAt;
@@ -37,43 +36,37 @@ public class Test implements ChainTestEntity {
 
     public Test() { }
 
-    public Test(final long buildId, final String name, final Optional<Class<?>> testClass, final Collection<String> tags) {
+    public Test(final long buildId, final String name, final Optional<String> testClass, final Collection<String> tags) {
         setBuildId(buildId);
         setName(name);
         if (null != tags) {
             addTags(tags);
         }
-        testClass.ifPresent(x -> {
-            setClassName(x.getName());
-            setPackageName(x.getPackageName());
-        });
+        testClass.ifPresent(Test.this::setClassName);
     }
 
-    public Test(final long buildId, final String name, final Optional<Class<?>> testClass, final Stream<String> tags) {
+    public Test(final long buildId, final String name, final Optional<String> testClass, final Stream<String> tags) {
         setBuildId(buildId);
         setName(name);
         if (null != tags) {
             tags.forEach(this::addTag);
         }
-        testClass.ifPresent(x -> {
-            setClassName(x.getName());
-            setPackageName(x.getPackageName());
-        });
+        testClass.ifPresent(Test.this::setClassName);
     }
 
-    public Test(final String name, final Optional<Class<?>> testClass, final Collection<String> tags) {
+    public Test(final String name, final Optional<String> testClass, final Collection<String> tags) {
         this(0L, name, testClass, tags);
     }
 
-    public Test(final String name, final Optional<Class<?>> testClass, final Stream<String> tags) {
+    public Test(final String name, final Optional<String> testClass, final Stream<String> tags) {
         this(0L, name, testClass, tags);
     }
 
-    public Test(final long buildId, final String name, final Optional<Class<?>> testClass) {
+    public Test(final long buildId, final String name, final Optional<String> testClass) {
         this(buildId, name, testClass, Stream.empty());
     }
 
-    public Test(final String name, final Optional<Class<?>> testClass) {
+    public Test(final String name, final Optional<String> testClass) {
         this(0L, name, testClass);
     }
 
@@ -163,14 +156,6 @@ public class Test implements ChainTestEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
     }
 
     public String getClassName() {

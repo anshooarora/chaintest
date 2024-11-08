@@ -69,7 +69,7 @@ public class ChainTestCucumberListener implements EventListener {
                 final Stream<String> tags = feature.getTags().stream()
                         .map(Tag::getName);
                 final Test test = new Test(feature.getName(),
-                        Optional.of(feature.getClass()),
+                        Optional.of("Feature"),
                         tags);
                 _features.put(event.getUri(), test);
             });
@@ -102,7 +102,7 @@ public class ChainTestCucumberListener implements EventListener {
     private final EventHandler<TestCaseStarted> caseStartedHandler = event -> {
         log.debug("Scenario start: {}", event.getTestCase().getName());
         final Test scenario = new Test(event.getTestCase().getName(),
-                Optional.of(event.getClass()),
+                Optional.of("Scenario"),
                 event.getTestCase().getTags());
         _features.get(event.getTestCase().getUri()).addChild(scenario);
         _scenarios.put(event.getTestCase().getId(), scenario);
@@ -118,7 +118,7 @@ public class ChainTestCucumberListener implements EventListener {
     private final EventHandler<TestStepFinished> stepFinishedHandler = event -> {
         log.debug("Step: {}", event.getTestCase().getName());
         final Test step = new Test(((PickleStepTestStep) event.getTestStep()).getStep().getText(),
-                Optional.of(event.getClass()));
+                Optional.of("Step"));
         _scenarios.get(event.getTestCase().getId()).addChild(step);
         step.complete(event.getResult().getError());
         step.setResult(event.getResult().getStatus().name());
