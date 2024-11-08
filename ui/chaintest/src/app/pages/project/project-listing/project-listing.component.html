@@ -61,9 +61,7 @@
             </div>
 
             <div class="my-5">
-              <nav aria-label="Page navigation" class="pagination-style-2">
-
-              </nav>
+              <app-paginate [entity]="projects" *ngIf="projects.totalPages >= 2"></app-paginate>
             </div>
           </div>
       </div>

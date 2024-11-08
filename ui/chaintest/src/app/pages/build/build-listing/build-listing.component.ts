@@ -44,4 +44,8 @@ export class BuildListingComponent implements OnInit {
       });
   }
 
+  paginate($event: any) {
+    this.findBuilds($event);
+  }
+
 }

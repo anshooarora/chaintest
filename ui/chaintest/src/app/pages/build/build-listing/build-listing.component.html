@@ -41,23 +41,25 @@
                                   <button type="button" class="btn btn-xs btn-light">Actions</button>
                               </div>
                           </div>
-                          <div class="pb-2 ms-1 mb-1 small">
+                          <div class="ms-1 mb-1 small">
                               <i class="bi bi-clock"></i> <span class="ms-2">{{build.startedAt | date:'yyyy-MM-dd h:m:s a'}}</span>
                               <i class="bi bi-hourglass ms-2-5"></i> <span class="ms-2">Took 5m 20s</span>
                           </div>
-                          <div class="border-bottom"></div>
-                          <div class="ms-1 mt-2-5">
-                            <span class="badge bg-outline-light" *ngFor="let tag of build.tags | slice: 0:tagDisplayLimit">{{tag.name}}</span>
-                            <ng-container *ngIf="build.tags.length > tagDisplayLimit">
-                                <span class="badge bg-outline-primary pointer" (click)="tagDisplayLimit = build.tags.length">
-                                    +{{build.tags.length - tagDisplayLimit}}
-                                </span>
-                            </ng-container>
-                          </div>
+                          <ng-container *ngIf="build.tags && build.tags.length">
+                            <div class="mt-3 border-bottom"></div>
+                            <div class="ms-1 mt-2-5">
+                                <span class="badge bg-outline-light" *ngFor="let tag of build.tags | slice: 0:tagDisplayLimit">{{tag.name}}</span>
+                                <ng-container *ngIf="build.tags.length > tagDisplayLimit">
+                                    <span class="badge bg-outline-primary pointer" (click)="tagDisplayLimit = build.tags.length">
+                                        +{{build.tags.length - tagDisplayLimit}}
+                                    </span>
+                                </ng-container>
+                            </div>
+                          </ng-container>
                       </div>
                   </div>
                   <div class="my-5">
-
+                    <app-paginate [entity]="builds" *ngIf="builds.totalPages >= 2" (currentPageEvent)="paginate($event)"></app-paginate>
                   </div>
               </div>
           </div>
