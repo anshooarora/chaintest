@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { NgApexchartsModule } from 'ng-apexcharts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,6 +10,8 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ProjectListingComponent } from './pages/project/project-listing/project-listing.component';
 import { TestListingComponent } from './pages/test/test-listing/test-listing.component';
+import { PaginateComponent } from './components/paginate/paginate.component';
+import { NgbModule, NgbOffcanvasModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -19,14 +20,15 @@ import { TestListingComponent } from './pages/test/test-listing/test-listing.com
     FooterComponent,
     HeaderComponent,
     ProjectListingComponent,
-    TestListingComponent
+    TestListingComponent,
+    PaginateComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    NgApexchartsModule
+    NgbModule
   ],
   providers: [
     provideClientHydration(),

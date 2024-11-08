@@ -40,7 +40,6 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/apexcharts/dist/apexcharts.min.js"
             ]
           },
           "configurations": {
