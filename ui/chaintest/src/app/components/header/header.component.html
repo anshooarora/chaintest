@@ -7,24 +7,51 @@
             </a>
           </div>
 
-          <div class="main-header-center ms-3 d-sm-none d-md-none d-lg-block form-group">
+          <div class="ms-3 d-sm-none d-md-none d-lg-block form-group">
               <a href="" class="ms-5">Workspaces <i class="bi bi-chevron-right mx-1"></i>
                 <span class="">chaintest-core</span></a>
               <span class="mx-3"></span>
-              <a href="">Builds</a>
+              <a [routerLink]="['projects', '1', 'builds']">Builds</a>
               <span class="mx-3"></span>
               <a href="">Tags</a>
               <span class="mx-3"></span>
-              <i class="bi bi-search"></i>
+              <i class="bi bi-search pointer" (click)="searchEnabled = !searchEnabled"></i>
           </div>
+          <input class="ms-5 form-control" id="q" placeholder="Search..." type="search" 
+            [(ngModel)]="searchTerm" *ngIf="searchEnabled" (keyup.enter)="search(content)">
       </div>
 
       <div class="header-content-right">
           <div class="header-element">
-              <a href="#" class="header-link">
-
-              </a>
-          </div>
+              <button (click)="openEnd(content)"></button>
+          </div> 
       </div>
   </div>
 </header>
+
+<ng-template #content let-offcanvas>
+	<div class="offcanvas-header">
+		<h4 class="offcanvas-title">Offcanvas title</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+	</div>
+	<div class="offcanvas-body">
+		<div *ngIf="page && page.content">
+      <div *ngFor="let feature of page.content">
+        {{feature.name}}
+        <div *ngIf="feature.children">
+          <div *ngFor="let scenario of feature.children">
+            &nbsp; &nbsp; {{scenario.name}}
+            <div *ngIf="scenario.children">
+              <div *ngFor="let step of scenario.children">
+                &nbsp; &nbsp; &nbsp; &nbsp; {{step.name}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    
+		<div class="text-end">
+			<button type="button" class="btn btn-outline-secondary" (click)="offcanvas.close('Close click')">Close</button>
+		</div>
+	</div>
+</ng-template>
