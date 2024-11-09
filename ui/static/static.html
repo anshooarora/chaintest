@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="horizontal" data-theme-mode="light" data-header-styles="light"
+  data-menu-styles="light" data-toggled="close">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>chaintest</title>
+
+  <link id="style" href="bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="static.css">
+</head>
+
+<body>
+  <div class="page">
+
+    <nav class="navbar navbar-expand-md">
+      <div class="container-fluid">
+        <a class="navbar-brand primary" href="#">ChainTest</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item ms-5 me-2">
+              <span class="nav-link">chaintest-core</span>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link" href="#">Tags</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a class="nav-link" href="#">Tests</a>
+            </li>
+          </ul>
+          <form class="d-flex" role="search">
+            <span class="badge bg-outline-light">2024-11-08 11:27 AM</span>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <!-- main-content -->
+    <div class="main-content app-content">
+
+      <style>
+        
+      </style>
+
+      <!--<div class="page-header">
+        <div class="container-fluid">
+          <div class="d-flex">
+            <h5>Tests</h5>
+          </div>
+        </div>
+      </div>-->
+      <div class="border-bottom"></div>
+
+      <div id="dashboard" class="mt-4 mb-3">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-4">
+              <div class="card card-custom" style="height: 200px">
+                <div class="card-header">
+                  Tests
+                </div>
+                <div class="card-body d-flex justify-content-center" style="height: 120px;">
+                  <div class="chart-view center" style="margin-left: -1rem;">
+                    <canvas id="acquisitions"></canvas>
+                  </div>
+                </div>
+                <div class="card-header small">
+                  1 Passed, 1 Failed, 0 Skipped
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="card card-custom" style="height: 200px">
+                <div class="card-header">
+                  
+                </div>
+                <div class="card-body d-flex justify-content-center" style="height: 120px;">
+                  <div class="chart-view center" style="margin-left: -1rem;">
+                    <canvas id="acquisitions"></canvas>
+                  </div>
+                </div>
+                <div class="card-header small">
+                  1 Passed, 1 Failed, 0 Skipped
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="card card-custom" style="height: 200px">
+                <div class="card-header">
+                  Summary
+                </div>
+                <div class="card-body d-flex justify-content-center" style="height: 120px;">
+                  <div class="chart-view center" style="margin-left: -1rem;">
+                    <canvas id="acquisitions"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid tags mt-4 mb-4">
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-custom">
+              <div class="card-header">
+                Tags
+              </div>
+              <div class="card-body">
+                <table id="tag-summary" class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col" style="width: 40%"></th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Failed</th>
+                      <th scope="col">Passed</th>
+                      <th scope="col">Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="tag"><a href="#" class="secondary">Smoke</a></td>
+                      <td>2</td>
+                      <td>1</td>
+                      <td>1</td>
+                      <td>5m 20s</td>
+                    </tr>
+                    <tr>
+                      <td class="tag"><a href="#" class="secondary">@regression</a></td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                      <td>5m 20s</td>
+                    </tr>
+                    <tr>
+                      <td class="tag"><a href="#" class="secondary">Feature 24.1</a></td>
+                      <td colspan="2">Larry the Bird</td>
+                      <td>@twitter</td>
+                      <td>5m 20s</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="container-fluid tests">
+        <div class="mt-3 mb-3 d-flex justify-content-between">
+          <div id="status-filter" class="btn-group" role="group" aria-label="Filter tests with status">
+            <button type="button" id="passed" class="btn btn-success">Passed</button>
+            <button type="button" id="skipped" class="btn btn-warning">Skipped</button>
+            <button type="button" id="failed" class="btn btn-danger">Failed</button>
+          </div>
+          <button type="button" class="btn btn-outline-light btn-sm">
+            Showing 5 per page
+          </button>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-custom test-result failed">
+              <div class="card-body">
+                <div class="ms-1 mb-2 d-flex justify-content-between">
+                  <a href="#" class="secondary">
+                    <span class="h6">#9 - junit-jupiter</span>
+                  </a>
+                  <div class="">
+                    <div class="pb-2 ms-1 mb-1 small">
+                      <i class="bi bi-clock"></i> <span class="ms-1">2024-10-17 4:32:22 PM</span>
+                      <i class="bi bi-hourglass ms-2"></i> <span class="ms-1">Took 5m 20s</span>
+                      <span class="ms-2 badge badge-danger badge-md"><i class="bi bi-record-fill me-1"></i>
+                        Failed</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="ms-1 mt-2 tag-list">
+                  <span class="badge bg-outline-light">Smoke</span>
+                  <span class="badge bg-outline-light">Feature 24.2</span>
+                  <span class="badge bg-outline-light">Feature 24.2</span>
+                  <span class="badge bg-outline-light">Feature 24.2</span>
+                </div>
+              </div>
+            </div>
+            <div class="card card-custom test-result passed">
+              <div class="card-body">
+                <div class="ms-1 mb-2 d-flex justify-content-between">
+                  <a href="#" class="secondary">
+                    <span class="h6">#9 - junit-jupiter</span>
+                  </a>
+                  <div class="">
+                    <div class="pb-2 ms-1 mb-1 small">
+                      <i class="bi bi-clock"></i> <span class="ms-1">2024-10-17 4:32:22 PM</span>
+                      <i class="bi bi-hourglass ms-2"></i> <span class="ms-1">Took 5m 20s</span>
+                      <span class="ms-2 badge badge-success badge-md"><i class="bi bi-flag me-1"></i>Passed</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="ms-1 mt-2 tag-list">
+                  <span class="badge bg-outline-light">Smoke</span>
+                  <span class="badge bg-outline-light">Feature 24.1</span>
+                  <span class="badge bg-outline-light">Feature 24.2</span>
+                  <span class="badge bg-outline-light">Feature 24.2</span>
+                  <span class="badge bg-outline-light">Unstable</span>
+                  <span class="badge bg-outline-light">@regression</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /main-content -->
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="static.js"></script>
+</body>
+
+</html>
