@@ -1,16 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-nav-layout="horizontal" data-theme-mode="light" data-header-styles="light"
-  data-menu-styles="light" data-toggled="close">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>chaintest</title>
-
   <link id="style" href="bootstrap.min.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
     rel="stylesheet">
@@ -18,16 +13,15 @@
 </head>
 
 <body>
+  <!-- page wrapper -->
   <div class="page">
 
+    <!-- navbar -->
     <nav class="navbar navbar-expand-md">
       <div class="container-fluid">
         <a class="navbar-brand primary" href="#">ChainTest</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+          <ul class="navbar-nav me-auto mb-0">
             <li class="nav-item ms-5 me-2">
               <span class="nav-link">chaintest-core</span>
             </li>
@@ -44,23 +38,13 @@
         </div>
       </div>
     </nav>
+    <!-- /navbar -->
 
     <!-- main-content -->
     <div class="main-content app-content">
-
-      <style>
-        
-      </style>
-
-      <!--<div class="page-header">
-        <div class="container-fluid">
-          <div class="d-flex">
-            <h5>Tests</h5>
-          </div>
-        </div>
-      </div>-->
       <div class="border-bottom"></div>
 
+      <!-- dashboard section -->
       <div id="dashboard" class="mt-4 mb-3">
         <div class="container-fluid">
           <div class="row">
@@ -109,8 +93,11 @@
           </div>
         </div>
       </div>
+      <!-- /dashboard section -->
 
       <div class="container-fluid tags mt-4 mb-4">
+
+        <!-- tag section -->
         <div class="row">
           <div class="col-12">
             <div class="card card-custom">
@@ -156,7 +143,9 @@
           </div>
         </div>
       </div>
+      <!-- /tag section -->
       
+      <!-- test section -->
       <div class="container-fluid tests">
         <div class="mt-3 mb-3 d-flex justify-content-between">
           <div id="status-filter" class="btn-group" role="group" aria-label="Filter tests with status">
@@ -221,12 +210,15 @@
           </div>
         </div>
       </div>
+      <!-- /test section-->
+
     </div>
     <!-- /main-content -->
+
   </div>
+  <!-- /page wrapper -->
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <script src="static.js"></script>
 </body>
-
 </html>

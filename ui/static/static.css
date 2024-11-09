@@ -218,3 +218,8 @@ a.secondary {
   color: rgb(34, 80, 231);
   border-bottom: 2px solid rgb(34, 80, 231);
 }
+
+/* content */
+#status-filter > button {
+  min-width: 4.75rem;
+}
