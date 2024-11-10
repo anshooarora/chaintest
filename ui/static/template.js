@@ -70,6 +70,23 @@ document.querySelectorAll('#tag-summary .tag').forEach((e) => {
   tags.push(e);
 });
 
+// init: clear-filters btn
+const clearFiltersBtn = document.getElementById('clear-filters');
+var observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutationRecord) {
+    if (mutationRecord.target.attributes.style.value.includes('none')) {
+      clearFiltersBtn.disabled = false;
+    }
+  });    
+});
+document.querySelectorAll('.test-result').forEach((target) => {
+  observer.observe(target, { attributes : true, attributeFilter : ['style'] });
+});
+
+// clear-filters btn event
+clearFiltersBtn.addEventListener('click', el => {
+  filterTests('');
+});
 
 // helper to filter tests by their status
 const results = ['passed', 'failed', 'skipped'];

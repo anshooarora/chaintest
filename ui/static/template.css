@@ -18,24 +18,37 @@
   --light-bg: rgb(235, 238, 242);
 }
 
+/* structure */
 body {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, Ubuntu, 'Helvetica Neue', sans-serif;
   background-color: #fff;
   font-size: 14px;
 }
 
+table tbody tr:last-child {
+  border-bottom-color: transparent;
+}
+
 th {
   font-weight: 500;
+  font-size: .8rem;
 }
 
 a, a.primary {
     color: var(--primary-color) !important;
     text-decoration: none;
 }
+
 a.secondary {
   color: var(--primary-rgb) !important;
 }
 
+/* background */
+.bg-success {
+  background-color: rgb(44, 197, 105) !important;
+}
+
+/* container */
 .container-fluid {
     width: 85%;
     --bs-gutter-x: 1.5rem;
@@ -45,10 +58,15 @@ a.secondary {
     padding-right: calc(var(--bs-gutter-x)* 0.5);
 }
 
+/* text */
 .small, small {
     font-size: 0.7rem;
 }
+.fs-10 {
+  font-size: .75rem;
+}
 
+/* margins */
 .ms-2-5 {
   margin-left: .75rem !important;
 }
@@ -65,6 +83,7 @@ a.secondary {
   margin-bottom: .75rem !important;
 }
 
+/* navbar */
 .navbar-brand {
   font-size: 1rem;
   font-weight: 600;
@@ -73,9 +92,16 @@ a.secondary {
   font-size: .875rem;
 }
 
+/* buttons */
 .btn {
   font-size: .8rem;
 }
+
+.btn:disabled {
+  border-color: #ddd;
+  color: inherit;
+}
+
 .btn-group .btn {
   font-size: .7rem !important;
   font-weight: normal;
@@ -129,6 +155,7 @@ a.secondary {
     border: 1px solid var(--light-bg);
 }
 
+/* badge */
 .badge {
   font-size: 11px;
 }
@@ -158,6 +185,7 @@ a.secondary {
   font-size: .90em;
 }
 
+/* cards */
 .card.card-custom {
   border-radius: .5rem;
   border-color: #e9e9e9;
@@ -173,50 +201,6 @@ a.secondary {
 }
 .card.card-custom .card-header, .card.card-custom .card-footer {
   background: none;
-}
-
-/*.card.card-custom:hover {
-  background-color: var(--highlight-bg);
-  border-color: var(--highlight-border);
-}*/
-
-.page-header {
-  background-color: rgb(249, 251, 251);
-  border-bottom: 1px solid #e9e9e9;
-  border-top: 1px solid #e9e9e9;
-  height: 5rem;
-  position: relative;
-}
-
-.page-header>.container-fluid {
-  width: 85%;
-  --bs-gutter-x: 1.5rem;
-  margin-right: auto;
-  margin-left: auto;
-  padding-left: calc(var(--bs-gutter-x)* .5);
-  padding-right: calc(var(--bs-gutter-x)* .5);
-}
-
-.page-header h5 {
-  padding-top: 1.5rem;
-}
-
-.page-header .nav {
-  position: absolute;
-  bottom: 0;
-}
-
-.page-header .nav .nav-link {
-  font-weight: 400;
-  padding-bottom: .75rem;
-}
-
-.page-header .nav .nav-link.active {
-  background: none !important;
-  border: none;
-  border-radius: 0;
-  color: rgb(34, 80, 231);
-  border-bottom: 2px solid rgb(34, 80, 231);
 }
 
 /* content */
