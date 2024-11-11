@@ -21,7 +21,7 @@ public class ChainTestApiClient {
 
     private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(30);
     private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
-    public static final String PROPERTY_SERVER_URL = "chaintest.host.url";
+    public static final String PROPERTY_SERVER_URL = "chaintest.client.host.url";
     public static final String CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
     public static final String CLIENT_EXPECT_CONTINUE = "chaintest.client.expect-continue";
     public static final String CLIENT_MAX_RETRIES = "chaintest.client.max-retries";
