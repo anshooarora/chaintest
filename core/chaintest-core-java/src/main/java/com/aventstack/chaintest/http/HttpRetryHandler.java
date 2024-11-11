@@ -21,7 +21,7 @@ public class HttpRetryHandler {
     private static final Logger log = LoggerFactory.getLogger(HttpRetryHandler.class);
 
     public static final int MAX_RETRY_ATTEMPTS = 3;
-    public static final long RETRY_INTERVAL = 1000L;
+    public static final long RETRY_INTERVAL = 2000L;
 
     private final ChainTestApiClient _client;
     private final int _maxRetryAttempts;
@@ -102,7 +102,7 @@ public class HttpRetryHandler {
                 : "will not retry on errors");
         final int size = collection.size();
         int retryAttempts = 0;
-        final ConcurrentHashMap<String, WrappedResponseAsync<Test>> failures = new ConcurrentHashMap<>(collection);
+        final Map<String, WrappedResponseAsync<Test>> failures = new ConcurrentHashMap<>(collection);
         while (!failures.isEmpty() && retryAttempts++ <= _maxRetryAttempts) {
             trySendAsyncCollection(failures);
             if (!failures.isEmpty() && retryAttempts <= _maxRetryAttempts) {

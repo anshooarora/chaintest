@@ -7,7 +7,7 @@ import org.junit.platform.launcher.TestPlan;
 public class ChainTestExecutionListener implements TestExecutionListener {
 
     public void testPlanExecutionFinished(final TestPlan testPlan) {
-        ChainPluginService.INSTANCE.finish();
+        ChainPluginService.INSTANCE.executionFinished();
     }
 
 }
