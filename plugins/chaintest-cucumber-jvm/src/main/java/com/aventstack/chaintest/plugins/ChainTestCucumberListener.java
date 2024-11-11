@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.plugins;
 
 import com.aventstack.chaintest.domain.Test;
+import com.aventstack.chaintest.generator.ChainTestSimpleGenerator;
 import com.aventstack.chaintest.service.ChainPluginService;
 import io.cucumber.gherkin.GherkinParser;
 import io.cucumber.messages.types.Envelope;
@@ -40,25 +41,20 @@ public class ChainTestCucumberListener implements EventListener {
     private ChainPluginService _service;
 
     public ChainTestCucumberListener(final String ignored) {
-        try {
-            _service = new ChainPluginService(CUCUMBER_JVM);
-            _service.start();
-        } catch (final IOException e) {
-            log.error("Failed to start plugin service", e);
-        }
+        _service = new ChainPluginService(CUCUMBER_JVM);
+        _service.register(new ChainTestSimpleGenerator());
+        _service.start();
     }
 
     @Override
     public void setEventPublisher(final EventPublisher publisher) {
-        if (_service.ready()) {
-            publisher.registerHandlerFor(TestSourceRead.class, testSourceReadHandler);
-            publisher.registerHandlerFor(TestCaseStarted.class, caseStartedHandler);
-            publisher.registerHandlerFor(TestCaseFinished.class, caseFinishedHandler);
-            publisher.registerHandlerFor(TestStepFinished.class, stepFinishedHandler);
-            publisher.registerHandlerFor(EmbedEvent.class, embedEventhandler);
-            publisher.registerHandlerFor(WriteEvent.class, writeEventhandler);
-            publisher.registerHandlerFor(TestRunFinished.class, runFinishedHandler);
-        }
+        publisher.registerHandlerFor(TestSourceRead.class, testSourceReadHandler);
+        publisher.registerHandlerFor(TestCaseStarted.class, caseStartedHandler);
+        publisher.registerHandlerFor(TestCaseFinished.class, caseFinishedHandler);
+        publisher.registerHandlerFor(TestStepFinished.class, stepFinishedHandler);
+        publisher.registerHandlerFor(EmbedEvent.class, embedEventhandler);
+        publisher.registerHandlerFor(WriteEvent.class, writeEventhandler);
+        publisher.registerHandlerFor(TestRunFinished.class, runFinishedHandler);
     }
 
     private final EventHandler<TestSourceRead> testSourceReadHandler = event -> {
@@ -134,13 +130,13 @@ public class ChainTestCucumberListener implements EventListener {
         for (final Map.Entry<URI, Test> entry : _features.entrySet()) {
             log.debug("Preparing to finalize and send Feature [{}]: {}", entry.getValue().getName(), entry.getKey());
             try {
-                _service.afterTest(entry.getValue());
+                _service.afterTest(entry.getValue(), Optional.empty());
                 Thread.sleep(10L);
             } catch (final Exception e) {
                 log.debug("An exception occurred while sending test", e);
             }
         }
-        _service.finish();
+        _service.executionFinished();
     };
 
 }
