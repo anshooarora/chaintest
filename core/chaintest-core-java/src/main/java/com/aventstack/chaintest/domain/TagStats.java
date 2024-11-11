@@ -24,7 +24,7 @@ public class TagStats {
     private int passed;
     private int failed;
     private int skipped;
-
+    private long durationMs;
 
     public void update(final Test test) {
         total++;
@@ -35,6 +35,7 @@ public class TagStats {
         } else {
             ++failed;
         }
+        durationMs += test.getDurationMs();
     }
 
     public int getDepth() {
@@ -77,4 +78,11 @@ public class TagStats {
         this.skipped = skipped;
     }
 
+    public long getDurationMs() {
+        return durationMs;
+    }
+
+    public void setDurationMs(long durationMs) {
+        this.durationMs = durationMs;
+    }
 }
