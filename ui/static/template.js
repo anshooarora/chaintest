@@ -56,6 +56,7 @@ document.querySelectorAll('#tag-summary .tag').forEach((e) => {
 });
 
 // clear-filters btn event
+const clearFiltersBtn = document.querySelector('#clear-filters');
 clearFiltersBtn.addEventListener('click', el => {
   filterTests('');
 });
