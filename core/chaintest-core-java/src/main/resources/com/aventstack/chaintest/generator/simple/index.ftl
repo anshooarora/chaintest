@@ -164,8 +164,11 @@
                       <div class="pb-2 ms-1 mb-1 small">
                         <i class="bi bi-clock"></i> <span class="ms-1">${test.startedAt}</span>
                         <i class="bi bi-hourglass ms-2"></i> <span class="ms-1">${test.durationMs}</span>
-                        <span class="ms-2 badge badge-danger badge-md"><i class="bi bi-record-fill me-1"></i>
-                          ${test.result}</span>
+                        <#if test.result=='PASSED'>
+                        <span class="ms-2 badge badge-success badge-md"><i class="bi bi-flag me-1"></i>Passed</span>
+                        <#else>
+                        <span class="ms-2 badge badge-danger badge-md"><i class="bi bi-record-fill me-1"></i>Failed</span>
+                        </#if>
                       </div>
                     </div>
                   </div>
@@ -179,30 +182,6 @@
                 </div>
               </div>
               </#list>
-              <div class="card card-custom test-result passed">
-                <div class="card-body">
-                  <div class="ms-1 mb-2 d-flex justify-content-between">
-                    <a href="#" class="secondary">
-                      <span class="h6">#9 - junit-jupiter</span>
-                    </a>
-                    <div class="">
-                      <div class="pb-2 ms-1 mb-1 small">
-                        <i class="bi bi-clock"></i> <span class="ms-1">2024-10-17 4:32:22 PM</span>
-                        <i class="bi bi-hourglass ms-2"></i> <span class="ms-1">Took 5m 20s</span>
-                        <span class="ms-2 badge badge-success badge-md"><i class="bi bi-flag me-1"></i>Passed</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="ms-1 mt-2 tag-list">
-                    <span class="badge bg-outline-light">Smoke</span>
-                    <span class="badge bg-outline-light">Feature 24.1</span>
-                    <span class="badge bg-outline-light">Feature 24.2</span>
-                    <span class="badge bg-outline-light">Feature 24.2</span>
-                    <span class="badge bg-outline-light">Unstable</span>
-                    <span class="badge bg-outline-light">@regression</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
