@@ -30,7 +30,8 @@ public class Test implements ChainTestEntity {
     private String result = Result.PASSED.getResult();
     private Set<Tag> tags;
     private String error;
-    private volatile List<Test> children;
+    private Test parent;
+    private volatile List<Test> children = Collections.synchronizedList(new ArrayList<>());
     private int depth;
     private UUID clientId = UUID.randomUUID();
 
@@ -117,9 +118,13 @@ public class Test implements ChainTestEntity {
     public void complete(final Optional<Throwable> error) {
         setEndedAt(System.currentTimeMillis());
         error.ifPresent(x -> {
-            this.error = ExceptionsUtil.readStackTrace(x);
-            this.result = Result.FAILED.getResult();
+            setError(ExceptionsUtil.readStackTrace(x));
+            setResult(Result.FAILED.getResult());
         });
+        if (null != parent) {
+            final Result result = Result.computePriority(Result.valueOf(getResult()), Result.valueOf(parent.getResult()));
+            parent.setResult(result.getResult());
+        }
     }
 
     public void complete(final Throwable error) {
@@ -230,6 +235,14 @@ public class Test implements ChainTestEntity {
         this.error = error;
     }
 
+    public Test getParent() {
+        return parent;
+    }
+
+    public void setParent(final Test test) {
+        this.parent = test;
+    }
+
     public List<Test> getChildren() {
         return children;
     }
@@ -239,13 +252,7 @@ public class Test implements ChainTestEntity {
     }
 
     public void addChild(final Test child) {
-        if (null == children) {
-            synchronized (lock) {
-                if (null == children) {
-                    children = Collections.synchronizedList(new ArrayList<>());
-                }
-            }
-        }
+        child.setParent(this);
         child.setDepth(depth + 1);
         children.add(child);
     }
