@@ -6,7 +6,7 @@ import freemarker.template.Template;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
+
 import java.nio.file.Files;
 import java.util.Map;
 
@@ -14,20 +14,12 @@ public abstract class FileGenerator {
 
     private Template _template;
 
-    protected void processTemplateToFile(final Map<String, Object> objectModel, final String outputFile) {
+    protected String processTemplate(final Map<String, Object> objectModel, final String outputFile) {
         final File file = new File(outputFile);
         final File dir = Files.isDirectory(file.toPath()) ? file : file.getParentFile();
         dir.mkdirs();
 
         try (final FileWriter out = new FileWriter(outputFile)) {
-            _template.process(objectModel, out);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected String processTemplateToString(final Map<String, Object> objectModel) {
-        try (final StringWriter out = new StringWriter()) {
             _template.process(objectModel, out);
             return out.toString();
         } catch (final Exception e) {
