@@ -107,8 +107,8 @@ public class ChainTestCucumberListener implements EventListener {
     private final EventHandler<TestCaseFinished> caseFinishedHandler = event -> {
         log.debug("Scenario end: {}", event.getTestCase().getName());
         final Test scenario = _scenarios.get(event.getTestCase().getId());
-        scenario.complete(event.getResult().getError());
         scenario.setResult(event.getResult().getStatus().name());
+        scenario.complete(event.getResult().getError());
     };
 
     private final EventHandler<TestStepFinished> stepFinishedHandler = event -> {
@@ -116,8 +116,8 @@ public class ChainTestCucumberListener implements EventListener {
         final Test step = new Test(((PickleStepTestStep) event.getTestStep()).getStep().getText(),
                 Optional.of("Step"));
         _scenarios.get(event.getTestCase().getId()).addChild(step);
-        step.complete(event.getResult().getError());
         step.setResult(event.getResult().getStatus().name());
+        step.complete(event.getResult().getError());
     };
 
     private final EventHandler<EmbedEvent> embedEventhandler = event -> {
