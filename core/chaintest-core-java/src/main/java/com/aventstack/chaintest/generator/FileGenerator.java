@@ -2,14 +2,12 @@ package com.aventstack.chaintest.generator;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 
 public abstract class FileGenerator {
@@ -37,13 +35,12 @@ public abstract class FileGenerator {
         }
     }
 
-    protected Template cacheTemplate(final Class<?> classForTemplateLoading, final String basePackagePath,
-                                     final String templateName) throws IOException {
+    protected void cacheTemplate(final Class<?> classForTemplateLoading, final String basePackagePath,
+                                 final String templateName) throws IOException {
         if (_template == null) {
             final Configuration cfg = new FreemarkerConfig().getConfig(classForTemplateLoading, basePackagePath);
             _template = cfg.getTemplate(templateName);
         }
-        return _template;
     }
 
 }
