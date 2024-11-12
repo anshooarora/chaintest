@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.domain;
 
 import com.aventstack.chaintest.util.ExceptionsUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.lang.reflect.Method;
@@ -30,6 +31,7 @@ public class Test implements ChainTestEntity {
     private String result = Result.PASSED.getResult();
     private Set<Tag> tags;
     private String error;
+    @JsonIgnore
     private Test parent;
     private volatile List<Test> children = Collections.synchronizedList(new ArrayList<>());
     private int depth;

@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.plugins;
 
 import com.aventstack.chaintest.domain.Test;
+import com.aventstack.chaintest.generator.ChainTestServiceClient;
 import com.aventstack.chaintest.generator.ChainTestSimpleGenerator;
 import com.aventstack.chaintest.service.ChainPluginService;
 import io.cucumber.gherkin.GherkinParser;
@@ -40,9 +41,10 @@ public class ChainTestCucumberListener implements EventListener {
     private final Map<URI, Test> _features = new HashMap<>();
     private ChainPluginService _service;
 
-    public ChainTestCucumberListener(final String ignored) {
+    public ChainTestCucumberListener(final String ignored) throws IOException {
         _service = new ChainPluginService(CUCUMBER_JVM);
         _service.register(new ChainTestSimpleGenerator());
+        _service.register(new ChainTestServiceClient());
         _service.start();
     }
 
