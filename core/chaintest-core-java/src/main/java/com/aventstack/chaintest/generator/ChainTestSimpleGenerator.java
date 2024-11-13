@@ -31,7 +31,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     }
 
     public void flush(final Map<UUID, Test> tests) {
-        processTemplateToFile(Map.of("build", _build, "tests", tests.values()), OUT_FILE);
+        processTemplate(Map.of("build", _build, "tests", tests.values()), OUT_FILE);
     }
 
     @Override

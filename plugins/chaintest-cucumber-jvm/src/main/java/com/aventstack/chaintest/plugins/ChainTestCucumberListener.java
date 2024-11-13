@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.plugins;
 
 import com.aventstack.chaintest.domain.Test;
+import com.aventstack.chaintest.generator.ChainTestEmailGenerator;
 import com.aventstack.chaintest.generator.ChainTestServiceClient;
 import com.aventstack.chaintest.generator.ChainTestSimpleGenerator;
 import com.aventstack.chaintest.service.ChainPluginService;
@@ -45,6 +46,7 @@ public class ChainTestCucumberListener implements EventListener {
         _service = new ChainPluginService(CUCUMBER_JVM);
         _service.register(new ChainTestSimpleGenerator());
         _service.register(new ChainTestServiceClient());
+        _service.register(new ChainTestEmailGenerator());
         _service.start();
     }
 
