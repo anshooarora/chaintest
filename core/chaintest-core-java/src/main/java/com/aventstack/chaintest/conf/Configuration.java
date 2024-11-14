@@ -53,7 +53,7 @@ public class Configuration {
 
         System.getenv().forEach((k, v) -> {
             if (k.startsWith(APP_NAME)) {
-                log.trace("Adding environment property " + k + " to configuration");
+                log.trace("Adding environment property {} to configuration", k);
                 _config.put(k, v);
             }
         });
@@ -62,14 +62,14 @@ public class Configuration {
     }
 
     public void loadFromClasspathResource(final String resource) throws IOException {
-        log.trace("Loading configuration from resource " + resource);
+        log.trace("Loading configuration from resource {}", resource);
         final Properties properties = new Properties();
         final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         if (null != is) {
             properties.load(is);
             loadFromProperties(properties);
         }
-        log.trace("Configuration entries after loading from resource " + resource + ": " + _config);
+        log.trace("Configuration entries after loading from resource {}: {}", resource, _config);
     }
 
     public void loadFromProperties(final Properties properties) {

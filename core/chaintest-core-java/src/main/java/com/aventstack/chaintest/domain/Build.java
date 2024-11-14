@@ -14,7 +14,7 @@ public class Build implements ChainTestEntity {
 
     private long id;
     private int projectId;
-    private String projectName;
+    private String projectName = "default";
     private long startedAt = System.currentTimeMillis();
     private long endedAt;
     private long durationMs;

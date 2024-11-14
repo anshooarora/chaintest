@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.generator;
 
+import com.aventstack.chaintest.conf.ConfigurationManager;
 import com.aventstack.chaintest.domain.Build;
 import com.aventstack.chaintest.domain.Test;
 import org.slf4j.Logger;
@@ -9,10 +10,14 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChainTestSimpleGenerator extends FileGenerator implements Generator {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestSimpleGenerator.class);
+    private static final String NAME = ChainTestSimpleGenerator.class.getSimpleName();
+    private static final String SIMPLE_CLIENT_ENABLED = "chaintest.generator.simple.enabled";
+    private static final AtomicBoolean ENABLED = new AtomicBoolean();
     private static final String TEMPLATE_DIR = "simple/";
     private static final String INDEX = "index.ftl";
     private static final String OUT_FILE = "target/chaintest/Index.html";
@@ -20,18 +25,33 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private Build _build;
 
     @Override
-    public void start(final String testRunner, final Build build) {
-        log.debug("Start was called for testRunner: {}", testRunner);
+    public void start(final Optional<Map<String, String>> config, final String testRunner, final Build build) {
+        final Map<String, String> configuration = config.orElse(ConfigurationManager.getConfig());
+        if (configuration == null) {
+            log.error("Unable to load ChainTestSimpleGenerator configuration, generator will now shutdown and no output will be produced");
+            return;
+        }
+
+        final String enabled = configuration.get(SIMPLE_CLIENT_ENABLED);
+        if (!Boolean.parseBoolean(enabled)) {
+            log.debug("{} Generator was not enabled. To enable, set property {}=true in your configuration", NAME, SIMPLE_CLIENT_ENABLED);
+            return;
+        }
+
+        log.trace("Start was called for testRunner: {}", testRunner);
         _build = build;
         try {
             cacheTemplate(ChainTestSimpleGenerator.class, TEMPLATE_DIR, INDEX);
+            ENABLED.set(true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void flush(final Map<UUID, Test> tests) {
-        processTemplate(Map.of("build", _build, "tests", tests.values()), OUT_FILE);
+        if (ENABLED.get()) {
+            processTemplate(Map.of("build", _build, "tests", tests.values()), OUT_FILE);
+        }
     }
 
     @Override

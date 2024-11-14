@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface Generator {
 
-    void start(final String testRunner, final Build build);
+    void start(final Optional<Map<String, String>> config, final String testRunner, final Build build);
 
     void afterTest(final Test test, final Optional<Throwable> throwable);
 

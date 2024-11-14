@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.service;
 
+import com.aventstack.chaintest.conf.ConfigurationManager;
 import com.aventstack.chaintest.domain.Build;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.generator.Generator;
@@ -12,11 +13,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChainPluginService {
 
     private static final Logger log = LoggerFactory.getLogger(ChainPluginService.class);
     private static final ConcurrentHashMap<UUID, Test> _tests = new ConcurrentHashMap<>();
+    private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
 
     public static ChainPluginService INSTANCE;
 
@@ -39,7 +42,11 @@ public class ChainPluginService {
     }
 
     public void start() {
-        _generators.forEach(x -> x.start(_testRunner, _build));
+        if (START_INVOKED.getAndSet(true)) {
+            log.info("Generator::start can only be invoked once");
+            return;
+        }
+        _generators.forEach(x -> x.start(Optional.ofNullable(ConfigurationManager.getConfig()), _testRunner, _build));
     }
 
     public void afterTest(final Test test, final Optional<Throwable> throwable) {

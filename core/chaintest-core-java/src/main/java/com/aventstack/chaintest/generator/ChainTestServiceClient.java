@@ -1,6 +1,6 @@
 package com.aventstack.chaintest.generator;
 
-import com.aventstack.chaintest.conf.Configuration;
+import com.aventstack.chaintest.conf.ConfigurationManager;
 import com.aventstack.chaintest.domain.Build;
 import com.aventstack.chaintest.domain.ExecutionStage;
 import com.aventstack.chaintest.domain.Result;
@@ -23,15 +23,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ChainTestServiceClient implements Generator {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestServiceClient.class);
-    private static final String GEN_ENABLED = "chaintest.generator.http.enabled";
+    private static final String HTTP_CLIENT_ENABLED = "chaintest.generator.http.enabled";
     private static final String PROJECT_NAME = "chaintest.project.name";
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _wrappedResponses = new ConcurrentHashMap<>();
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
 
     public static ChainTestServiceClient INSTANCE;
 
-    private ChainTestApiClient _client;
     private String _testRunner;
+    private ChainTestApiClient _client;
     private Build _build;
 
     public ChainTestServiceClient(final String testRunner) {
@@ -39,7 +39,7 @@ public class ChainTestServiceClient implements Generator {
         INSTANCE = this;
     }
 
-    public ChainTestServiceClient() throws IOException {
+    public ChainTestServiceClient() {
         this("");
     }
 
@@ -47,7 +47,7 @@ public class ChainTestServiceClient implements Generator {
         return CALLBACK_INVOKED.get();
     }
 
-    public void useClient(final ChainTestApiClient client) {
+    public void client(final ChainTestApiClient client) {
         _client = client;
     }
 
@@ -59,21 +59,22 @@ public class ChainTestServiceClient implements Generator {
         return _build;
     }
 
-    public void start(final String testRunner, final Build ignored) {
-        if (CALLBACK_INVOKED.get()) {
+    @Override
+    public void start(final Optional<Map<String, String>> config, final String testRunner, final Build ignored) {
+        _testRunner = testRunner;
+        if (isReady()) {
             return;
         }
 
-        try {
-            final Configuration conf = new Configuration();
-            conf.load();
-            final String enabled = conf.get(GEN_ENABLED);
-            if (!Boolean.parseBoolean(enabled)) {
-                log.debug("Http Generator was not enabled. To enable Http generator, set property {}=true in your configuration", GEN_ENABLED);
-                return;
-            }
-        } catch (final Exception e) {
-            log.error("Runtime exception was raised while loading ChainTestApiClient", e);
+        final Map<String, String> configuration = config.orElse(ConfigurationManager.getConfig());
+        if (configuration == null) {
+            log.error("Unable to load ChainTestServiceClient configuration, generator will now shutdown and no output will be produced");
+            return;
+        }
+
+        final String enabled = configuration.get(HTTP_CLIENT_ENABLED);
+        if (!Boolean.parseBoolean(enabled)) {
+            log.debug("Http Generator was not enabled. To enable Http generator, set property {}=true in your configuration", HTTP_CLIENT_ENABLED);
             return;
         }
 
@@ -113,7 +114,6 @@ public class ChainTestServiceClient implements Generator {
         if (!isReady()) {
             return;
         }
-
         _build.setExecutionStage(ExecutionStage.FINISHED);
         flush(Map.of());
     }
@@ -123,7 +123,6 @@ public class ChainTestServiceClient implements Generator {
         if (!isReady()) {
             return;
         }
-
         final boolean hasTestFailures = tests.values().stream()
                 .anyMatch(x -> x.getResult().equals(Result.FAILED.getResult()));
         final Result buildResult = hasTestFailures ? Result.FAILED : Result.PASSED;
