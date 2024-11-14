@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.domain;
 
+import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Collection;
@@ -48,6 +49,9 @@ public class Build implements ChainTestEntity {
     }
 
     public void updateStats(final Test test) {
+        setEndedAt(System.currentTimeMillis());
+        setResult(Result.computePriority(getResult(), test.getResult()).toString());
+
         final RunStats stat = runStats.stream()
                 .filter(x -> x.getDepth() == test.getDepth())
                 .findAny().orElseGet(() -> addRunStatsDepth(test.getDepth()));
@@ -128,6 +132,10 @@ public class Build implements ChainTestEntity {
 
     public void setDurationMs(long durationMs) {
         this.durationMs = durationMs;
+    }
+
+    public String getDurationPretty() {
+        return TimeUtil.getPrettyTime(getDurationMs());
     }
 
     public ExecutionStage getExecutionStage() {
