@@ -1,17 +1,14 @@
 package com.aventstack.chaintest.generator;
 
 import com.aventstack.chaintest.domain.Build;
-import com.aventstack.chaintest.domain.Result;
 import com.aventstack.chaintest.domain.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class ChainTestEmailGenerator extends FileGenerator implements Generator {
 
@@ -39,12 +36,10 @@ public class ChainTestEmailGenerator extends FileGenerator implements Generator 
     }
 
     public void flush(final Map<UUID, Test> tests) {
-        final List<Test> failed = tests.values().stream()
-                .filter(x -> x.getResult().equals(Result.FAILED.getResult()))
-                .collect(Collectors.toUnmodifiableList());
-        if (!failed.isEmpty()) {
-            _source = processTemplate(Map.of("build", _build, "tests", failed), OUT_FILE);
+        if (tests.isEmpty()) {
+            return;
         }
+        _source = processTemplate(Map.of("build", _build, "tests", tests.values()), OUT_FILE);
     }
 
     @Override

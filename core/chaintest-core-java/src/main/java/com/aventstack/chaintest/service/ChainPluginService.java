@@ -50,6 +50,7 @@ public class ChainPluginService {
     }
 
     public void flush() {
+        _build.complete();
         _generators.forEach(x -> x.flush(_tests));
     }
 

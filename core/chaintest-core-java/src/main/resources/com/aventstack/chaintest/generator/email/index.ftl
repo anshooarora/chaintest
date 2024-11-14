@@ -8,9 +8,12 @@
     <title>ChainTest</title>
     <style type="text/css">
       td, th, div, p {font-family: -apple-system, system-ui, "Lato", "Helvetica Neue", "Segoe UI", Arial, sans-serif;}
-      .bg-pass { background-color: #79B530; color: #fff; }
-      .bg-fail { background-color: #e64b5d; color: #fff; }
-      .bg-skip { background-color: #e6e04c; color: #fff; }
+      .bg-passed { background-color: #79B530; color: #fff; }
+      .text-passed { color: #79B530; }
+      .bg-failed,.bg-undefined { background-color: #e64b5d; color: #fff; }
+      .text-failed,.text-undefined { color: #e64b5d; }
+      .bg-skipped { background-color: #e6e04c; color: #fff; }
+      .text-skipped { color: #e6e04c; }
       .tag { background-color:#f6f7f9; }
     </style>
   </head>
@@ -22,12 +25,11 @@
           <table>
             <tr>
               <td width="650">
-                <table  style="padding: 20px;">
+                <table style="padding: 20px;">
                   <tr>
                     <td>
-                      <span class="bg-${build.result?lower_case}" style="font-size:11px;font-weight:500;margin-top:0;padding:0px 5px;">Build ${build.result}</span>
-                      <br/>
-                      <span style="font-size:12px;font-weight:500;color:#555;">${build.startedAt} // ${build.durationMs}</span>
+                      <span class="bg-${build.result?lower_case}" style="font-size:13px;font-weight:500;margin-top:0;margin-right:10px;padding:0px 5px;">Build ${build.result}</span>
+                      <span style="font-size:13px;font-weight:500;color:#555;">${build.startedAt?number_to_datetime} - Took ${build.durationPretty}</span>
                     </td>
                   </tr>
                 </table>
@@ -116,6 +118,7 @@
       <tr>
         <td align="center">
           <#list tests as test>
+          <#if test.result != 'PASSED'>
           <table width="650">
             <tr>
               <td bgcolor="#FFFFFF" style="padding:20px 40px;">
@@ -125,32 +128,42 @@
                       <p style="font-size:16px;font-weight:500;margin:0;margin-bottom:5px;">
                         ${test.name}
                       <p style="font-size:12px;margin:0;">
-                        ${test.startedAt?string("MM-dd-yyyy HH:mm:ss")} / ${test.durationMs?number_to_time?string("mm:ss:SSS")}
-                      </p>
-                      <p style="margin:10px 0;font-size:12px;">
-                        <span class="bg-${test.result?lower_case}" style="font-size:12px;margin:0;padding:0 7px;">${test.result}</span>
+                        <span>${test.startedAt?number_to_datetime} / ${test.durationPretty}</span>
+                        <span class="bg-${test.result?lower_case}" style="font-size:11px;margin-left:.5rem;padding:0 7px;">${test.result}</span>
                       </p>
                     </td>
                   </tr>
                   <#list test.children as child>
                   <tr>
-                    <td width="650px" style="padding:5px 0;">
+                    <td width="650px" style="padding-top:.75rem;padding-left:.75rem">
                       <p style="font-size:16px;font-weight:500;margin:0;margin-bottom:5px;">
-                        - ${child.name}
+                        ${child.name}
                       </p>
-                      <p style="font-size:12px;margin:0;margin-left:10px;">
-                        ${child.startedAt?string("MM-dd-yyyy HH:mm:ss")} / ${child.durationMs?number_to_time?string("mm:ss:SSS")}
-                      </p>
-                      <p style="margin:10px 0;font-size:12px;margin-left:10px;">
-                        <span class="bg-${child.result?lower_case}" style="font-size:12px;margin:0;padding:0 7px;">${child.result}</span>
+                      <p style="font-size:12px;margin:0">
+                        <span>${child.startedAt?number_to_datetime} / ${child.durationPretty}</span>
+                        <span class="text-${child.result?lower_case}" style="font-size:12px;margin-left:.5rem;padding:0 7px;">${child.result}</span>
                       </p>
                     </td>
                   </tr>
+                    <#list child.children as leaf>
+                    <tr>
+                      <td width="650px" style="padding-top:.75rem;padding-left:1.5rem">
+                        <p style="font-size:16px;font-weight:500;margin:0;margin-bottom:5px;">
+                          ${leaf.name}
+                        </p>
+                        <p style="font-size:12px;margin:0">
+                          <span>${leaf.startedAt?number_to_datetime} / ${leaf.durationPretty}</span>
+                          <span class="text-${leaf.result?lower_case}" style="font-size:12px;padding:0 7px;margin-left:.5rem">${leaf.result}</span>
+                        </p>
+                      </td>
+                    </tr>
+                    </#list>
                   </#list>
                 </table>
               </td>
             </tr>
           </table>
+          </#if>
           </#list>
         </td>
       </tr>

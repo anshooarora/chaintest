@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.domain;
 
 import com.aventstack.chaintest.util.ExceptionsUtil;
+import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -196,6 +197,10 @@ public class Test implements ChainTestEntity {
 
     public void setDurationMs(long durationMs) {
         this.durationMs = durationMs;
+    }
+
+    public String getDurationPretty() {
+        return TimeUtil.getPrettyTime(getDurationMs());
     }
 
     public String getResult() {
