@@ -21,12 +21,12 @@ public class ChainTestApiClient {
 
     private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(30);
     private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
-    public static final String PROPERTY_SERVER_URL = "chaintest.client.host.url";
-    public static final String CLIENT_REQUEST_TIMEOUT = "chaintest.client.request-timeout-s";
-    public static final String CLIENT_EXPECT_CONTINUE = "chaintest.client.expect-continue";
-    public static final String CLIENT_MAX_RETRIES = "chaintest.client.max-retries";
-    public static final String CLIENT_RETRY_INTERVAL = "chaintest.client.retry-interval-ms";
-    public static final String CLIENT_THROW_AFTER_RETRY_ATTEMPTS_EXCEEDED = "chaintest.client.throw-after-retry-attempts-exceeded";
+    public static final String PROPERTY_SERVER_URL = "chaintest.generator.http.host.url";
+    public static final String CLIENT_REQUEST_TIMEOUT = "chaintest.generator.http.client.request-timeout-s";
+    public static final String CLIENT_EXPECT_CONTINUE = "chaintest.generator.http.client.expect-continue";
+    public static final String CLIENT_MAX_RETRIES = "chaintest.generator.http.client.max-retries";
+    public static final String CLIENT_RETRY_INTERVAL = "chaintest.generator.http.client.retry-interval-ms";
+    public static final String CLIENT_THROW_AFTER_RETRY_ATTEMPTS_EXCEEDED = "chaintest.generator.http.client.throw-after-retry-attempts-exceeded";
 
     private static final String API_VERSION = "/api/v1/";
 
@@ -68,6 +68,16 @@ public class ChainTestApiClient {
 
         final String expectContinue = config.get(CLIENT_EXPECT_CONTINUE);
         _expectContinue = Boolean.parseBoolean(expectContinue);
+    }
+
+    public ChainTestApiClient(final Configuration conf) {
+        _config = conf;
+        final Builder builder = builder().defaultBuilder();
+        _httpClient = builder.httpClient;
+        _mapper = builder.objectMapper;
+        _requestTimeout = builder.timeout;
+        _baseURI = URI.create(_serverURL).resolve(API_VERSION);
+        _retryHandler = new HttpRetryHandler(this, _config.getConfig());
     }
 
     public ChainTestApiClient(final Builder builder) {

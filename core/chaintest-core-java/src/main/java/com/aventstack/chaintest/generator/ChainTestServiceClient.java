@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.generator;
 
+import com.aventstack.chaintest.conf.Configuration;
 import com.aventstack.chaintest.domain.Build;
 import com.aventstack.chaintest.domain.ExecutionStage;
 import com.aventstack.chaintest.domain.Result;
@@ -22,33 +23,32 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ChainTestServiceClient implements Generator {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestServiceClient.class);
-    private static final String PROJECT_ID = "chaintest.project.id";
+    private static final String GEN_ENABLED = "chaintest.generator.http.enabled";
     private static final String PROJECT_NAME = "chaintest.project.name";
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _wrappedResponses = new ConcurrentHashMap<>();
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
 
     public static ChainTestServiceClient INSTANCE;
 
-    private final ChainTestApiClient _client;
+    private ChainTestApiClient _client;
     private String _testRunner;
     private Build _build;
 
-    public ChainTestServiceClient(final ChainTestApiClient client, final String testRunner) {
-        _client = client;
+    public ChainTestServiceClient(final String testRunner) {
         _testRunner = testRunner;
         INSTANCE = this;
-    }
-
-    public ChainTestServiceClient(final String testRunner) throws IOException {
-        this(new ChainTestApiClient(), testRunner);
     }
 
     public ChainTestServiceClient() throws IOException {
         this("");
     }
 
-    public boolean ready() {
+    public boolean isReady() {
         return CALLBACK_INVOKED.get();
+    }
+
+    public void useClient(final ChainTestApiClient client) {
+        _client = client;
     }
 
     public ChainTestApiClient getClient() {
@@ -60,13 +60,36 @@ public class ChainTestServiceClient implements Generator {
     }
 
     public void start(final String testRunner, final Build ignored) {
+        if (CALLBACK_INVOKED.get()) {
+            return;
+        }
+
+        try {
+            final Configuration conf = new Configuration();
+            conf.load();
+            final String enabled = conf.get(GEN_ENABLED);
+            if (!Boolean.parseBoolean(enabled)) {
+                log.debug("Http Generator was not enabled. To enable Http generator, set property {}=true in your configuration", GEN_ENABLED);
+                return;
+            }
+        } catch (final Exception e) {
+            log.error("Runtime exception was raised while loading ChainTestApiClient", e);
+            return;
+        }
+
+        if (null == _client) {
+            try {
+                _client = new ChainTestApiClient();
+            } catch (final Exception e) {
+                log.error("Failed to create an instance of {}", ChainTestApiClient.class, e);
+                return;
+            }
+        }
+
         log.trace("Starting new build, but events will only be sent to API if build is successfully created");
 
-        final int projectId = Integer.parseInt(_client.config().get(PROJECT_ID));
         final String projectName = _client.config().getConfig().getOrDefault(PROJECT_NAME, "");
-        if (projectId > 0) {
-            _build = new Build(projectId, _testRunner);
-        } else if (!projectName.isBlank()) {
+        if (!projectName.isBlank()) {
             _build = new Build(projectName, _testRunner);
         } else {
             _build = new Build(_testRunner);
@@ -87,13 +110,17 @@ public class ChainTestServiceClient implements Generator {
 
     @Override
     public void executionFinished() {
+        if (!isReady()) {
+            return;
+        }
+
         _build.setExecutionStage(ExecutionStage.FINISHED);
         flush(Map.of());
     }
 
     @Override
     public void flush(final Map<UUID, Test> tests) {
-        if (!ready()) {
+        if (!isReady()) {
             return;
         }
 
@@ -116,7 +143,7 @@ public class ChainTestServiceClient implements Generator {
 
     @Override
     public void afterTest(final Test test, final Optional<Throwable> throwable) {
-        if (!ready()) {
+        if (!isReady()) {
             return;
         }
 
