@@ -1,6 +1,8 @@
 package com.aventstack.chaintest.plugins;
 
 import com.aventstack.chaintest.domain.Test;
+import com.aventstack.chaintest.generator.ChainTestEmailGenerator;
+import com.aventstack.chaintest.generator.ChainTestSimpleGenerator;
 import com.aventstack.chaintest.http.ChainTestApiClient;
 import com.aventstack.chaintest.service.ChainPluginService;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -26,28 +28,24 @@ public class ChainTestExecutionCallback
         if (CALLBACK_INVOKED.getAndSet(true)) {
             return;
         }
-        log.trace("Creating instance of " + ChainTestApiClient.class);
+        log.trace("Creating instance of {}", ChainTestApiClient.class);
         _service = new ChainPluginService(JUNIT_JUPITER);
+        _service.register(new ChainTestSimpleGenerator());
+        _service.register(new ChainTestEmailGenerator());
         _service.start();
     }
 
     @Override
     public void afterTestExecution(final ExtensionContext context) throws Exception {
-        if (!_service.ready()) {
-            return;
-        }
         final Test test = new Test(context.getDisplayName(),
                 context.getTestClass().map(Class::getName),
                 context.getTags());
         _service.afterTest(test, context.getExecutionException());
-        log.trace("Ended test " + test.getName() + " with status " + test.getResult());
+        log.trace("Ended test {} with status {}", test.getName(), test.getResult());
     }
 
     @Override
     public void afterAll(final ExtensionContext extensionContext) {
-        if (!_service.ready()) {
-            return;
-        }
         log.trace("Executing afterAll hook");
         _service.flush();
     }
