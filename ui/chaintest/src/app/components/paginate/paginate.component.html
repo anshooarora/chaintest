@@ -1,13 +1,19 @@
 <nav aria-label="Page navigation" class="pagination-wrapper" *ngIf="entity">
   <ul class="pagination mb-0 flex-wrap justify-content-center">
-      <li class="page-item" [ngClass]="{'disabled': current == 0}">
-        <a class="page-link" href="javascript:void(0)" (click)="onPrev()">prev</a>
-      </li>
-      <li class="page-item" [ngClass]="{'active': p == current+1}" *ngFor="let p of pages">
-        <a class="page-link" href="javascript:void(0)" (click)="setPage(p-1)">{{p}}</a>
-      </li>
-      <li class="page-item" [ngClass]="{'disabled': total-1 == current}">
-        <a class="page-link" href="javascript:void(0)" (click)="onNext()">next</a>
-      </li>
+    <li class="page-item" [ngClass]="{'disabled': current == 0}">
+      <a class="page-link" href="javascript:void(0)" (click)="onPrev()">prev</a>
+    </li>
+    <li class="page-item" [ngClass]="{'active': current == 0}" *ngIf="current >= 2">
+      <a class="page-link" href="javascript:void(0)" (click)="setPage(0)">1</a>
+    </li>
+    <li class="page-item" [ngClass]="{'active': p == current+1}" *ngFor="let p of pages">
+      <a class="page-link" href="javascript:void(0)" (click)="setPage(p-1)">{{p}}</a>
+    </li>
+    <li class="page-item" [ngClass]="{'active': total == current+1}">
+      <a class="page-link" href="javascript:void(0)" (click)="setPage(total-1)">{{total}}</a>
+    </li>
+    <li class="page-item" [ngClass]="{'disabled': total-1 == current}">
+      <a class="page-link" href="javascript:void(0)" (click)="onNext()">next</a>
+    </li>
   </ul>
 </nav>
