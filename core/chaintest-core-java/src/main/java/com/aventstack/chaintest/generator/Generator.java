@@ -17,4 +17,6 @@ public interface Generator {
 
     void executionFinished();
 
+    String getName();
+
 }

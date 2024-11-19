@@ -4,13 +4,17 @@ import com.aventstack.chaintest.conf.ConfigurationManager;
 import com.aventstack.chaintest.domain.Build;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.generator.Generator;
+import com.aventstack.chaintest.util.RegexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ChainPluginService {
 
     private static final Logger log = LoggerFactory.getLogger(ChainPluginService.class);
+    private static final String GEN_PATTERN = "chaintest.generator.[a-zA-z0-9]+.enabled";
     private static final ConcurrentHashMap<UUID, Test> _tests = new ConcurrentHashMap<>();
     private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
 
@@ -46,7 +51,32 @@ public class ChainPluginService {
             log.info("Generator::start can only be invoked once");
             return;
         }
-        _generators.forEach(x -> x.start(Optional.ofNullable(ConfigurationManager.getConfig()), _testRunner, _build));
+        final Optional<Map<String, String>> config = Optional.ofNullable(ConfigurationManager.getConfig());
+        config.ifPresent(this::enableGen);
+        _generators.forEach(x -> x.start(config, _testRunner, _build));
+    }
+
+    private void enableGen(final Map<String, String> config) {
+        final Set<String> generatorNames = new HashSet<>();
+        _generators.forEach(x -> generatorNames.add(x.getName()));
+        for (final Map.Entry<String, String> entry : config.entrySet()) {
+            if (entry.getKey().matches(GEN_PATTERN) && !generatorNames.contains(entry.getKey().split("\\.")[2])) {
+                final String classNameKey = RegexUtil.match("(.*)\\.", entry.getKey()) + "class-name";
+                if (!config.containsKey(classNameKey)) {
+                    log.info("{} was true from configuration but the required property {} was not provided", entry.getKey(), classNameKey);
+                    continue;
+                }
+                final String className = config.get(classNameKey);
+                try {
+                    final Class<?> clazz = Class.forName(className);
+                    final Generator gen = (Generator) clazz.getDeclaredConstructor().newInstance();
+                    _generators.add(gen);
+                    generatorNames.add(gen.getName());
+                } catch (Exception e) {
+                    log.error("Failed to create an instance of {} generator", className, e);
+                }
+            }
+        }
     }
 
     public void afterTest(final Test test, final Optional<Throwable> throwable) {
