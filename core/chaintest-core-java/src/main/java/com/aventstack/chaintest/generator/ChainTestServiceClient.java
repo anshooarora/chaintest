@@ -1,6 +1,5 @@
 package com.aventstack.chaintest.generator;
 
-import com.aventstack.chaintest.conf.ConfigurationManager;
 import com.aventstack.chaintest.domain.Build;
 import com.aventstack.chaintest.domain.ExecutionStage;
 import com.aventstack.chaintest.domain.Result;
@@ -23,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ChainTestServiceClient implements Generator {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestServiceClient.class);
+    private static final String NAME = "http";
     private static final String HTTP_CLIENT_ENABLED = "chaintest.generator.http.enabled";
     private static final String PROJECT_NAME = "chaintest.project.name";
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _wrappedResponses = new ConcurrentHashMap<>();
@@ -66,13 +66,12 @@ public class ChainTestServiceClient implements Generator {
             return;
         }
 
-        final Map<String, String> configuration = config.orElse(ConfigurationManager.getConfig());
-        if (configuration == null) {
-            log.error("Unable to load ChainTestServiceClient configuration, generator will now shutdown and no output will be produced");
+        if (config.isEmpty()) {
+            log.debug("Unable to load ChainTestServiceClient configuration, generator will now shutdown and no output will be produced");
             return;
         }
 
-        final String enabled = configuration.get(HTTP_CLIENT_ENABLED);
+        final String enabled = config.get().get(HTTP_CLIENT_ENABLED);
         if (!Boolean.parseBoolean(enabled)) {
             log.debug("Http Generator was not enabled. To enable Http generator, set property {}=true in your configuration", HTTP_CLIENT_ENABLED);
             return;
@@ -166,6 +165,11 @@ public class ChainTestServiceClient implements Generator {
         if (null != test.getChildren()) {
             test.getChildren().forEach(this::updateAttributes);
         }
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
 }

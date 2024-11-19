@@ -1,6 +1,5 @@
 package com.aventstack.chaintest.generator;
 
-import com.aventstack.chaintest.conf.ConfigurationManager;
 import com.aventstack.chaintest.domain.Build;
 import com.aventstack.chaintest.domain.Test;
 import org.slf4j.Logger;
@@ -15,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ChainTestEmailGenerator extends FileGenerator implements Generator {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestEmailGenerator.class);
-    private static final String NAME = ChainTestEmailGenerator.class.getSimpleName();
+    private static final String NAME = "email";
     private static final String EMAIL_CLIENT_ENABLED = "chaintest.generator.email.enabled";
     private static final AtomicBoolean ENABLED = new AtomicBoolean();
     private static final String TEMPLATE_DIR = "email/";
@@ -31,13 +30,12 @@ public class ChainTestEmailGenerator extends FileGenerator implements Generator 
 
     @Override
     public void start(final Optional<Map<String, String>> config, final String testRunner, final Build build) {
-        final Map<String, String> configuration = config.orElse(ConfigurationManager.getConfig());
-        if (configuration == null) {
-            log.error("Unable to load ChainTestSimpleGenerator configuration, generator will now shutdown and no output will be produced");
+        if (config.isEmpty()) {
+            log.debug("Unable to load ChainTestSimpleGenerator configuration, generator will now shutdown and no output will be produced");
             return;
         }
 
-        final String enabled = configuration.get(EMAIL_CLIENT_ENABLED);
+        final String enabled = config.get().get(EMAIL_CLIENT_ENABLED);
         if (!Boolean.parseBoolean(enabled)) {
             log.debug("{} Generator was not enabled. To enable, set property {}=true in your configuration", NAME, EMAIL_CLIENT_ENABLED);
             return;
@@ -65,5 +63,10 @@ public class ChainTestEmailGenerator extends FileGenerator implements Generator 
 
     @Override
     public void executionFinished() { }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
 
 }
