@@ -8,16 +8,20 @@ import com.aventstack.chaintest.service.ChainPluginService;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChainTestExecutionCallback
-        implements BeforeAllCallback, AfterAllCallback, AfterTestExecutionCallback {
+        implements BeforeAllCallback, AfterAllCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestExecutionCallback.class);
+    private static final Map<String, Test> TESTS = new ConcurrentHashMap<>();
     private static final String JUNIT_JUPITER = "junit-jupiter";
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
 
@@ -36,10 +40,16 @@ public class ChainTestExecutionCallback
     }
 
     @Override
-    public void afterTestExecution(final ExtensionContext context) throws Exception {
+    public void beforeTestExecution(final ExtensionContext context) throws Exception {
         final Test test = new Test(context.getDisplayName(),
                 context.getTestClass().map(Class::getName),
                 context.getTags());
+        TESTS.put(context.getUniqueId(), test);
+    }
+
+    @Override
+    public void afterTestExecution(final ExtensionContext context) throws Exception {
+        final Test test = TESTS.get(context.getUniqueId());
         _service.afterTest(test, context.getExecutionException());
         log.trace("Ended test {} with status {}", test.getName(), test.getResult());
     }
