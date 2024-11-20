@@ -45,7 +45,7 @@ public class ChainTestCucumberListener implements EventListener {
     public ChainTestCucumberListener(final String ignored) throws IOException {
         _service = new ChainPluginService(CUCUMBER_JVM);
         _service.register(new ChainTestSimpleGenerator());
-        _service.register(new ChainTestServiceClient());
+        //_service.register(new ChainTestServiceClient());
         _service.register(new ChainTestEmailGenerator());
         _service.start();
     }
@@ -68,7 +68,7 @@ public class ChainTestCucumberListener implements EventListener {
             container.ifPresent(feature -> {
                 final Stream<String> tags = feature.getTags().stream()
                         .map(Tag::getName);
-                final Test test = new Test(feature.getName(),
+                final Test test = new Test("Feature: " + feature.getName(),
                         Optional.of("Feature"),
                         tags);
                 _features.put(event.getUri(), test);
@@ -101,7 +101,7 @@ public class ChainTestCucumberListener implements EventListener {
 
     private final EventHandler<TestCaseStarted> caseStartedHandler = event -> {
         log.debug("Scenario start: {}", event.getTestCase().getName());
-        final Test scenario = new Test(event.getTestCase().getName(),
+        final Test scenario = new Test(event.getTestCase().getKeyword() + ": " + event.getTestCase().getName(),
                 Optional.of("Scenario"),
                 event.getTestCase().getTags());
         _features.get(event.getTestCase().getUri()).addChild(scenario);
@@ -117,7 +117,8 @@ public class ChainTestCucumberListener implements EventListener {
 
     private final EventHandler<TestStepFinished> stepFinishedHandler = event -> {
         log.debug("Step: {}", event.getTestCase().getName());
-        final Test step = new Test(((PickleStepTestStep) event.getTestStep()).getStep().getText(),
+        final PickleStepTestStep pickle = ((PickleStepTestStep) event.getTestStep());
+        final Test step = new Test(pickle.getStep().getKeyword() + pickle.getStep().getText(),
                 Optional.of("Step"));
         _scenarios.get(event.getTestCase().getId()).addChild(step);
         step.setResult(event.getResult().getStatus().name());
