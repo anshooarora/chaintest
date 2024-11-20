@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ChainPluginService {
 
     private static final Logger log = LoggerFactory.getLogger(ChainPluginService.class);
-    private static final String GEN_PATTERN = "chaintest.generator.[a-zA-z0-9]+.enabled";
+    private static final String GEN_PATTERN = "chaintest.generator.[a-zA-Z]+.enabled";
     private static final ConcurrentHashMap<UUID, Test> _tests = new ConcurrentHashMap<>();
     private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
 
@@ -52,16 +52,18 @@ public class ChainPluginService {
             return;
         }
         final Optional<Map<String, String>> config = Optional.ofNullable(ConfigurationManager.getConfig());
-        config.ifPresent(this::enableGen);
+        config.ifPresent(this::register);
         _generators.forEach(x -> x.start(config, _testRunner, _build));
     }
 
-    private void enableGen(final Map<String, String> config) {
+    private void register(final Map<String, String> config) {
         final Set<String> generatorNames = new HashSet<>();
         _generators.forEach(x -> generatorNames.add(x.getName()));
         for (final Map.Entry<String, String> entry : config.entrySet()) {
+            log.trace("Reading property: {}", entry.getKey());
             if (entry.getKey().matches(GEN_PATTERN) && !generatorNames.contains(entry.getKey().split("\\.")[2])) {
                 final String classNameKey = RegexUtil.match("(.*)\\.", entry.getKey()) + "class-name";
+                log.debug("Found configuration entry {}, will use {} to resolve class", entry.getKey(), classNameKey);
                 if (!config.containsKey(classNameKey)) {
                     log.info("{} was true from configuration but the required property {} was not provided", entry.getKey(), classNameKey);
                     continue;
@@ -71,7 +73,6 @@ public class ChainPluginService {
                     final Class<?> clazz = Class.forName(className);
                     final Generator gen = (Generator) clazz.getDeclaredConstructor().newInstance();
                     _generators.add(gen);
-                    generatorNames.add(gen.getName());
                 } catch (Exception e) {
                     log.error("Failed to create an instance of {} generator", className, e);
                 }
