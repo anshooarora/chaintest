@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.domain;
 
+import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -84,5 +85,9 @@ public class TagStats {
 
     public void setDurationMs(long durationMs) {
         this.durationMs = durationMs;
+    }
+
+    public String getDurationPretty() {
+        return TimeUtil.getPrettyTime(getDurationMs());
     }
 }
