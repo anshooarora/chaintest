@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChainTestEmailGenerator extends FileGenerator implements Generator {
@@ -51,11 +51,11 @@ public class ChainTestEmailGenerator extends FileGenerator implements Generator 
         }
     }
 
-    public void flush(final Map<UUID, Test> tests) {
+    public void flush(final List<Test> tests) {
         if (tests.isEmpty() || !ENABLED.get()) {
             return;
         }
-        _source = processTemplate(Map.of("build", _build, "tests", tests.values()), OUT_FILE);
+        _source = processTemplate(Map.of("build", _build, "tests", tests), OUT_FILE);
     }
 
     @Override

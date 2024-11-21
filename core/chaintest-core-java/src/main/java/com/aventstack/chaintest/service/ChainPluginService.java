@@ -10,20 +10,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChainPluginService {
 
     private static final Logger log = LoggerFactory.getLogger(ChainPluginService.class);
     private static final String GEN_PATTERN = "chaintest.generator.[a-zA-Z]+.enabled";
-    private static final ConcurrentHashMap<UUID, Test> _tests = new ConcurrentHashMap<>();
+    private static final List<Test> _tests = Collections.synchronizedList(new ArrayList<>(10));
     private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
 
     public static ChainPluginService INSTANCE;
@@ -86,7 +85,7 @@ public class ChainPluginService {
 
     public void afterTest(final Test test, final Optional<Throwable> throwable) {
         test.complete(throwable);
-        _tests.putIfAbsent(test.getClientId(), test);
+        _tests.add(test);
         _build.updateStats(test);
         _generators.forEach(x -> x.afterTest(test, throwable));
     }

@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -114,15 +114,15 @@ public class ChainTestServiceClient implements Generator {
             return;
         }
         _build.setExecutionStage(ExecutionStage.FINISHED);
-        flush(Map.of());
+        flush(List.of());
     }
 
     @Override
-    public void flush(final Map<UUID, Test> tests) {
+    public void flush(final List<Test> tests) {
         if (!isReady()) {
             return;
         }
-        final boolean hasTestFailures = tests.values().stream()
+        final boolean hasTestFailures = tests.stream()
                 .anyMatch(x -> x.getResult().equals(Result.FAILED.getResult()));
         final Result buildResult = hasTestFailures ? Result.FAILED : Result.PASSED;
         _build.complete(buildResult);
