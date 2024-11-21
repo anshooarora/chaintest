@@ -26,9 +26,11 @@
             <li class="nav-item ms-5 me-2">
               <span class="nav-link">chaintest-core</span>
             </li>
+            <#if build.tags?? && build.tags?has_content>
             <li class="nav-item mx-2">
               <a class="nav-link" href="#tags">Tags</a>
             </li>
+            </#if>
             <li class="nav-item mx-2">
               <a class="nav-link" href="#tests">Tests</a>
             </li>

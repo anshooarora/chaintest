@@ -59,6 +59,7 @@ public class Build implements ChainTestEntity {
         stat.update(test);
 
         if (null != test.getTags()) {
+            addTags(test.getTags());
             for (final Tag tag : test.getTags()) {
                 if (!tagStatsMonitor.containsKey(tag.getName())) {
                     final TagStats ts = new TagStats();

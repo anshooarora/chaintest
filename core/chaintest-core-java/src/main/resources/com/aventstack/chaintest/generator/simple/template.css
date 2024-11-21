@@ -198,7 +198,7 @@ pre {
   box-shadow: none;
   margin-bottom: 1rem;
 }
-.card.card-custom.failed, .card.card-custom.failed:hover {
+.page.false .card.card-custom.failed, .page.false .card.card-custom.failed:hover {
   background-color: var(--danger-bg);
   border-color: var(--danger-border-light);
 }
