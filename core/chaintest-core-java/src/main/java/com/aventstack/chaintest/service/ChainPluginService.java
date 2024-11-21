@@ -38,6 +38,10 @@ public class ChainPluginService {
         _testRunner = testRunner;
     }
 
+    public Build getBuild() {
+        return _build;
+    }
+
     public void register(final Generator generator) {
         _generators.add(generator);
     }

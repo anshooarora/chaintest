@@ -132,11 +132,11 @@ public class ChainTestCucumberListener implements EventListener {
     };
 
     private final EventHandler<TestRunFinished> runFinishedHandler = event -> {
+        _service.getBuild().setBDD(true);
         for (final Map.Entry<URI, Test> entry : _features.entrySet()) {
             log.debug("Preparing to finalize and send Feature [{}]: {}", entry.getValue().getName(), entry.getKey());
             try {
                 _service.afterTest(entry.getValue(), Optional.empty());
-                Thread.sleep(10L);
             } catch (final Exception e) {
                 log.debug("An exception occurred while sending test", e);
             }

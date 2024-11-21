@@ -15,7 +15,7 @@
 
 <body>
   <!-- page wrapper -->
-  <div class="page">
+  <div class="page ${build.isBDD()?c}">
 
     <!-- navbar -->
     <nav class="navbar navbar-expand-md">
@@ -27,14 +27,15 @@
               <span class="nav-link">chaintest-core</span>
             </li>
             <li class="nav-item mx-2">
-              <a class="nav-link" href="#">Tags</a>
+              <a class="nav-link" href="#tags">Tags</a>
             </li>
             <li class="nav-item mx-2">
-              <a class="nav-link" href="#">Tests</a>
+              <a class="nav-link" href="#tests">Tests</a>
             </li>
           </ul>
           <form class="d-flex" role="search">
-            <span class="badge bg-outline-light">2024-11-08 11:27 AM</span>
+            <span class="badge bg-outline-light me-1">${build.startedAt?number_to_datetime}</span>
+            <span class="badge bg-outline-light">${build.durationPretty}</span>
           </form>
         </div>
       </div>
@@ -56,7 +57,7 @@
                 </div>
                 <div class="card-body d-flex justify-content-center" style="height: 120px;">
                   <div class="chart-view center" style="margin-left: -1rem;">
-                    <canvas id="acquisitions"></canvas>
+                    <canvas id="stats"></canvas>
                   </div>
                 </div>
                 <div class="card-header small">
@@ -97,104 +98,121 @@
             </div>
           </div>
         </div>
-        <!-- /dashboard section -->
-
-        <div class="container-fluid tags mt-4 mb-4">
-
-          <!-- tag section -->
-          <div class="row">
-            <div class="col-12">
-              <div class="card card-custom">
-                <div class="card-header">
-                  Tags
-                </div>
-                <div class="card-body">
-                  <table id="tag-summary" class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col" style="width: 40%">Name</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Failed</th>
-                        <th scope="col">Passed</th>
-                        <th scope="col">Time</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <#list build.tagStats as tag>
-                      <tr>
-                        <td class="tag"><a href="#" class="secondary">${tag.name}</a></td>
-                        <td>${tag.total}</td>
-                        <td>${tag.passed}</td>
-                        <td>${tag.skipped}</td>
-                        <td>${tag.durationMs}</td>
-                      </tr>
-                      </#list>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- /tag section -->
-
-        <!-- test section -->
-        <div class="container-fluid tests">
-          <div class="mt-3 mb-3 d-flex justify-content-between">
-            <div id="status-filter" class="btn-group" role="group" aria-label="Filter tests with status">
-              <button type="button" id="passed" class="btn btn-success">Passed</button>
-              <button type="button" id="skipped" class="btn btn-warning">Skipped</button>
-              <button type="button" id="failed" class="btn btn-danger">Failed</button>
-            </div>
-            <button id="clear-filters" type="button" class="btn btn-outline-light btn-sm">
-              <i class="bi bi-x-lg me-1"></i>Clear all filters
-            </button>
-          </div>
-
-          <div class="row">
-            <#list tests as test>
-            <div class="col-12">
-              <div class="card card-custom test-result ${test.result?lower_case}">
-                <div class="card-body">
-                  <div class="ms-1 mb-2 d-flex justify-content-between">
-                    <a href="#" class="secondary">
-                      <span class="h6">${test.name}</span>
-                    </a>
-                    <div class="">
-                      <div class="pb-2 ms-1 mb-1 small">
-                        <i class="bi bi-clock"></i> <span class="ms-1">${test.startedAt}</span>
-                        <i class="bi bi-hourglass ms-2"></i> <span class="ms-1">${test.durationMs}</span>
-                        <#if test.result=='PASSED'>
-                        <span class="ms-2 badge badge-success badge-md"><i class="bi bi-flag me-1"></i>Passed</span>
-                        <#else>
-                        <span class="ms-2 badge badge-danger badge-md"><i class="bi bi-record-fill me-1"></i>Failed</span>
-                        </#if>
-                      </div>
-                    </div>
-                  </div>
-                  <#if test.tag??>
-                  <div class="ms-1 mt-2 tag-list">
-                    <#list test.tags as tag>
-                    <span class="badge bg-outline-light">${tag.name}</span>
-                    </#list>
-                  </div>
-                  </#if>
-                </div>
-              </div>
-              </#list>
-            </div>
-          </div>
-        </div>
-        <!-- /test section-->
-
       </div>
-      <!-- /main-content -->
+      <!-- /dashboard section -->
+
+      <div class="container-fluid tags mt-4 mb-4">
+
+        <!-- tag section -->
+        <div id="tags" class="row">
+          <div class="col-12">
+            <div class="card card-custom">
+              <div class="card-header">
+                Tags
+              </div>
+              <div class="card-body">
+                <table id="tag-summary" class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col" style="width: 60%">Name</th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Failed</th>
+                      <th scope="col">Passed</th>
+                      <th scope="col">Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <#list build.tagStats as tag>
+                    <tr>
+                      <td class="tag"><a href="#" class="secondary">${tag.name}</a></td>
+                      <td>${tag.total}</td>
+                      <td>${tag.passed}</td>
+                      <td>${tag.skipped}</td>
+                      <td>${tag.durationPretty}</td>
+                    </tr>
+                    </#list>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /tag section -->
+
+      <!-- test section -->
+      <div id="tests" class="container-fluid tests mb-5">
+        <div class="mt-3 mb-3 d-flex justify-content-between">
+          <div id="status-filter" class="btn-group" role="group" aria-label="Filter tests with status">
+            <button type="button" id="passed" class="btn btn-success">Passed</button>
+            <button type="button" id="skipped" class="btn btn-warning">Skipped</button>
+            <button type="button" id="failed" class="btn btn-danger">Failed</button>
+          </div>
+          <button id="clear-filters" type="button" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-x-lg me-1"></i>Clear all filters
+          </button>
+        </div>
+
+        <div class="row">
+          <#if build.isBDD()>
+            <#include "bdd.ftl">
+          <#else>
+            <#include "standard.ftl">
+          </#if>
+        </div>
+      </div>
+      <!-- /test section-->
 
     </div>
-    <!-- /page wrapper -->
+    <!-- /main-content -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-    <script src="template.js"></script>
+  </div>
+  <!-- /page wrapper -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="template.js"></script>
+  <#if build.runStats?? && build.runStats?size != 0>
+  <script>
+    (async function() {
+      const data = [
+        { result: 'Passed', count: ${build.runStats[0].passed}, bg: 'rgb(43,189,86)' },
+        { result: 'Failed', count: ${build.runStats[0].failed}, bg: 'red' },
+        { result: 'Skipped', count: ${build.runStats[0].skipped}, bg: 'yellow' }
+      ];
+
+      const donut = {
+        labels: [
+          'Passed',
+          'Failed',
+          'Skipped'
+        ]
+      };
+
+      new Chart(
+        document.getElementById('stats'),
+        {
+          type: 'doughnut',
+          data: {
+            labels: donut.labels,
+            datasets: [
+              {
+                data: data.map(row => row.count),
+                backgroundColor: data.map(row => row.bg)
+              }
+            ]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: false
+              }
+            }
+          }
+        }
+      );
+    })();
+  </script>
+  </#if>
 </body>
 
 </html>

@@ -31,6 +31,7 @@ public class Build implements ChainTestEntity {
     private String gitCommitHash;
     private String gitTags;
     private String gitCommitMessage;
+    private boolean isBDD;
 
     public Build() { }
 
@@ -253,5 +254,13 @@ public class Build implements ChainTestEntity {
 
     public void setGitCommitMessage(String gitCommitMessage) {
         this.gitCommitMessage = gitCommitMessage;
+    }
+
+    public boolean isBDD() {
+        return isBDD;
+    }
+
+    public void setBDD(boolean val) {
+        isBDD = val;
     }
 }
