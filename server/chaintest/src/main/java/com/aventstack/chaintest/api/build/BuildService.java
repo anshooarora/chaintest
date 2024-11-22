@@ -41,8 +41,11 @@ public class BuildService {
     }
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
-    public Page<Build> findAll(final Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Build> findAll(final int projectId, final Pageable pageable) {
+        final Build build = new Build();
+        build.setProjectId(projectId);
+        final BuildSpec spec = new BuildSpec(build);
+        return repository.findAll(spec, pageable);
     }
 
     @Cacheable(value = "build", key = "#id")

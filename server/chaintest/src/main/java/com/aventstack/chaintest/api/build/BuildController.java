@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -27,8 +28,9 @@ public class BuildController {
     private ProjectService projectService;
 
     @GetMapping
-    public ResponseEntity<Page<Build>> findAll(final Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(pageable));
+    public ResponseEntity<Page<Build>> findAll(@RequestParam(required = false, defaultValue = "0") final int projectId,
+                                               final Pageable pageable) {
+        return ResponseEntity.ok(service.findAll(projectId, pageable));
     }
 
     @GetMapping("/{id}")
