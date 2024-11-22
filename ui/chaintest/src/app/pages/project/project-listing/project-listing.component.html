@@ -21,40 +21,43 @@
               </button>
           </div>
 
-          <div class="row" *ngIf="projects && projects.content.length">
+          <div class="row" *ngIf="projects && projects.content.length && projects.content[0].builds">
             <div class="col-4" *ngFor="let project of projects.content">
-              <div class="card card-custom no-bg">
+              <div class="card card-custom no-bg d-on-hover" *ngIf="project.builds">
                 <div class="card-header">
-                  <h5 class="mb-0">{{project.name}}</h5>
-                  <div class="ms-auto">
-                    <i class="bi bi-check-circle-fill text-success"></i>
+                  <h5 class="mb-0 pointer" [routerLink]="['projects', project.id, 'builds']">{{project.name}}</h5>
+                  <div class="ms-auto fs-6">
+                    <i class="bi bi-check-circle-fill text-success" *ngIf="project.builds.content[0].result.toString() == 'PASSED'"></i>
+                    <i class="bi bi-x-circle-fill text-danger" *ngIf="project.builds.content[0].result.toString() != 'PASSED'"></i>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="row">
                     <div class="col-4">
                       <small class="card-text-sm text-muted mb-1">Builds</small>
-                      <h6>124</h6>
+                      <h6>{{project.builds.totalElements}}</h6>
                     </div> 
-                    <div class="col-8"> 
+                    <div class="col-8">
                       <small class="card-text-sm text-muted mb-1">Last Build</small>
-                      <h6>1 day ago</h6>
+                      <h6>{{project.builds.content[0].startedAt | timeago}}</h6>
                     </div> 
                   </div>
                 </div>
                 <div class="card-footer no-bg">
                   <div class="d-flex flex-row">
-                    <div class="status-bar status-success"></div>
-                    <div class="status-bar status-success"></div>
-                    <div class="status-bar status-success"></div>
-                    <div class="status-bar status-success"></div>
-                    <div class="status-bar status-success"></div>
-                    <div class="status-bar status-success"></div>
-                    <div class="status-bar status-success"></div>
-                    <div class="status-bar status-failure"></div>
-                    <div class="status-bar status-success"></div>
-                    <div class="status-bar status-success"></div>
-                    <div class="status-bar status-success"></div>
+                    <a class="status-bar" 
+                      *ngFor="let build of project.builds.content | slice:0:12"
+                      [ngClass]="{'status-success': build.result.toString() == 'PASSED', 'status-failure': build.result.toString() != 'PASSED'}"
+                      [routerLink]="['projects', project.id, 'builds', build.id]"
+                      ngbTooltip="{{build.result}}, {{build.startedAt | timeago}} - Took {{moment.utc(build.durationMs).format('HH:mm:ss')}}"
+                      tooltipClass="text-sm">
+                    </a>
+                    <div class="ms-auto pointer" ngbDropdown>
+                      <span ngbDropdownToggle><i class="bi bi-three-dots"></i></span>
+                      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                        <button ngbDropdownItem>Delete build</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -70,3 +73,6 @@
 
   <app-footer />
 </div>
+
+
+<ng-template #popoverTitle>Fancy <b>content!!</b></ng-template>

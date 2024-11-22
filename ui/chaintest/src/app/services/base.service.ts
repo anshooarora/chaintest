@@ -21,10 +21,10 @@ export abstract class BaseService<T> {
     return this.http.get<Page<T>>(this._api_endpoint.href, { params: params });
   }
 
-  findAll(page: number = 0, pageSize: number = 20, sort: string = 'asc'): Observable<Page<T>> {
+  findAll(page: number = 0, pageSize: number = 20, sort: string = ''): Observable<Page<T>> {
     const params = new HttpParams()
       .set('page', page)
-      .set('sort', 'id,' + sort)
+      .set('sort', sort)
       .set('size', pageSize);
     return this.query(params);
   }
