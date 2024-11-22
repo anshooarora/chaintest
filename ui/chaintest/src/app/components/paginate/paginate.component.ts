@@ -21,8 +21,10 @@ export class PaginateComponent implements OnInit {
   }
 
   setPage(page: number) {
+    if (this.current != page) {
+      this.currentPageEvent.emit(page);
+    }
     this.current = page;
-    this.currentPageEvent.emit(page);
     this.updatePages();
   }
 
@@ -34,7 +36,6 @@ export class PaginateComponent implements OnInit {
   }
 
   onPrev(): void {
-    console.log(this.current)
     if (this.current == 0) {
       return;
     }
@@ -42,7 +43,6 @@ export class PaginateComponent implements OnInit {
   }
 
   updatePages(): void {
-    console.log(this.current, this.total, this.total-2);
     if (this.current >= this.total - 1) {
       this.pages = [this.current-1, this.current];
       return;
@@ -54,7 +54,6 @@ export class PaginateComponent implements OnInit {
     } else {
       this.pages = [this.current, this.current+1, this.current+2];
     }
-    console.log(this.pages)
   }
 
 }
