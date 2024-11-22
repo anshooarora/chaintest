@@ -33,6 +33,7 @@ public class ChainTestServiceClient implements Generator {
     private String _testRunner;
     private ChainTestApiClient _client;
     private Build _build;
+    private List<Test> _tests;
 
     public ChainTestServiceClient(final String testRunner) {
         _testRunner = testRunner;
@@ -114,7 +115,7 @@ public class ChainTestServiceClient implements Generator {
             return;
         }
         _build.setExecutionStage(ExecutionStage.FINISHED);
-        flush(List.of());
+        flush(_tests);
     }
 
     @Override
@@ -122,6 +123,7 @@ public class ChainTestServiceClient implements Generator {
         if (!isReady()) {
             return;
         }
+        _tests = tests;
         final boolean hasTestFailures = tests.stream()
                 .anyMatch(x -> x.getResult().equals(Result.FAILED.getResult()));
         final Result buildResult = hasTestFailures ? Result.FAILED : Result.PASSED;

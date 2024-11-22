@@ -22,14 +22,14 @@ public class ChainPluginService {
 
     private static final Logger log = LoggerFactory.getLogger(ChainPluginService.class);
     private static final String GEN_PATTERN = "chaintest.generator.[a-zA-Z]+.enabled";
-    private static final List<Test> _tests = Collections.synchronizedList(new ArrayList<>(10));
+    private static final List<Test> _tests = Collections.synchronizedList(new ArrayList<>());
     private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
 
     public static ChainPluginService INSTANCE;
 
     private final Build _build;
     private final String _testRunner;
-    private final List<Generator> _generators = new ArrayList<>(2);
+    private final List<Generator> _generators = new ArrayList<>(3);
 
     public ChainPluginService(final String testRunner) {
         INSTANCE = this;
