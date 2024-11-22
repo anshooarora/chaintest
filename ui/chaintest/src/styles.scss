@@ -19,14 +19,30 @@
   --light-bg: rgb(235, 238, 242);
 }
 
+html:not([data-theme-mode=dark]) body {
+  background-color: #fff;
+}
+
 body {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, Ubuntu, 'Helvetica Neue', sans-serif;
-  background-color: #fff;
 }
 
 /* cursor */
 .pointer {
   cursor: pointer;
+}
+
+/* display */
+.d-on-hover .d-on-hover-target {
+  display: none;
+}
+.d-on-hover:hover .d-on-hover-target {
+  display: block;
+}
+
+/* text */
+.text-sm {
+  font-size: .75rem;
 }
 
 /* margin */
@@ -115,6 +131,14 @@ body {
   border-color: var(--highlight-border);
 }
 
+/* app-header */
+.app-header {
+  #q {
+    max-width: 250px !important;
+    width: 250px !important;
+  }
+}
+
 /* page-header */
 .page-header {
   margin-top: -3rem;
@@ -153,6 +177,11 @@ body {
   h4 {
     padding-top: 2.25rem;
   }
+}
+
+/* dropdown */
+.dropdown-toggle::after {
+  display: none;
 }
 
 /* status */

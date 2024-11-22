@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { TimeagoModule } from 'ngx-timeago';
+import { NgbModule, NgbOffcanvasModule, NgbTooltipModule, NgbPopoverModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,7 +13,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { ProjectListingComponent } from './pages/project/project-listing/project-listing.component';
 import { TestListingComponent } from './pages/test/test-listing/test-listing.component';
 import { PaginateComponent } from './components/paginate/paginate.component';
-import { NgbModule, NgbOffcanvasModule } from '@ng-bootstrap/ng-bootstrap';
+import { BuildComponent } from './pages/build/build/build.component';
 
 @NgModule({
   declarations: [
@@ -21,14 +23,16 @@ import { NgbModule, NgbOffcanvasModule } from '@ng-bootstrap/ng-bootstrap';
     HeaderComponent,
     ProjectListingComponent,
     TestListingComponent,
-    PaginateComponent
+    PaginateComponent,
+    BuildComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    TimeagoModule.forRoot()
   ],
   providers: [
     provideClientHydration(),

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
+import moment from 'moment';
 import { BuildService } from '../../../services/build.service';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
 import { Page } from '../../../model/page.model';
@@ -13,6 +14,8 @@ import { Build } from '../../../model/build.model';
 export class BuildListingComponent implements OnInit {
 
   private _destroy$: Subject<any> = new Subject<any>();
+
+  moment: any = moment;
 
   error: any;
   tagDisplayLimit: number = 5;
