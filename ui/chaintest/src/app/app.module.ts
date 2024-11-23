@@ -4,6 +4,7 @@ import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/
 import { FormsModule } from '@angular/forms';
 import { TimeagoModule } from 'ngx-timeago';
 import { NgbModule, NgbOffcanvasModule, NgbTooltipModule, NgbPopoverModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,11 +33,13 @@ import { BuildComponent } from './pages/build/build/build.component';
     HttpClientModule,
     FormsModule,
     NgbModule,
-    TimeagoModule.forRoot()
+    TimeagoModule.forRoot(),
+    BaseChartDirective
   ],
   providers: [
     provideClientHydration(),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch()),
+    provideCharts(withDefaultRegisterables())
   ],
   bootstrap: [AppComponent]
 })
