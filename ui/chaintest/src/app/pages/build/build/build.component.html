@@ -1,0 +1,110 @@
+<div class="page" *ngIf="build">
+  <app-header />
+
+  <!-- main-content -->
+  <div class="main-content app-content" [ngClass]="{'bdd': build.bdd}">
+      <div class="page-header">
+          <div class="container py-3">
+              <div class="d-flex">
+                  <h4>Build {{build.id}}</h4>
+              </div>
+          </div>
+      </div>
+
+      <div class="container" *ngIf="build && build.bdd">
+        <div class="row">
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header pb-0">
+                <h6 class="mb-0">Features</h6>
+              </div>
+              <div class="card-body py-0">
+                <div class="mx-auto" style="width: 150px;max-height: 150px;">
+                  <canvas baseChart [type]="chartType" [data]="depth0Data" [options]="options"></canvas>
+                </div>
+              </div>
+              <div class="card-footer smaller">
+                {{depth0Data.datasets[0].data[0]}} Passed,
+                {{depth0Data.datasets[0].data[1]}} Failed,
+                {{depth0Data.datasets[0].data[2]}} Skipped
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header pb-0">
+                <h6 class="mb-0">Scenarios</h6>
+              </div>
+              <div class="card-body py-0">
+                <div class="mx-auto" style="width: 150px;max-height: 150px;">
+                  <canvas baseChart [type]="chartType" [data]="depth1Data" [options]="options"></canvas>
+                </div>
+              </div>
+              <div class="card-footer smaller">
+                {{depth1Data.datasets[0].data[0]}} Passed,
+                {{depth1Data.datasets[0].data[1]}} Failed,
+                {{depth1Data.datasets[0].data[2]}} Skipped
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header pb-0">
+                <h6 class="mb-0">Steps</h6>
+              </div>
+              <div class="card-body py-0">
+                <div class="mx-auto" style="width: 150px;max-height: 150px;">
+                  <canvas baseChart [type]="chartType" [data]="depth2Data" [options]="options"></canvas>
+                </div>
+              </div>
+              <div class="card-footer smaller">
+                {{depth2Data.datasets[0].data[0]}} Passed,
+                {{depth2Data.datasets[0].data[1]}} Failed,
+                {{depth2Data.datasets[0].data[2]}} Skipped
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div *ngIf="page">
+            <div class="card test-card" *ngFor="let feature of page.content">
+              <div class="card-body">
+                <h5 class="card-title feature" [ngClass]="feature.result">{{feature.name}}</h5>
+                <div class="small">
+                  <span class="me-2">
+                    <i class="bi bi-clock me-1"></i> {{feature.startedAt | date:'yyyy-MM-dd h:m:s a'}} - {{feature.endedAt | date:'yyyy-MM-dd h:m:s a'}}
+                  </span>
+                  <span class="">
+                    <i class="bi bi-hourglass me-1"></i> {{feature.durationMs}}
+                  </span>
+                </div>
+                <div *ngIf="feature.children">
+                  <div *ngFor="let scenario of feature.children">
+                    <div class="scenario" [ngClass]="scenario.result">{{scenario.name}}
+                      <div *ngIf="scenario.children">
+                        <div *ngFor="let step of scenario.children">
+                          <div class="step d-flex justify-content-between" [ngClass]="step.result">
+                            <div>
+                              {{step.name}}
+                              <pre *ngIf="step.error">{{step.error}}</pre>
+                            </div>
+                            <div>
+                              <span class="me-3 badge bg-light-subtle text-secondary fw-semibold">{{step.durationMs}} ms</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <!-- /main-content -->
+
+  <app-footer />
+</div>

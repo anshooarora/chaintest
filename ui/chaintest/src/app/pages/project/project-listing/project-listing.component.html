@@ -4,14 +4,14 @@
   <!-- main-content -->
   <div class="main-content app-content">
       <div class="page-header">
-          <div class="container-fluid">
+          <div class="container">
               <div class="d-flex">
                   <h4>Projects</h4>
               </div>
           </div>
       </div>
 
-      <div class="main-container container-fluid">
+      <div class="container">
           <div class="mt-3 mb-3 d-flex justify-content-between">
               <button type="button" class="btn btn-outline-light btn-sm">
                   <i class="bi bi-funnel"></i> Add Filters
@@ -23,8 +23,8 @@
 
           <div class="row" *ngIf="projects && projects.content.length && projects.content[0].builds">
             <div class="col-4" *ngFor="let project of projects.content">
-              <div class="card card-custom no-bg d-on-hover" *ngIf="project.builds">
-                <div class="card-header">
+              <div class="card d-on-hover" *ngIf="project.builds">
+                <div class="card-header d-flex">
                   <h5 class="mb-0 pointer" [routerLink]="['projects', project.id, 'builds']">{{project.name}}</h5>
                   <div class="ms-auto fs-6">
                     <i class="bi bi-check-circle-fill text-success" *ngIf="project.builds.content[0].result.toString() == 'PASSED'"></i>
@@ -43,7 +43,7 @@
                     </div> 
                   </div>
                 </div>
-                <div class="card-footer no-bg">
+                <div class="card-footer no-bg" style="height:53px">
                   <div class="d-flex flex-row">
                     <a class="status-bar" 
                       *ngFor="let build of project.builds.content | slice:0:12"
@@ -52,10 +52,10 @@
                       ngbTooltip="{{build.result}}, {{build.startedAt | timeago}} - Took {{moment.utc(build.durationMs).format('HH:mm:ss')}}"
                       tooltipClass="text-sm">
                     </a>
-                    <div class="ms-auto pointer" ngbDropdown>
+                    <div class="ms-auto pointer d-on-hover-target" ngbDropdown>
                       <span ngbDropdownToggle><i class="bi bi-three-dots"></i></span>
                       <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                        <button ngbDropdownItem>Delete build</button>
+                        <button ngbDropdownItem>Delete project</button>
                       </div>
                     </div>
                   </div>

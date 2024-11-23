@@ -5,6 +5,7 @@ import { BuildService } from '../../../services/build.service';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
 import { Page } from '../../../model/page.model';
 import { Build } from '../../../model/build.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-build-listing',
@@ -16,15 +17,18 @@ export class BuildListingComponent implements OnInit {
   private _destroy$: Subject<any> = new Subject<any>();
 
   moment: any = moment;
+  projectId: string = '0';
 
   error: any;
   tagDisplayLimit: number = 5;
   builds: Page<Build>;
 
-  constructor(private _buildService: BuildService,
+  constructor(private route: ActivatedRoute,
+    private _buildService: BuildService,
     private _errorService: ErrorHandlerService) { }
 
   ngOnInit(): void {
+    this.projectId = this.route.snapshot.paramMap.get('projectId') || '0';
     this.findBuilds();
   }
 

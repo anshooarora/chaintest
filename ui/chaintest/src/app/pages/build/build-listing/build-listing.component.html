@@ -33,7 +33,7 @@
                   <div class="card card-custom" *ngFor="let build of builds.content">
                       <div class="card-body">
                           <div class="ms-1 mb-2 d-flex justify-content-between">
-                              <a href="">
+                              <a routerLink="{{build.id}}">
                                   <span class="h6">#{{build.id}} - {{build.testRunner}}</span>
                                   <span class="ms-2 badge badge-success badge-md" *ngIf="build.result.toString() == 'PASSED'"><i class="bi bi-flag me-1"></i> {{build.result}}</span>
                                   <span class="ms-2 badge badge-danger badge-md" *ngIf="build.result.toString() != 'PASSED'"><i class="bi bi-exclamation-triangle-fill me-1"></i> {{build.result}}</span>
