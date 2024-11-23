@@ -1,41 +1,31 @@
-<header class="app-header">
-  <div class="main-header-container container-fluid">
-      <div class="header-content-left align-items-center">
-          <div class="header-element">
-            <a href="/" class="text-primary fw-bold fs-6">
-                ChainTest
-            </a>
-          </div>
+<header class="px-3 py-2 mb-3 border-bottom">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <a href="/" class="text-primary fw-semibold fs-6 me-5">
+        ChainTest
+      </a>
 
-          <div class="ms-3 d-sm-none d-md-none d-lg-block form-group">
-              <a href="" class="ms-5">Workspaces <i class="bi bi-chevron-right mx-1"></i>
-                <span class="">chaintest-core</span></a>
-              <span class="mx-3"></span>
-              <a [routerLink]="['projects', '1', 'builds']">Builds</a>
-              <span class="mx-3"></span>
-              <a href="">Tags</a>
-              <span class="mx-3"></span>
-              <i class="bi bi-search pointer" (click)="searchEnabled = !searchEnabled"></i>
-          </div>
-          <input class="ms-5 form-control" id="q" placeholder="Search..." type="search" 
-            [(ngModel)]="searchTerm" *ngIf="searchEnabled" (keyup.enter)="search(content)">
-      </div>
+      <ul class="nav col-auto me-auto justify-content-center mb-md-0">
+        <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
+        <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
+      </ul>
 
-      <div class="header-content-right">
-          <div class="header-element">
-              <button (click)="openEnd(content)"></button>
-          </div> 
-      </div>
+      <form class="w-25 me-3" role="search">
+        <input type="search" class="form-control rounded-3" placeholder="Search..." aria-label="Search">
+      </form>
+
+      <span class="pointer border rounded-5 px-2 py-1"><i class="bi bi-sliders"></i></span>
+    </div>
   </div>
 </header>
 
 <ng-template #content let-offcanvas>
-	<div class="offcanvas-header">
-		<h4 class="offcanvas-title">Offcanvas title</h4>
-		<button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
-	</div>
-	<div class="offcanvas-body">
-		<div *ngIf="page && page.content">
+  <div class="offcanvas-header">
+    <h4 class="offcanvas-title">Offcanvas title</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div *ngIf="page && page.content">
       <div *ngFor="let feature of page.content">
         {{feature.name}}
         <div *ngIf="feature.children">
@@ -49,9 +39,9 @@
           </div>
         </div>
       </div>
-    </div>    
-		<div class="text-end">
-			<button type="button" class="btn btn-outline-secondary" (click)="offcanvas.close('Close click')">Close</button>
-		</div>
-	</div>
+    </div>
+    <div class="text-end">
+      <button type="button" class="btn btn-outline-secondary" (click)="offcanvas.close('Close click')">Close</button>
+    </div>
+  </div>
 </ng-template>
