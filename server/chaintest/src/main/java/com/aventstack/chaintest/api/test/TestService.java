@@ -36,11 +36,12 @@ public class TestService {
     }
 
     @Cacheable(value = "tests", unless = "#result == null || #result.size == 0")
-    public Page<Test> findAll(final String name, final Long buildId, final Integer depth,
+    public Page<Test> findAll(final String name, final Long buildId, final Integer depth, final String result,
                               final Set<String> tags, final String error, final Pageable pageable) {
         final Test test = new Test();
         test.setName(name);
         test.setBuildId(buildId == null ? 0 : buildId);
+        test.setResult(result);
         if (null != depth) {
             test.setDepth(depth);
         }

@@ -28,10 +28,11 @@ public class TestController {
     public ResponseEntity<Page<Test>> findAll(@RequestParam(required = false) final String name,
                                               @RequestParam(required = false) final Long buildId,
                                               @RequestParam(required = false) final Integer depth,
+                                              @RequestParam(required = false) final String result,
                                               @RequestParam(required = false) final Set<String> tags,
                                               @RequestParam(required = false) final String error,
                                               final Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(name, buildId, depth, tags, error, pageable));
+        return ResponseEntity.ok(service.findAll(name, buildId, depth, result, tags, error, pageable));
     }
 
     @GetMapping("/{id}")

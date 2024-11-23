@@ -42,6 +42,10 @@ public class TestSpec implements Specification<Test> {
             predicates.add(cb.like(cb.lower(root.get(Test_.error)), "%" + _test.getError().toLowerCase() + "%"));
         }
 
+        if (!StringUtils.isBlank(_test.getResult())) {
+            predicates.add(cb.equal(root.get(Test_.result), _test.getResult()));
+        }
+
         final Predicate predicate = cb.and(predicates.toArray(new Predicate[0]));
         return predicate;
     }

@@ -55,9 +55,6 @@ public class Test implements Taggable {
     private long durationMs;
 
     @Column
-    private String packageName;
-
-    @Column
     private String className;
 
     @Column
