@@ -145,8 +145,6 @@ public class ChainTestServiceClient implements Generator {
             return;
         }
 
-        test.complete(throwable);
-        _build.updateStats(test);
         updateAttributes(test);
 
         final WrappedResponseAsync<Test> wrapper = new WrappedResponseAsync<>(test);
@@ -161,7 +159,6 @@ public class ChainTestServiceClient implements Generator {
 
     private void updateAttributes(final Test test) {
         test.setBuildId(_build.getId());
-        _build.addTags(test.getTags());
         if (null != test.getChildren()) {
             test.getChildren().forEach(this::updateAttributes);
         }
