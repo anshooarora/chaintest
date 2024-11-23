@@ -45,9 +45,10 @@ public class ChainTestCucumberListener implements EventListener {
     public ChainTestCucumberListener(final String ignored) throws IOException {
         _service = new ChainPluginService(CUCUMBER_JVM);
         _service.register(new ChainTestSimpleGenerator());
-        //_service.register(new ChainTestServiceClient());
+        _service.register(new ChainTestServiceClient());
         _service.register(new ChainTestEmailGenerator());
         _service.start();
+        _service.getBuild().setBDD(true);
     }
 
     @Override
@@ -132,7 +133,6 @@ public class ChainTestCucumberListener implements EventListener {
     };
 
     private final EventHandler<TestRunFinished> runFinishedHandler = event -> {
-        _service.getBuild().setBDD(true);
         for (final Map.Entry<URI, Test> entry : _features.entrySet()) {
             log.debug("Preparing to finalize and send Feature [{}]: {}", entry.getValue().getName(), entry.getKey());
             try {

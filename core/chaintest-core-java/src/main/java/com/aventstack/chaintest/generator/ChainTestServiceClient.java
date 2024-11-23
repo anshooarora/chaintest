@@ -2,7 +2,6 @@ package com.aventstack.chaintest.generator;
 
 import com.aventstack.chaintest.domain.Build;
 import com.aventstack.chaintest.domain.ExecutionStage;
-import com.aventstack.chaintest.domain.Result;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.http.ChainTestApiClient;
 import com.aventstack.chaintest.http.HttpMethod;
@@ -61,7 +60,7 @@ public class ChainTestServiceClient implements Generator {
     }
 
     @Override
-    public void start(final Optional<Map<String, String>> config, final String testRunner, final Build ignored) {
+    public void start(final Optional<Map<String, String>> config, final String testRunner, final Build build) {
         _testRunner = testRunner;
         if (isReady()) {
             return;
@@ -90,16 +89,19 @@ public class ChainTestServiceClient implements Generator {
         log.trace("Starting new build, but events will only be sent to API if build is successfully created");
 
         final String projectName = _client.config().getConfig().getOrDefault(PROJECT_NAME, "");
+        Build buildForId;
         if (!projectName.isBlank()) {
-            _build = new Build(projectName, _testRunner);
+            buildForId = new Build(projectName, _testRunner);
         } else {
-            _build = new Build(_testRunner);
+            buildForId = new Build(_testRunner);
         }
 
         try {
-            final HttpResponse<Build> response = _client.retryHandler().trySend(_build, Build.class, HttpMethod.POST);
+            final HttpResponse<Build> response = _client.retryHandler().trySend(buildForId, Build.class, HttpMethod.POST);
             if (200 == response.statusCode()) {
-                _build = response.body();
+                buildForId = response.body();
+                _build = build;
+                _build.setId(buildForId.getId());
                 CALLBACK_INVOKED.set(true);
                 log.debug("All tests in this run will be associated with buildId: {}", _build.getId());
             }
@@ -124,10 +126,6 @@ public class ChainTestServiceClient implements Generator {
             return;
         }
         _tests = tests;
-        final boolean hasTestFailures = tests.stream()
-                .anyMatch(x -> x.getResult().equals(Result.FAILED.getResult()));
-        final Result buildResult = hasTestFailures ? Result.FAILED : Result.PASSED;
-        _build.complete(buildResult);
         final Map<String, WrappedResponseAsync<Test>> failures = _client.retryHandler().sendWithRetries(_wrappedResponses);
         try {
             if (!failures.isEmpty()) {
