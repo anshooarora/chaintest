@@ -4,9 +4,7 @@ import com.aventstack.chaintest.api.domain.Taggable;
 import com.aventstack.chaintest.api.runstats.RunStats;
 import com.aventstack.chaintest.api.tag.Tag;
 import com.aventstack.chaintest.api.test.Test;
-import com.aventstack.chaintest.api.project.Project;
 import com.aventstack.chaintest.api.tagstats.TagStats;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
@@ -20,7 +18,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -96,6 +93,9 @@ public class Build implements Taggable {
 
     @Column(name = "git_commit_message")
     private String gitCommitMessage;
+
+    @Column(name = "is_bdd")
+    private Boolean bdd;
 
     public Build() { }
 
