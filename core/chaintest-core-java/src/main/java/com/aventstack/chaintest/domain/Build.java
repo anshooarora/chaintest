@@ -3,7 +3,9 @@ package com.aventstack.chaintest.domain;
 import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -20,9 +22,6 @@ public class Build implements ChainTestEntity {
     private String testRunner;
     private String name;
     private String result = Result.PASSED.getResult();
-    private final List<RunStats> runStats = Collections.synchronizedList(new ArrayList<>(3));
-    private final Set<TagStats> tagStats = ConcurrentHashMap.newKeySet();
-    private final Map<String, TagStats> tagStatsMonitor = new ConcurrentHashMap<>();
     private Set<Tag> tags = ConcurrentHashMap.newKeySet();
     private String gitRepository;
     private String gitBranch;
@@ -50,40 +49,6 @@ public class Build implements ChainTestEntity {
     public void updateStats(final Test test) {
         setEndedAt(System.currentTimeMillis());
         setResult(Result.computePriority(getResult(), test.getResult()).getResult());
-        updateRunStats(test);
-        updateTagStats(test);
-    }
-
-    private void updateTagStats(final Test test) {
-        if (null != test.getTags()) {
-            addTags(test.getTags());
-            for (final Tag tag : test.getTags()) {
-                if (!tagStatsMonitor.containsKey(tag.getName())) {
-                    final TagStats ts = new TagStats(test.getDepth());
-                    ts.setName(tag.getName());
-                    tagStats.add(ts);
-                    tagStatsMonitor.put(tag.getName(), ts);
-                }
-                tagStatsMonitor.get(tag.getName()).update(test);
-            }
-        }
-    }
-
-    private void updateRunStats(final Test test) {
-        final RunStats stat = runStats.stream()
-                .filter(x -> x.getDepth() == test.getDepth())
-                .findAny()
-                .orElseGet(() -> addRunStatsDepth(test.getDepth()));
-        stat.update(test);
-        for (final Test t : test.getChildren()) {
-            updateRunStats(t);
-        }
-    }
-
-    private RunStats addRunStatsDepth(final int depth) {
-        final RunStats stat = new RunStats(depth);
-        runStats.add(stat);
-        return stat;
     }
 
     public void complete(final Result result) {
@@ -176,14 +141,6 @@ public class Build implements ChainTestEntity {
 
     public void setResult(String result) {
         this.result = result;
-    }
-
-    public List<RunStats> getRunStats() {
-        return runStats;
-    }
-
-    public Set<TagStats> getTagStats() {
-        return tagStats;
     }
 
     public void setEndedAt(long endedAt) {
