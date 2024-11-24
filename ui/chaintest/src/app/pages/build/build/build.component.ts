@@ -21,11 +21,33 @@ export class BuildComponent implements OnInit {
   buildId: number;
   build: Build;
   page: Page<Test>;
+  displayCharts: boolean = true;
   error: string;
   result: string = 'FAILED';
 
+  constructor(private route: ActivatedRoute,
+    private _buildService: BuildService,
+    private _testService: TestService,
+    private _errorService: ErrorHandlerService) { }
+
+  ngOnInit(): void {
+    let id = this.route.snapshot.paramMap.get('buildId') || '0';
+    this.buildId = parseInt(id);
+    this.findBuild();
+    this.findTests();
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next(null);
+    this._destroy$.complete();
+  }
+  
   /* charts */
   chartType: any = 'doughnut';
+
+  toggleDisplayCharts(): void {
+    this.displayCharts = !this.displayCharts;
+  }
 
   depth0Data: ChartData<any> = {
     labels: ['Passed', 'Failed', 'Skipped'],
@@ -76,25 +98,8 @@ export class BuildComponent implements OnInit {
     }
   };
 
-  constructor(private route: ActivatedRoute,
-    private _buildService: BuildService,
-    private _testService: TestService,
-    private _errorService: ErrorHandlerService) { }
-
-  ngOnInit(): void {
-    let id = this.route.snapshot.paramMap.get('buildId') || '0';
-    this.buildId = parseInt(id);
-    this.findBuild(this.buildId);
-    this.findTests(this.buildId);
-  }
-
-  ngOnDestroy(): void {
-    this._destroy$.next(null);
-    this._destroy$.complete();
-  }
-
-  findBuild(buildId: number): void {
-    this._buildService.find(buildId)
+  findBuild(): void {
+    this._buildService.find(this.buildId)
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (build: Build) => {
@@ -123,7 +128,7 @@ export class BuildComponent implements OnInit {
     }
   }
 
-  findTests(buildId: number): void {
+  findTests(): void {
     this._testService.search(0, '', this.buildId, 0, this.result)
     .pipe(takeUntil(this._destroy$))
     .subscribe({
@@ -135,5 +140,10 @@ export class BuildComponent implements OnInit {
         this.error = this._errorService.getError(err);
       }
     });
+  }
+
+  findAllTests(): void {
+    this.result = '';
+    this.findTests();
   }
 }

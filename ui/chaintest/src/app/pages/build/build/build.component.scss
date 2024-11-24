@@ -1,10 +1,25 @@
 pre {
   white-space: pre-wrap;
   margin-bottom: 0;
+  max-height: 20rem;
 }
 
 .test-card {
   font-size: .85rem;
+}
+
+.test {
+  .card-title {
+    font-size: .95rem !important;
+  }
+
+  &.FAILED {
+    border-color: rgb(230, 51, 78);
+
+    .card-title {
+      color: rgb(230, 51, 78);
+    }
+  }
 }
 
 .bdd {

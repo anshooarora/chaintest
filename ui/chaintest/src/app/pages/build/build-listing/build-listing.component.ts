@@ -17,7 +17,7 @@ export class BuildListingComponent implements OnInit {
   private _destroy$: Subject<any> = new Subject<any>();
 
   moment: any = moment;
-  projectId: string = '0';
+  projectId: number;
 
   error: any;
   tagDisplayLimit: number = 5;
@@ -28,7 +28,8 @@ export class BuildListingComponent implements OnInit {
     private _errorService: ErrorHandlerService) { }
 
   ngOnInit(): void {
-    this.projectId = this.route.snapshot.paramMap.get('projectId') || '0';
+    const projectId = this.route.snapshot.paramMap.get('projectId') || '0';
+    this.projectId = parseInt(projectId);
     this.findBuilds();
   }
 
@@ -38,7 +39,7 @@ export class BuildListingComponent implements OnInit {
   }
 
   findBuilds(page: number = 0, pageSize: number = 5): void {
-    this._buildService.findAll(page, pageSize, 'id,desc')
+    this._buildService.findByProjectId(this.projectId, page, pageSize, 'id,desc')
       .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: (builds: Page<Build>) => {
