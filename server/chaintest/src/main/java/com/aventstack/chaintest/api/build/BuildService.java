@@ -5,7 +5,10 @@ import com.aventstack.chaintest.api.project.ProjectNotSpecifiedException;
 import com.aventstack.chaintest.api.project.ProjectService;
 import com.aventstack.chaintest.api.runstats.RunStats;
 import com.aventstack.chaintest.api.runstats.RunStatsService;
+import com.aventstack.chaintest.api.tag.Tag;
 import com.aventstack.chaintest.api.tag.TagService;
+import com.aventstack.chaintest.api.tagstats.TagStats;
+import com.aventstack.chaintest.api.tagstats.TagStatsService;
 import com.aventstack.chaintest.api.test.Test;
 import com.aventstack.chaintest.util.Assert;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,21 +36,25 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BuildService {
 
     private static final Map<Long, Map<Integer, RunStats>> RUN_STATS = new ConcurrentHashMap<>();
+    private static final Map<Long, Map<Integer, List<TagStats>>> TAG_STATS = new ConcurrentHashMap<>();
 
     private final BuildRepository repository;
     private final TagService tagService;
     private final ProjectService projectService;
     private final RunStatsService runStatsService;
+    private final TagStatsService tagStatsService;
 
     @Autowired
     public BuildService(final BuildRepository repository,
                         final TagService tagService,
                         final ProjectService projectService,
-                        final RunStatsService runStatsService) {
+                        final RunStatsService runStatsService,
+                        final TagStatsService tagStatsService) {
         this.repository = repository;
         this.tagService = tagService;
         this.projectService = projectService;
         this.runStatsService = runStatsService;
+        this.tagStatsService = tagStatsService;
     }
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
@@ -99,6 +109,7 @@ public class BuildService {
         final Map<Integer, RunStats> map = new ConcurrentHashMap<>();
         map.put(0, new RunStats(build));
         RUN_STATS.put(build.getId(), map);
+        TAG_STATS.put(build.getId(), new ConcurrentHashMap<>());
     }
 
     public void updateStatsForTest(final Test test) {
@@ -107,6 +118,7 @@ public class BuildService {
         final Build build = findById(test.getBuildId());
         test.setBuild(build);
         updateRunStats(test);
+        updateTagStats(test);
     }
 
     private void updateRunStats(final Test test) {
@@ -119,6 +131,36 @@ public class BuildService {
             for (final Test node : test.getChildren()) {
                 node.setBuild(test.getBuild());
                 updateRunStats(node);
+            }
+        }
+    }
+
+    private void updateTagStats(final Test test) {
+        if (null == test.getTags() || test.getTags().isEmpty()) {
+            return;
+        }
+
+        final Map<Integer, List<TagStats>> stats = TAG_STATS.get(test.getBuildId());
+        if (!stats.containsKey(test.getDepth())) {
+            stats.put(test.getDepth(), Collections.synchronizedList(new ArrayList<>()));
+        }
+
+        for (final Tag tag : test.getTags()) {
+            final TagStats tagstats = stats.get(test.getDepth()).stream()
+                    .filter(x -> x.getName().equalsIgnoreCase(tag.getName()))
+                    .findAny()
+                    .orElseGet(() -> {
+                        final TagStats stat = new TagStats(test.getBuild(), tag.getName(), test.getDepth());
+                        stats.get(test.getDepth()).add(stat);
+                        return stat;
+                    });
+            tagstats.update(test);
+
+            if (null != test.getChildren()) {
+                for (final Test node : test.getChildren()) {
+                    node.setBuild(test.getBuild());
+                    updateTagStats(node);
+                }
             }
         }
     }
@@ -144,6 +186,11 @@ public class BuildService {
         final Map<Integer, RunStats> runStatsMap = RUN_STATS.get(build.getId());
         for (Map.Entry<Integer, RunStats> entry : runStatsMap.entrySet()) {
             runStatsService.update(entry.getValue());
+        }
+
+        final Map<Integer, List<TagStats>> tagStatsMap = TAG_STATS.get(build.getId());
+        for (Map.Entry<Integer, List<TagStats>> entry : tagStatsMap.entrySet()) {
+            entry.getValue().forEach(tagStatsService::update);
         }
 
         // if executionStage == {FINISHED, COMPLETE}, remove entry from collection

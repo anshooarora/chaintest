@@ -3,6 +3,7 @@ package com.aventstack.chaintest.api.build;
 import com.aventstack.chaintest.api.domain.Taggable;
 import com.aventstack.chaintest.api.runstats.RunStats;
 import com.aventstack.chaintest.api.tag.Tag;
+import com.aventstack.chaintest.api.tagstats.TagStats;
 import com.aventstack.chaintest.api.test.Test;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 @ToString(exclude = { "tests" })
@@ -43,7 +45,10 @@ public class Build implements Taggable {
     private String projectName;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
-    private Collection<RunStats> runStats = Collections.synchronizedList(new ArrayList<>(3));
+    private Collection<RunStats> runStats = ConcurrentHashMap.newKeySet(3);
+
+    @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
+    private Collection<TagStats> tagStats = ConcurrentHashMap.newKeySet();
 
     @Column(name = "started", nullable = false)
     private long startedAt;

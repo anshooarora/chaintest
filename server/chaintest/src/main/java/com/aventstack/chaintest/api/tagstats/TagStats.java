@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.api.tagstats;
 
+import com.aventstack.chaintest.api.build.Build;
 import com.aventstack.chaintest.api.test.Test;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -7,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.DiscriminatorOptions;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
-@ToString(exclude = "tagStatsList")
+@ToString(exclude = "build")
 @Entity
 @EqualsAndHashCode
 @DiscriminatorOptions(force = true)
@@ -30,11 +30,11 @@ public class TagStats {
     @EqualsAndHashCode.Exclude
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "tag_stats_list")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "build_id")
     @EqualsAndHashCode.Exclude
     @JsonIgnore
-    private TagStatsList tagStatsList;
+    private Build build;
 
     private int depth;
     private String name;
@@ -45,8 +45,8 @@ public class TagStats {
 
     public TagStats() { }
 
-    public TagStats(final TagStatsList list, final String name, final int depth) {
-        this.tagStatsList = list;
+    public TagStats(final Build build, final String name, final int depth) {
+        this.build = build;
         this.name = name;
         this.depth = depth;
     }
