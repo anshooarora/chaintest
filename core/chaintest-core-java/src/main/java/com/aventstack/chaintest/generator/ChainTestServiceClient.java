@@ -102,6 +102,7 @@ public class ChainTestServiceClient implements Generator {
                 buildForId = response.body();
                 _build = build;
                 _build.setId(buildForId.getId());
+                _build.setProjectId(buildForId.getProjectId());
                 CALLBACK_INVOKED.set(true);
                 log.debug("All tests in this run will be associated with buildId: {}", _build.getId());
             }

@@ -37,12 +37,7 @@ public class RunStatsService {
     @CachePut(value = "runStat", key = "#runStat.id")
     public RunStats update(final RunStats stats) {
         log.info("Updating run stats: {}", stats);
-        repository.findById(stats.getId()).ifPresentOrElse(
-                x -> repository.save(stats),
-                () -> {
-                    throw new RunStatsNotFoundException("RunStats with ID " + stats.getId() + " was not found");
-                }
-        );
+        repository.save(stats);
         return stats;
     }
 

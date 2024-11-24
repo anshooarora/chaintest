@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.annotations.DiscriminatorOptions;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -22,7 +20,6 @@ import javax.persistence.Table;
 @ToString(exclude = "build")
 @Entity
 @EqualsAndHashCode
-@DiscriminatorOptions(force = true)
 @Table(name = "run_stats")
 public class RunStats {
 
@@ -31,7 +28,7 @@ public class RunStats {
     @EqualsAndHashCode.Exclude
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "build_id")
     @EqualsAndHashCode.Exclude
     @JsonIgnore
@@ -44,6 +41,10 @@ public class RunStats {
     private int skipped;
 
     public RunStats() { }
+
+    public RunStats(final Build build) {
+        this.build = build;
+    }
 
     public RunStats(final Build build, final int depth) {
         this.build = build;

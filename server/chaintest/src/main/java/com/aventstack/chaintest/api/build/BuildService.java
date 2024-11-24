@@ -1,13 +1,15 @@
 package com.aventstack.chaintest.api.build;
 
 import com.aventstack.chaintest.api.project.Project;
+import com.aventstack.chaintest.api.project.ProjectNotSpecifiedException;
 import com.aventstack.chaintest.api.project.ProjectService;
 import com.aventstack.chaintest.api.runstats.RunStats;
+import com.aventstack.chaintest.api.runstats.RunStatsService;
 import com.aventstack.chaintest.api.tag.TagService;
-import com.aventstack.chaintest.api.tagstats.TagStatsList;
 import com.aventstack.chaintest.api.test.Test;
 import com.aventstack.chaintest.util.Assert;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -28,19 +30,21 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BuildService {
 
     private static final Map<Long, Map<Integer, RunStats>> RUN_STATS = new ConcurrentHashMap<>();
-    private static final Map<Long, Map<Integer, TagStatsList>> TAG_STATS = new ConcurrentHashMap<>();
 
     private final BuildRepository repository;
     private final TagService tagService;
     private final ProjectService projectService;
+    private final RunStatsService runStatsService;
 
     @Autowired
     public BuildService(final BuildRepository repository,
                         final TagService tagService,
-                        final ProjectService projectService) {
+                        final ProjectService projectService,
+                        final RunStatsService runStatsService) {
         this.repository = repository;
         this.tagService = tagService;
         this.projectService = projectService;
+        this.runStatsService = runStatsService;
     }
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
@@ -63,31 +67,38 @@ public class BuildService {
     public Build create(final Build build) {
         log.info("Creating new build {}", build);
         tagService.createAssignTags(build);
+
+        // if a project-id is specified on creation time, check if the project exists
+        // this will throw a ProjectNotFoundException if project is not found
         if (build.getProjectId() > 0) {
             projectService.findById(build.getProjectId());
-        } else if (null != build.getProjectName() && !build.getProjectName().isBlank()) {
+        } else {
+            // if a project-id was not specified, check if projectName is present and prevent
+            // from persisting the build if a projectName was not provided
+            if (StringUtils.isBlank(build.getProjectName())) {
+                throw new ProjectNotSpecifiedException("Trying to save build without specifying a project name");
+            }
             final Optional<Project> container = projectService.findByName(build.getProjectName());
+            // check if project with name exists, else, create
             container.ifPresentOrElse(
                     p -> build.setProjectId(p.getId()),
                     () -> {
-                        Assert.notNullOrEmpty(build.getProjectName(),
-                                "Failed to save build. Project name cannot be null or empty");
                         final Project project = new Project();
                         project.setName(build.getProjectName());
                         projectService.create(project);
                         build.setProjectId(project.getId());
                     });
         }
+
         final Build persisted = repository.save(build);
         initStatsTracker(persisted);
         return persisted;
     }
 
     private void initStatsTracker(final Build build) {
-        final Map<Integer, RunStats> stats = new ConcurrentHashMap<>();
-        RUN_STATS.put(build.getId(), stats);
-        final Map<Integer, TagStatsList> tagStats = new ConcurrentHashMap<>();
-        TAG_STATS.put(build.getId(), tagStats);
+        final Map<Integer, RunStats> map = new ConcurrentHashMap<>();
+        map.put(0, new RunStats(build));
+        RUN_STATS.put(build.getId(), map);
     }
 
     public void updateStatsForTest(final Test test) {
@@ -96,7 +107,6 @@ public class BuildService {
         final Build build = findById(test.getBuildId());
         test.setBuild(build);
         updateRunStats(test);
-        updateTagStats(test);
     }
 
     private void updateRunStats(final Test test) {
@@ -113,19 +123,6 @@ public class BuildService {
         }
     }
 
-    private void updateTagStats(final Test test) {
-        final Map<Integer, TagStatsList> stats = TAG_STATS.get(test.getBuildId());
-        if (!stats.containsKey(test.getDepth())) {
-            stats.put(test.getDepth(), new TagStatsList(test.getBuild(), test.getDepth()));
-        }
-        stats.get(test.getDepth()).update(test);
-        if (null != test.getChildren()) {
-            for (final Test node : test.getChildren()) {
-                updateTagStats(node);
-            }
-        }
-    }
-
     @Transactional
     @CacheEvict(value = "builds", allEntries = true)
     @CachePut(value = "build", key = "#build.id")
@@ -135,13 +132,24 @@ public class BuildService {
         final Optional<Build> findResult = repository.findById(build.getId());
         findResult.ifPresentOrElse(
                 persisted -> {
-                    build.setRunStats(RUN_STATS.get(build.getId()).values());
-                    build.setTagStats(TAG_STATS.get(build.getId()));
+                    persistStats(build);
                     repository.save(build);
                 },
                 () -> { throw new BuildNotFoundException("Build with ID " + build.getId() + " was not found"); }
         );
         return build;
+    }
+
+    private void persistStats(final Build build) {
+        final Map<Integer, RunStats> runStatsMap = RUN_STATS.get(build.getId());
+        for (Map.Entry<Integer, RunStats> entry : runStatsMap.entrySet()) {
+            runStatsService.update(entry.getValue());
+        }
+
+        // if executionStage == {FINISHED, COMPLETE}, remove entry from collection
+        if (build.getExecutionStage().equalsIgnoreCase("finished")) {
+            RUN_STATS.remove(build.getId());
+        }
     }
 
     @Transactional
