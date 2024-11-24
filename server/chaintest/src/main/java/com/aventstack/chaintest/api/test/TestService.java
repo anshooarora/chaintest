@@ -14,18 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
 @Transactional(readOnly = true)
 public class TestService {
 
-    private static final ConcurrentHashMap<UUID, Long> BUILD_INFO = new ConcurrentHashMap<>();
-
     private final TestRepository repository;
     private final TagService tagService;
+    private final BuildService buildService;
 
     @Autowired
     public TestService(final TestRepository repository,
@@ -33,6 +30,7 @@ public class TestService {
                        final BuildService buildService) {
         this.repository = repository;
         this.tagService = tagService;
+        this.buildService = buildService;
     }
 
     @Cacheable(value = "tests", unless = "#result == null || #result.size == 0")
@@ -66,9 +64,10 @@ public class TestService {
         if (0L == test.getBuildId()) {
             throw new MissingBuildPropertyException("Mandatory field [buildId] was not provided for this test");
         }
-        tagService.associateTagsIfPresent(test);
+        tagService.createAssignTags(test);
         test.addChildRel();
-        log.debug("Saving test " + test + " for buildId: " + test.getBuildId());
+        buildService.updateStatsForTest(test);
+        log.debug("Saving test {} for buildId: {}", test, test.getBuildId());
         return repository.save(test);
     }
 
@@ -76,9 +75,13 @@ public class TestService {
     @CacheEvict(value = "tests", allEntries = true)
     @CachePut(value = "test", key = "#test.id")
     public Test update(final Test test) {
-        log.info("Saving test " + test);
-        repository.findById(test.getId()).ifPresentOrElse(
-                x -> repository.save(test),
+        log.info("Saving test {}", test);
+        repository.findById(test.getId())
+                .ifPresentOrElse(
+                x -> {
+                    buildService.updateStatsForTest(test);
+                    repository.save(test);
+                },
                 () -> { throw new TestNotFoundException("Test with ID " + test.getId() + " was not found"); }
         );
         return test;
@@ -90,9 +93,9 @@ public class TestService {
             @CacheEvict(value = "test", key = "#id", condition="#id > 0")
     })
     public void delete(final long id) {
-        log.info("Deleting test with id " + id);
+        log.info("Deleting test with id {}", id);
         repository.deleteById(id);
-        log.info("Test id: " + id + " was deleted successfully");
+        log.info("Test id: {} was deleted successfully", id);
     }
 
 }

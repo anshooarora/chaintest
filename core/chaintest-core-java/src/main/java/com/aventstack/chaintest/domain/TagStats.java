@@ -8,8 +8,10 @@ public class TagStats {
 
     private String name;
 
-    public TagStats() {
-        super();
+    public TagStats() { }
+
+    public TagStats(final int depth) {
+        setDepth((depth));
     }
 
     public String getName() {

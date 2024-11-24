@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.api.runstats;
 
 import com.aventstack.chaintest.api.build.Build;
+import com.aventstack.chaintest.api.test.Test;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,5 +42,23 @@ public class RunStats {
     private int passed;
     private int failed;
     private int skipped;
+
+    public RunStats() { }
+
+    public RunStats(final Build build, final int depth) {
+        this.build = build;
+        this.depth = depth;
+    }
+
+    public void update(final Test test) {
+        total++;
+        if ("PASSED".equalsIgnoreCase(test.getResult())) {
+            ++passed;
+        } else if ("SKIPPED".equalsIgnoreCase(test.getResult())) {
+            ++skipped;
+        } else {
+            ++failed;
+        }
+    }
 
 }

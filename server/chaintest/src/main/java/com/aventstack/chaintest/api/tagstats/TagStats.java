@@ -1,6 +1,6 @@
 package com.aventstack.chaintest.api.tagstats;
 
-import com.aventstack.chaintest.api.build.Build;
+import com.aventstack.chaintest.api.test.Test;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
-@ToString(exclude = "build")
+@ToString(exclude = "tagStatsList")
 @Entity
 @EqualsAndHashCode
 @DiscriminatorOptions(force = true)
@@ -31,15 +31,35 @@ public class TagStats {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "build_id")
+    @JoinColumn(name = "tag_stats_list")
     @EqualsAndHashCode.Exclude
     @JsonIgnore
-    private Build build;
+    private TagStatsList tagStatsList;
 
+    private int depth;
     private String name;
     private int total;
     private int passed;
     private int failed;
     private int skipped;
+
+    public TagStats() { }
+
+    public TagStats(final TagStatsList list, final String name, final int depth) {
+        this.tagStatsList = list;
+        this.name = name;
+        this.depth = depth;
+    }
+
+    public void update(final Test test) {
+        total++;
+        if ("PASSED".equalsIgnoreCase(test.getResult())) {
+            ++passed;
+        } else if ("SKIPPED".equalsIgnoreCase(test.getResult())) {
+            ++skipped;
+        } else {
+            ++failed;
+        }
+    }
 
 }

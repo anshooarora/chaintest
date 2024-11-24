@@ -92,7 +92,7 @@ public class TagService {
         log.info("Tag id: " + id + " was deleted successfully");
     }
 
-    public void associateTagsIfPresent(final Taggable taggable) {
+    public void createAssignTags(final Taggable taggable) {
         if (null != taggable.getTags() && !taggable.getTags().isEmpty()) {
             final Set<Tag> tags = taggable.getTags();
             for (final Tag tag : tags) {
@@ -100,10 +100,10 @@ public class TagService {
                 tag.setId(created.getId());
             }
             if (taggable instanceof Test) {
-                final Collection<Test> nodes = ((Test)taggable).getChildren();
+                final Collection<Test> nodes = ((Test) taggable).getChildren();
                 if (null != nodes) {
                     for (final Test test : nodes) {
-                        associateTagsIfPresent(test);
+                        createAssignTags(test);
                     }
                 }
             }

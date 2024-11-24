@@ -3,11 +3,7 @@ package com.aventstack.chaintest.domain;
 import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -26,7 +22,7 @@ public class Build implements ChainTestEntity {
     private String result = Result.PASSED.getResult();
     private final List<RunStats> runStats = Collections.synchronizedList(new ArrayList<>(3));
     private final Set<TagStats> tagStats = ConcurrentHashMap.newKeySet();
-    private final ConcurrentHashMap<String, TagStats> tagStatsMonitor = new ConcurrentHashMap<>();
+    private final Map<String, TagStats> tagStatsMonitor = new ConcurrentHashMap<>();
     private Set<Tag> tags = ConcurrentHashMap.newKeySet();
     private String gitRepository;
     private String gitBranch;
@@ -53,14 +49,17 @@ public class Build implements ChainTestEntity {
 
     public void updateStats(final Test test) {
         setEndedAt(System.currentTimeMillis());
-        setResult(Result.computePriority(getResult(), test.getResult()).toString());
+        setResult(Result.computePriority(getResult(), test.getResult()).getResult());
         updateRunStats(test);
+        updateTagStats(test);
+    }
 
+    private void updateTagStats(final Test test) {
         if (null != test.getTags()) {
             addTags(test.getTags());
             for (final Tag tag : test.getTags()) {
                 if (!tagStatsMonitor.containsKey(tag.getName())) {
-                    final TagStats ts = new TagStats();
+                    final TagStats ts = new TagStats(test.getDepth());
                     ts.setName(tag.getName());
                     tagStats.add(ts);
                     tagStatsMonitor.put(tag.getName(), ts);
@@ -73,12 +72,11 @@ public class Build implements ChainTestEntity {
     private void updateRunStats(final Test test) {
         final RunStats stat = runStats.stream()
                 .filter(x -> x.getDepth() == test.getDepth())
-                .findAny().orElseGet(() -> addRunStatsDepth(test.getDepth()));
+                .findAny()
+                .orElseGet(() -> addRunStatsDepth(test.getDepth()));
         stat.update(test);
-        if (!test.getChildren().isEmpty()) {
-            for (final Test t : test.getChildren()) {
-                updateRunStats(t);
-            }
+        for (final Test t : test.getChildren()) {
+            updateRunStats(t);
         }
     }
 
@@ -216,7 +214,7 @@ public class Build implements ChainTestEntity {
     }
 
     public void addTags(Collection<Tag> tags) {
-        if (null != tags) {
+        if (null != tags && !tags.isEmpty()) {
             this.tags.addAll(tags);
         }
     }

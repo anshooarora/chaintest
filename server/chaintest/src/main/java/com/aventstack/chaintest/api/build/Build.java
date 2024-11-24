@@ -3,6 +3,7 @@ package com.aventstack.chaintest.api.build;
 import com.aventstack.chaintest.api.domain.Taggable;
 import com.aventstack.chaintest.api.runstats.RunStats;
 import com.aventstack.chaintest.api.tag.Tag;
+import com.aventstack.chaintest.api.tagstats.TagStatsList;
 import com.aventstack.chaintest.api.test.Test;
 import com.aventstack.chaintest.api.tagstats.TagStats;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,7 +22,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -41,10 +44,11 @@ public class Build implements Taggable {
     private String projectName;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
-    private Set<RunStats> runStats;
+    private Collection<RunStats> runStats;
 
+    // mapped by depth -> list of tag-stats
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
-    private Set<TagStats> tagStats;
+    private Map<Integer, TagStatsList> tagStats;
 
     @Column(name = "started", nullable = false)
     private long startedAt;
@@ -58,7 +62,7 @@ public class Build implements Taggable {
     @Column(name = "execution_stage")
     private String executionStage;
 
-    @Column(name = "testrunner")
+    @Column(name = "test_runner")
     private String testRunner;
 
     @Column
