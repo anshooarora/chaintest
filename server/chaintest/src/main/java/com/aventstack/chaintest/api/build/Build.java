@@ -21,12 +21,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 @ToString(exclude = { "tests" })
@@ -45,10 +42,10 @@ public class Build implements Taggable {
     private String projectName;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
-    private Collection<RunStats> runStats = ConcurrentHashMap.newKeySet(3);
+    private Collection<RunStats> runStats;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
-    private Collection<TagStats> tagStats = ConcurrentHashMap.newKeySet();
+    private Collection<TagStats> tagStats;
 
     @Column(name = "started", nullable = false)
     private long startedAt;

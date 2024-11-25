@@ -33,13 +33,7 @@ public class TagStatsService {
     @CachePut(value = "tagStat", key = "#tagStat.id")
     public TagStats update(final TagStats stats) {
         log.info("Updating TagStats: {}", stats);
-        repository.findById(stats.getId()).ifPresentOrElse(
-                x -> repository.save(stats),
-                () -> {
-                    throw new TagStatsNotFoundException("TagStats with ID " + stats.getId() + " was not found");
-                }
-        );
-        return stats;
+        return repository.save(stats);
     }
 
     @Transactional

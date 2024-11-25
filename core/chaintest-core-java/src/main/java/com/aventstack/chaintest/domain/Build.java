@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.domain;
 
 import com.aventstack.chaintest.util.TimeUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
@@ -25,7 +26,9 @@ public class Build implements ChainTestEntity {
     private String testRunner;
     private String name;
     private String result = Result.PASSED.getResult();
+    @JsonIgnore
     private final List<RunStats> runStats = Collections.synchronizedList(new ArrayList<>(3));
+    @JsonIgnore
     private final Set<TagStats> tagStats = ConcurrentHashMap.newKeySet();
     private final Map<String, TagStats> tagStatsMonitor = new ConcurrentHashMap<>();
     private Set<Tag> tags = ConcurrentHashMap.newKeySet();

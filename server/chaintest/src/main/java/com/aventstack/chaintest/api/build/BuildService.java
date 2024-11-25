@@ -174,10 +174,12 @@ public class BuildService {
         final Optional<Build> findResult = repository.findById(build.getId());
         findResult.ifPresentOrElse(
                 persisted -> {
-                    persistStats(build);
                     repository.save(build);
+                    persistStats(build);
                 },
-                () -> { throw new BuildNotFoundException("Build with ID " + build.getId() + " was not found"); }
+                () -> {
+                    throw new BuildNotFoundException("Build with ID " + build.getId() + " was not found");
+                }
         );
         return build;
     }
@@ -190,12 +192,16 @@ public class BuildService {
 
         final Map<Integer, List<TagStats>> tagStatsMap = TAG_STATS.get(build.getId());
         for (Map.Entry<Integer, List<TagStats>> entry : tagStatsMap.entrySet()) {
-            entry.getValue().forEach(tagStatsService::update);
+            final List<TagStats> list = entry.getValue();
+            for (final TagStats stat : list) {
+                tagStatsService.update(stat);
+            }
         }
 
-        // if executionStage == {FINISHED, COMPLETE}, remove entry from collection
+        // if executionStage == {FINISHED}, remove entry from collection
         if (build.getExecutionStage().equalsIgnoreCase("finished")) {
             RUN_STATS.remove(build.getId());
+            TAG_STATS.remove(build.getId());
         }
     }
 
