@@ -36,6 +36,9 @@ public class Test implements Taggable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "client_id")
+    private String clientId;
+
     @ManyToOne
     @JoinColumn(name = "build")
     @JsonBackReference

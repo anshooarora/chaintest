@@ -14,11 +14,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
 @Transactional(readOnly = true)
 public class TestService {
+
+    private final Set<String> clientId = ConcurrentHashMap.newKeySet();
 
     private final TestRepository repository;
     private final TagService tagService;
@@ -61,6 +64,15 @@ public class TestService {
     @CacheEvict(value = "tests", allEntries = true)
     @CachePut(value = "test", key = "#test.id")
     public Test create(final Test test) {
+        if (clientId.contains(test.getClientId())) {
+            log.error("Attempt to save a duplicate test with clientId {}", test.getClientId());
+            return repository.findByClientId(test.getClientId())
+                    .orElseThrow(() -> new IllegalStateException("Unable to save and get test with clientId "
+                            + test.getClientId() + " as it was previously saved and currently unavailable possibly "
+                            + "due to in flight write operation"));
+        }
+        clientId.add(test.getClientId());
+
         if (0L == test.getBuildId()) {
             throw new MissingBuildPropertyException("Mandatory field [buildId] was not provided for this test");
         }
