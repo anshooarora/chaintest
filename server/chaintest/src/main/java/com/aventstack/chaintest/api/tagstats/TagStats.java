@@ -51,8 +51,8 @@ public class TagStats {
         this.depth = depth;
     }
 
-    public void update(final Test test) {
-        total++;
+    public synchronized void update(final Test test) {
+        ++total;
         if ("PASSED".equalsIgnoreCase(test.getResult())) {
             ++passed;
         } else if ("SKIPPED".equalsIgnoreCase(test.getResult())) {

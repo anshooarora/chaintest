@@ -39,6 +39,7 @@ public class BuildService {
 
     private static final Map<Long, Map<Integer, RunStats>> RUN_STATS = new ConcurrentHashMap<>();
     private static final Map<Long, Map<Integer, List<TagStats>>> TAG_STATS = new ConcurrentHashMap<>();
+    private static final Object tagStatCreationLock = new Object();
 
     private final BuildRepository repository;
     private final TagService tagService;
@@ -151,14 +152,25 @@ public class BuildService {
         }
 
         for (final Tag tag : test.getTags()) {
-            final TagStats tagstats = stats.get(test.getDepth()).stream()
-                    .filter(x -> x.getName().equalsIgnoreCase(tag.getName()))
-                    .findAny()
-                    .orElseGet(() -> {
-                        final TagStats stat = new TagStats(test.getBuild(), tag.getName(), test.getDepth());
-                        stats.get(test.getDepth()).add(stat);
-                        return stat;
-                    });
+            TagStats tagstats;
+            final Optional<TagStats> container = stats.get(test.getDepth()).stream()
+                    .filter(x -> x.getName().equals(tag.getName()))
+                    .findAny();
+            if (container.isEmpty()) {
+                synchronized (tagStatCreationLock) {
+                    tagstats = stats.get(test.getDepth()).stream()
+                            .filter(x -> x.getName().equals(tag.getName()))
+                            .findAny()
+                            .orElseGet(() -> {
+                                final TagStats stat = new TagStats(test.getBuild(), tag.getName(), test.getDepth());
+                                stats.get(test.getDepth()).add(stat);
+                                return stat;
+                            });
+                }
+            } else {
+                tagstats = container.get();
+            }
+
             tagstats.update(test);
 
             if (null != test.getChildren()) {
