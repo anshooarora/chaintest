@@ -1,6 +1,11 @@
-h6, .h6 {
-  font-size: 0.975rem !important;
+.build-name {
+  &.FAILED {
+    color: rgb(230, 51, 78) !important;
+  }
 }
-.badge {
-  margin-right: .25rem;
+
+.sticky {
+  position: fixed;
+  left: 65%;
+  width: 31.33%;
 }

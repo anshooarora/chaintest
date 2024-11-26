@@ -15,6 +15,7 @@ import { ProjectListingComponent } from './pages/project/project-listing/project
 import { TestListingComponent } from './pages/test/test-listing/test-listing.component';
 import { PaginateComponent } from './components/paginate/paginate.component';
 import { BuildComponent } from './pages/build/build/build.component';
+import { PrettyTimePipe } from './pipes/pretty-time.pipe';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { BuildComponent } from './pages/build/build/build.component';
     ProjectListingComponent,
     TestListingComponent,
     PaginateComponent,
-    BuildComponent
+    BuildComponent,
+    PrettyTimePipe
   ],
   imports: [
     BrowserModule,

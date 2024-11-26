@@ -1,75 +1,141 @@
 <div class="page">
-  <app-header />
+	<app-header />
 
-  <!-- main-content -->
-  <div class="main-content app-content">
-      <div class="page-header">
-          <div class="container">
-              <div class="d-flex">
-                  <h4>Builds</h4>
+	<!-- main-content -->
+	<div class="main-content app-content">
+		<!--<div class="page-header">
+			<div class="container">
+				<div class="d-flex">
+					<h4>Builds</h4>
+				</div>
+				<ul class="nav nav-tabs border-0">
+					<li class="nav-item"> <a class="nav-link active" aria-current="page" href="javascript:void(0);">All</a> </li>
+					<li class="nav-item"> <a class="nav-link" href="javascript:void(0);">In Progress</a> </li>
+					<li class="nav-item"> <a class="nav-link" href="javascript:void(0);">Passed</a> </li>
+					<li class="nav-item"> <a class="nav-link" href="javascript:void(0);">Failed</a> </li>
+				</ul>
+			</div>
+		</div>-->
+
+		<div class="container">
+			<div class="mt-3 mb-3 d-flex justify-content-between">
+				<button type="button" class="btn btn-outline-light btn-sm">
+					<i class="bi bi-funnel"></i> Add Filters
+				</button>
+				<button type="button" class="btn btn-outline-light btn-sm">
+					Showing 5 per page
+				</button>
+			</div>
+
+			<div class="row" *ngIf="builds && builds.content">
+				<!-- build list -->
+				<div class="col-8">
+					<div class="card" [ngClass]="{'active': build == selectedBuild}" *ngFor="let build of builds.content">
+						<div class="card-body d-on-hover">
+							<div class="ms-1 mb-2 d-flex justify-content-between">
+								<div class="build-name pointer" routerLink="{{build.id}}">
+									<i class="bi bi-check-circle-fill text-success" *ngIf="build.result.toString() == 'PASSED'"></i>
+									<i class="bi bi-x-circle-fill text-danger" *ngIf="build.result.toString() != 'PASSED'"></i>
+									<span class="ms-2 text-md fw-semibold">#{{build.id}} - {{build.testRunner}}</span>
+								</div>
+								<div class="d-flex">
+									<div class="pointer me-2" ngbDropdown>
+										<span ngbDropdownToggle><i class="bi bi-three-dots"></i></span>
+										<div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+											<button ngbDropdownItem>Delete build</button>
+										</div>
+									</div>
+									<div style="margin-top:-1px">
+										<span class="pointer text-md" (click)="selectBuild(build)">
+											<i [ngClass]="build == selectedBuild ? 'bi-circle-fill' : 'bi-circle'" class="bi text-muted"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="ms-1">
+								<div class="text-secondary">
+									<span class="small"><i class="bi bi-clock me-1"></i>
+											{{build.startedAt | date:'yyyy-MM-dd h:m:s a'}}</span> - 
+									<span class="small">{{build.endedAt | date:'yyyy-MM-dd h:m:s a'}}</span>
+									<span class="ms-2 small"><i class="bi bi-hourglass me-2"></i>Took
+										{{build.durationMs | prettyTime}}</span>
+								</div>
+							</div>
+						</div>
+						<div class="card-footer">
+							<span class="badge bg-outline-light me-1"
+								*ngFor="let tag of build.tags | slice: 0:tagDisplayLimit">{{tag.name}}</span>
+							<ng-container *ngIf="build.tags.length > tagDisplayLimit">
+								<span class="badge bg-outline-primary pointer" (click)="tagDisplayLimit = build.tags.length">
+									+{{build.tags.length - tagDisplayLimit}}
+								</span>
+							</ng-container>
+						</div>
+					</div>
+					<div class="my-5 d-flex justify-content-center">
+						<button type="button" class="btn btn-outline-primary" 
+						(click)="loadNextPage()"
+						[disabled]="this.builds.last">Load more builds</button>
+					</div>
+				</div>
+				<!-- /build list -->
+
+				<!-- build stats -->
+				<div class="col-4 sticky affix">
+					<div class="card">
+						<div class="card-header pb-0">
+              <h6 class="mb-0">#{{selectedBuild.id}}</h6>
+            </div>
+						<div class="card-body">
+							<p>Took {{selectedBuild.durationMs | prettyTime}}</p>
+            </div>
+					</div>
+
+					<div class="card">
+						<div class="card-header pb-0">
+              <h6 class="mb-0">{{statsTitle}}</h6>
+            </div>
+            <div class="card-body py-0">
+              <div class="mx-auto" style="width: 150px;max-height: 150px;">
+                <canvas baseChart [type]="chartType" [data]="stats" [options]="options"></canvas>
               </div>
-              <ul class="nav nav-tabs border-0">
-                  <li class="nav-item"> <a class="nav-link active" aria-current="page"
-                          href="javascript:void(0);">All</a> </li>
-                  <li class="nav-item"> <a class="nav-link" href="javascript:void(0);">In Progress</a> </li>
-                  <li class="nav-item"> <a class="nav-link" href="javascript:void(0);">Passed</a> </li>
-                  <li class="nav-item"> <a class="nav-link" href="javascript:void(0);">Failed</a> </li>
-              </ul>
-          </div>
-      </div>
-
-      <div class="container">
-          <div class="mt-3 mb-3 d-flex justify-content-between">
-              <button type="button" class="btn btn-outline-light btn-sm">
-                  <i class="bi bi-funnel"></i> Add Filters
-              </button>
-              <button type="button" class="btn btn-outline-light btn-sm">
-                  Showing 5 per page
-              </button>
+            </div>
+            <div class="card-footer smaller">
+              {{stats.datasets[0].data[0]}} Passed,
+              {{stats.datasets[0].data[1]}} Failed,
+              {{stats.datasets[0].data[2]}} Skipped
+            </div>
           </div>
 
-          <div class="row">
-              <div class="col-12" *ngIf="builds && builds.content">
-                  <div class="card card-custom" *ngFor="let build of builds.content">
-                      <div class="card-body">
-                          <div class="ms-1 mb-2 d-flex justify-content-between">
-                              <a routerLink="{{build.id}}">
-                                  <span class="h6">#{{build.id}} - {{build.testRunner}}</span>
-                                  <span class="ms-2 badge badge-success badge-md" *ngIf="build.result.toString() == 'PASSED'"><i class="bi bi-flag me-1"></i> {{build.result}}</span>
-                                  <span class="ms-2 badge badge-danger badge-md" *ngIf="build.result.toString() != 'PASSED'"><i class="bi bi-exclamation-triangle-fill me-1"></i> {{build.result}}</span>
-                              </a>
-                              <div class="pointer" ngbDropdown>
-                                <span ngbDropdownToggle><i class="bi bi-three-dots"></i></span>
-                                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                                  <button ngbDropdownItem>Delete project</button>
-                                </div>
-                              </div>
-                          </div>
-                          <div class="ms-1 mb-1 small">
-                              <i class="bi bi-clock"></i> <span class="ms-2 me-3">{{build.startedAt | date:'yyyy-MM-dd h:m:s a'}} - {{build.endedAt | date:'yyyy-MM-dd h:m:s a'}}</span>
-                              <i class="bi bi-hourglass"></i> <span class="ms-2">Took {{moment.utc(build.durationMs).format('HH:mm:ss')}}</span>
-                          </div>
-                          <ng-container *ngIf="build.tags && build.tags.length">
-                            <div class="mt-3 border-bottom"></div>
-                            <div class="ms-1 mt-2-5">
-                                <span class="badge bg-outline-light" *ngFor="let tag of build.tags | slice: 0:tagDisplayLimit">{{tag.name}}</span>
-                                <ng-container *ngIf="build.tags.length > tagDisplayLimit">
-                                    <span class="badge bg-outline-primary pointer" (click)="tagDisplayLimit = build.tags.length">
-                                        +{{build.tags.length - tagDisplayLimit}}
-                                    </span>
-                                </ng-container>
-                            </div>
-                          </ng-container>
-                      </div>
-                  </div>
-                  <div class="my-5">
-                    <app-paginate [entity]="builds" *ngIf="builds.totalPages >= 2" (currentPageEvent)="paginate($event)"></app-paginate>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-  <!-- /main-content -->
+					<div class="card" *ngIf="tagstats && tagstats.length">
+						<div class="card-header pb-0">
+              <h6 class="mb-0">Tags</h6>
+						</div>
+						<div class="card-body">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th style="width: 65px">Passed</th>
+										<th style="width: 65px">Failed</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let ts of tagstats">
+										<td>{{ts.name}}</td>
+										<td>{{ts.passed}}</td>
+										<td>{{ts.failed}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- /build stats-->
+			</div>
+		</div>
+	</div>
+	<!-- /main-content -->
 
-  <app-footer />
+	<app-footer />
 </div>
