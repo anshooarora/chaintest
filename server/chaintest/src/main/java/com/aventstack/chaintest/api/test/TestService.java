@@ -98,4 +98,10 @@ public class TestService {
         log.info("Test id: {} was deleted successfully", id);
     }
 
+    public void deleteForBuild(final long buildId) {
+        log.info("Deleting all tests for build-id {}", buildId);
+        repository.deleteByBuildId(buildId);
+        log.info("Tests removed");
+    }
+
 }

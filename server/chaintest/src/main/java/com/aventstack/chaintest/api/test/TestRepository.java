@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TestRepository extends
         PagingAndSortingRepository<Test, Long>, JpaSpecificationExecutor<Test> {
+
+    void deleteByBuildId(final long buildId);
+
 }

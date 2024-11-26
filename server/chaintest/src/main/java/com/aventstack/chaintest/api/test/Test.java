@@ -37,7 +37,7 @@ public class Test implements Taggable {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "build_id", insertable = false, updatable = false)
+    @JoinColumn(name = "build")
     @JsonBackReference
     private Build build;
 

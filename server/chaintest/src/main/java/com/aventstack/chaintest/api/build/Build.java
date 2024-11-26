@@ -68,7 +68,7 @@ public class Build implements Taggable {
     @Column
     private String result;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<Test> tests;
 

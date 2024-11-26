@@ -10,6 +10,7 @@ import com.aventstack.chaintest.api.tag.TagService;
 import com.aventstack.chaintest.api.tagstats.TagStats;
 import com.aventstack.chaintest.api.tagstats.TagStatsService;
 import com.aventstack.chaintest.api.test.Test;
+import com.aventstack.chaintest.api.test.TestService;
 import com.aventstack.chaintest.util.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,18 +45,21 @@ public class BuildService {
     private final ProjectService projectService;
     private final RunStatsService runStatsService;
     private final TagStatsService tagStatsService;
+    private final TestService testService;
 
     @Autowired
     public BuildService(final BuildRepository repository,
                         final TagService tagService,
                         final ProjectService projectService,
                         final RunStatsService runStatsService,
-                        final TagStatsService tagStatsService) {
+                        final TagStatsService tagStatsService,
+                        @Lazy final TestService testService) {
         this.repository = repository;
         this.tagService = tagService;
         this.projectService = projectService;
         this.runStatsService = runStatsService;
         this.tagStatsService = tagStatsService;
+        this.testService = testService;
     }
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
@@ -211,6 +216,8 @@ public class BuildService {
             @CacheEvict(value = "build", key = "#id", condition="#id > 0")
     })
     public void delete(final long id) {
+        log.info("Deleting all tests for build with id {}", id);
+        testService.deleteForBuild(id);
         log.info("Deleting build with id {}", id);
         repository.deleteById(id);
         log.info("Build id: {} was deleted successfully", id);
