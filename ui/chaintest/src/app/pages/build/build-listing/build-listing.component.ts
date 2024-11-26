@@ -16,6 +16,7 @@ import { TagStats } from '../../../model/tag-stats.model';
 export class BuildListingComponent implements OnInit {
 
   private _destroy$: Subject<any> = new Subject<any>();
+  private _destroyDel$: Subject<any> = new Subject<any>();
 
   projectId: number;
 
@@ -70,6 +71,8 @@ export class BuildListingComponent implements OnInit {
   ngOnDestroy(): void {
     this._destroy$.next(null);
     this._destroy$.complete();
+    this._destroyDel$.next(null);
+    this._destroyDel$.complete();
   }
 
   findBuilds(page: number = 0, pageSize: number = 5): void {
@@ -78,7 +81,6 @@ export class BuildListingComponent implements OnInit {
       .subscribe({
         next: (builds: Page<Build>) => {
           if (!this.builds) {
-            console.log('not builds')
             this.builds = builds;
             this.selectBuild(builds.content[0]);
           } else {
@@ -107,6 +109,9 @@ export class BuildListingComponent implements OnInit {
   showMetrics(build: Build) {
     this.tagstats = [];
     let runstats: any;
+    if (!build.runStats || !build.runStats.length) {
+      return;
+    }
     if (build.bdd) {
       runstats = build.runStats.filter(x => x.depth == 1);
       this.tagstats = build.tagStats && build.tagStats.filter(x => x.depth == 1);
@@ -116,6 +121,19 @@ export class BuildListingComponent implements OnInit {
       this.tagstats = build.tagStats && build.tagStats.filter(x => x.depth == 0);
     }
     this.stats.datasets[0].data.push(runstats[0].passed, runstats[0].failed, runstats[0].skipped);
+  }
+
+  del(build: Build): void {
+    this._buildService.delete(build)
+    .pipe(takeUntil(this._destroy$))
+    .subscribe({
+      next: (response: any) => {
+        console.log(response)
+      },
+      error: (err) => {
+        this.error = this._errorService.getError(err);
+      }
+    });
   }
 
   paginate($event: any) {
