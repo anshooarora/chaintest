@@ -16,13 +16,13 @@
               <button type="button" class="btn btn-outline-light btn-sm">
                   <i class="bi bi-funnel"></i> Add Filters
               </button>
-              <button type="button" class="btn btn-outline-light btn-sm">
-                  Showing 9 per page
+              <button type="button" class="btn btn-outline-light btn-sm" *ngIf="projectPage">
+                  Showing {{projectPage.numberOfElements}} of {{projectPage.totalElements}} projects
               </button>
           </div>
 
-          <div class="row" *ngIf="projects && projects.content.length && projects.content[0].builds">
-            <div class="col-4" *ngFor="let project of projects.content">
+          <div class="row" *ngIf="projectPage && projectPage.content.length && projectPage.content[0].builds">
+            <div class="col-4" *ngFor="let project of projectPage.content">
               <div class="card d-on-hover" *ngIf="project.builds">
                 <div class="card-header d-flex">
                   <h5 class="mb-0 pointer" [routerLink]="['projects', project.id, 'builds']">{{project.name}}</h5>
@@ -64,7 +64,7 @@
             </div>
 
             <div class="my-5">
-              <app-paginate [entity]="projects" *ngIf="projects.totalPages >= 2"></app-paginate>
+              <app-paginate [entity]="projectPage" *ngIf="projectPage.totalPages >= 2"></app-paginate>
             </div>
           </div>
       </div>

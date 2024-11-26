@@ -21,7 +21,7 @@ export class ProjectListingComponent implements OnInit {
   moment: any = moment;
 
   error: any;
-  projects: Page<Project>;
+  projectPage: Page<Project>;
 
   constructor(private projectService: ProjectService, 
     private buildService: BuildService,
@@ -36,7 +36,7 @@ export class ProjectListingComponent implements OnInit {
     .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: (response: Page<Project>) => {
-          this.projects = response;
+          this.projectPage = response;
           response.content.forEach(project => {
             this.findBuilds(project);
           });
@@ -48,7 +48,7 @@ export class ProjectListingComponent implements OnInit {
   }
 
   findBuilds(project: Project): void {
-    this.buildService.findByProjectId(project.id)
+    this.buildService.findByProjectId(project.id, 0, 15, 'id,desc')
     .pipe(takeUntil(this._build$))
       .subscribe({
         next: (response: Page<Build>) => {
