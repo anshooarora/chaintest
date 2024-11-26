@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ChartData, ChartOptions, LegendItem } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 import { BuildService } from '../../../services/build.service';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
 import { Build } from '../../../model/build.model';
@@ -16,6 +17,8 @@ import { Test } from '../../../model/test.model';
 })
 export class BuildComponent implements OnInit {
 
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
+  
   private _destroy$: Subject<any> = new Subject<any>();
 
   buildId: number;
@@ -24,6 +27,7 @@ export class BuildComponent implements OnInit {
   displayCharts: boolean = true;
   error: string;
   result: string = 'FAILED';
+  pageNum: number = 0;
 
   constructor(private route: ActivatedRoute,
     private _buildService: BuildService,
@@ -126,15 +130,22 @@ export class BuildComponent implements OnInit {
     if (depth2.length) {
       this.depth2Data.datasets[0].data.push(depth2[0].passed, depth2[0].failed, depth2[0].skipped);
     }
+    this.chart?.update();
   }
 
-  findTests(): void {
-    this._testService.search(0, '', this.buildId, 0, this.result)
+  findTests(pageNum: number = 0, append: boolean = false): void {
+    this._testService.search(0, '', this.buildId, 0, this.result, '', '', pageNum)
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (page: Page<Test>) => {
-        this.page = page;
-        console.log(page)
+        if (!append) {
+          this.page = page;
+        } else {
+          this.page.content.push(...page.content);
+          this.page.first = page.first;
+          this.page.last = page.last;
+        }
+        console.log(this.page)
       },
       error: (err) => {
         this.error = this._errorService.getError(err);
@@ -144,6 +155,11 @@ export class BuildComponent implements OnInit {
 
   findAllTests(): void {
     this.result = '';
-    this.findTests();
+    this.findTests(0, false);
+  }
+
+  loadNextPage(): void {
+    this.pageNum++;
+    this.findTests(this.pageNum, true);
   }
 }

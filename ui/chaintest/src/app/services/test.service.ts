@@ -12,7 +12,7 @@ export class TestService extends BaseService<Test> {
     super('/tests', http);
   }
 
-  search(id: number = 0, name: string = '', buildId: number = 0, depth: number = -1, result: string = '', tags: string = '', error: string = '') {
+  search(id: number = 0, name: string = '', buildId: number = 0, depth: number = -1, result: string = '', tags: string = '', error: string = '', pageNum: number = 0) {
     let params = new HttpParams();
     if (id > 0) {
       params = params.set('id', id);
@@ -35,6 +35,7 @@ export class TestService extends BaseService<Test> {
     if (error) {
       params = params.set('error', error);
     }
+    params = params.set('page', pageNum);
     return super.query(params)
   }
 
