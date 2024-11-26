@@ -23,8 +23,12 @@ pre {
 }
 
 .bdd {
-  .feature.FAILED {
-    color: rgb(230, 51, 78);
+  .feature {
+    font-size: 1rem !important;
+    
+    &.FAILED {
+      color: rgb(230, 51, 78);
+    }
   }
 
   .scenario {
