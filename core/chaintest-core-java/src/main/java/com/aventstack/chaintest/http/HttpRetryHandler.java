@@ -133,7 +133,14 @@ public class HttpRetryHandler {
                     entry.getValue().getResponseFuture().join();
                 } catch (final Exception ignored) { }
             }
-            final HttpResponse<Test> response = entry.getValue().getResponse();
+            HttpResponse<Test> response = entry.getValue().getResponse();
+            final long startedMillis = System.currentTimeMillis();
+            while (null == response && (System.currentTimeMillis() - startedMillis) < 5000L) {
+                try {
+                    Thread.sleep(100L);
+                    response = entry.getValue().getResponse();
+                } catch (final InterruptedException ignored) { }
+            }
             if (null != response) {
                 if (200 == response.statusCode()) {
                     collection.entrySet().removeIf(x -> x.getKey().equals(entry.getKey()));
