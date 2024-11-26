@@ -17,6 +17,8 @@
     </div>
 
     <div class="container" *ngIf="build">
+
+      <!-- bdd charts -->
       <div class="row" *ngIf="build.bdd && displayCharts">
         <div class="col-4">
           <div class="card">
@@ -70,6 +72,29 @@
           </div>
         </div>
       </div>
+      <!-- /bdd charts -->
+
+      <!-- non-bdd charts -->
+      <div class="row" *ngIf="!build.bdd && displayCharts">
+        <div class="col-4">
+          <div class="card">
+            <div class="card-header pb-0">
+              <h6 class="mb-0">Tests</h6>
+            </div>
+            <div class="card-body py-0">
+              <div class="mx-auto" style="width: 150px;max-height: 150px;">
+                <canvas baseChart [type]="chartType" [data]="depth0Data" [options]="options"></canvas>
+              </div>
+            </div>
+            <div class="card-footer smaller">
+              {{depth0Data.datasets[0].data[0]}} Passed,
+              {{depth0Data.datasets[0].data[1]}} Failed,
+              {{depth0Data.datasets[0].data[2]}} Skipped
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /non-bdd charts -->
 
       <div class="row">
         <div *ngIf="page">
@@ -80,7 +105,7 @@
               </button>
             </div>
             <div>
-              <span class="small">Showing {{page.numberOfElements}} of {{build.runStats[0].total}} tests</span>
+              <span class="small">Showing {{page.content.length}} of {{build.runStats[0].total}} tests</span>
               <button type="button" class="btn btn-outline-light btn-sm ms-2" 
                 *ngIf="page.totalElements < build.runStats[0].total"
                 (click)="findAllTests()">
@@ -151,6 +176,12 @@
               </div>
             </div>
           </ng-container>
+
+          <div class="my-5 d-flex justify-content-center">
+						<button type="button" class="btn btn-outline-primary" 
+						(click)="loadNextPage()"
+						[disabled]="page.last">Load more tests</button>
+					</div>
         </div>
       </div>
     </div>

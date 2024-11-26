@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ChartData, ChartOptions, LegendItem } from 'chart.js';
@@ -7,6 +7,7 @@ import { ErrorHandlerService } from '../../../services/error-handler.service';
 import { Page } from '../../../model/page.model';
 import { Build } from '../../../model/build.model';
 import { TagStats } from '../../../model/tag-stats.model';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-build-listing',
@@ -15,6 +16,8 @@ import { TagStats } from '../../../model/tag-stats.model';
 })
 export class BuildListingComponent implements OnInit {
 
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
+  
   private _destroy$: Subject<any> = new Subject<any>();
   private _destroyDel$: Subject<any> = new Subject<any>();
 
@@ -108,10 +111,11 @@ export class BuildListingComponent implements OnInit {
 
   showMetrics(build: Build) {
     this.tagstats = [];
-    let runstats: any;
+    this.stats.datasets[0].data = [];
     if (!build.runStats || !build.runStats.length) {
       return;
     }
+    let runstats: any;
     if (build.bdd) {
       runstats = build.runStats.filter(x => x.depth == 1);
       this.tagstats = build.tagStats && build.tagStats.filter(x => x.depth == 1);
@@ -121,6 +125,7 @@ export class BuildListingComponent implements OnInit {
       this.tagstats = build.tagStats && build.tagStats.filter(x => x.depth == 0);
     }
     this.stats.datasets[0].data.push(runstats[0].passed, runstats[0].failed, runstats[0].skipped);
+    this.chart?.update();
   }
 
   del(build: Build): void {

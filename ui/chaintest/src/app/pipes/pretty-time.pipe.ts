@@ -11,17 +11,17 @@ export class PrettyTimePipe implements PipeTransform {
     }
     
     const millis = value % 1000;
-    const secs = Math.floor((millis / 1000) % 60);
+    const secs = Math.floor((value / 1000) % 60);
     if (60000 > value) {
       return `${secs}s`;
     }
 
-    const mins = Math.floor((millis / (60 * 1000)) % 60);
+    const mins = Math.floor((value / (60 * 1000)) % 60);
     if (3600000 > value) {
       return `${mins}m ${secs}s`;
     }
 
-    const hours = Math.floor((millis / (3600 * 1000)) % 3600);
+    const hours = Math.floor((value / (3600 * 1000)) % 3600);
     return `${hours}h ${mins}m ${secs}s`;
   }
 
