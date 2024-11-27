@@ -119,6 +119,10 @@
             </div>
           </div>
 
+          <div class="ms-1 mt-5" *ngIf="result == 'FAILED' && !page.content.length">
+            <p>All tests passed! <span class="pointer text-primary fw-semibold" (click)="findAllTests()">Show all</span> tests in this build.</p>
+          </div>
+
           <ng-container *ngIf="build.bdd">
             <div class="card test-card" *ngFor="let feature of page.content">
               <div class="card-body">
@@ -177,7 +181,7 @@
             </div>
           </ng-container>
 
-          <div class="my-5 d-flex justify-content-center">
+          <div class="my-5 d-flex justify-content-center" *ngIf="page.content.length">
 						<button type="button" class="btn btn-outline-primary" 
 						(click)="loadNextPage()"
 						[disabled]="page.last">Load more tests</button>

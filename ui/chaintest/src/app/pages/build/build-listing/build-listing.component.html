@@ -84,58 +84,60 @@
 				<!-- /build list -->
 
 				<!-- build stats -->
-				<div class="col-4 sticky affix">
-					<div class="card">
-						<div class="card-header pb-3 d-flex justify-content-between">
-              <h6 class="mb-0">#{{selectedBuild.id}}</h6>
-							<div>
-								<i class="bi bi-check-circle-fill text-success" *ngIf="selectedBuild.result.toString() == 'PASSED'"></i>
-								<i class="bi bi-x-circle-fill text-danger" *ngIf="selectedBuild.result.toString() != 'PASSED'"></i>
-							</div>
-            </div>
-					</div>
-
-					<ng-container *ngIf="selectedBuild.runStats && selectedBuild.runStats.length && selectedBuild.runStats[0].total">
+				<div class="col-4">
+					<div class="sticky">
 						<div class="card">
-							<div class="card-header pb-0">
-								<h6 class="mb-0">{{statsTitle}}</h6>
-							</div>
-							<div class="card-body py-0">
-								<div class="mx-auto" style="width: 150px;max-height: 150px;">
-									<canvas baseChart [type]="chartType" [data]="stats" [options]="options"></canvas>
+							<div class="card-header pb-3 d-flex justify-content-between">
+								<h6 class="mb-0">#{{selectedBuild.id}}</h6>
+								<div>
+									<i class="bi bi-check-circle-fill text-success" *ngIf="selectedBuild.result.toString() == 'PASSED'"></i>
+									<i class="bi bi-x-circle-fill text-danger" *ngIf="selectedBuild.result.toString() != 'PASSED'"></i>
 								</div>
 							</div>
-							<div class="card-footer smaller">
-								{{stats.datasets[0].data[0]}} Passed,
-								{{stats.datasets[0].data[1]}} Failed,
-								{{stats.datasets[0].data[2]}} Skipped
-							</div>
 						</div>
 
-						<div class="card" *ngIf="tagstats && tagstats.length">
-							<div class="card-header pb-0">
-								<h6 class="mb-0">Tags</h6>
+						<ng-container *ngIf="selectedBuild.runStats && selectedBuild.runStats.length && selectedBuild.runStats[0].total">
+							<div class="card">
+								<div class="card-header pb-0">
+									<h6 class="mb-0">{{statsTitle}}</h6>
+								</div>
+								<div class="card-body py-0">
+									<div class="mx-auto" style="width: 150px;max-height: 150px;">
+										<canvas baseChart [type]="chartType" [data]="stats" [options]="options"></canvas>
+									</div>
+								</div>
+								<div class="card-footer smaller">
+									{{stats.datasets[0].data[0]}} Passed,
+									{{stats.datasets[0].data[1]}} Failed,
+									{{stats.datasets[0].data[2]}} Skipped
+								</div>
 							</div>
-							<div class="card-body">
-								<table class="table">
-									<thead>
-										<tr>
-											<th>Name</th>
-											<th style="width: 65px">Passed</th>
-											<th style="width: 65px">Failed</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr *ngFor="let ts of tagstats">
-											<td>{{ts.name}}</td>
-											<td>{{ts.passed}}</td>
-											<td>{{ts.failed}}</td>
-										</tr>
-									</tbody>
-								</table>
+
+							<div class="card" *ngIf="tagstats && tagstats.length">
+								<div class="card-header pb-0">
+									<h6 class="mb-0">Tags</h6>
+								</div>
+								<div class="card-body">
+									<table class="table">
+										<thead>
+											<tr>
+												<th>Name</th>
+												<th style="width: 65px">Passed</th>
+												<th style="width: 65px">Failed</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let ts of tagstats">
+												<td>{{ts.name}}</td>
+												<td>{{ts.passed}}</td>
+												<td>{{ts.failed}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
-						</div>
-					</ng-container>
+						</ng-container>
+					</div>
 				</div>
 				<!-- /build stats-->
 			</div>
