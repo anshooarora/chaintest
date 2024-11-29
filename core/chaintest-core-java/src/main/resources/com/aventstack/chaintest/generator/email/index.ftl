@@ -7,7 +7,7 @@
     <meta name="x-apple-disable-message-reformatting">
     <title>ChainTest</title>
     <style type="text/css">
-      td, th, div, p {font-family: -apple-system, system-ui, "Lato", "Helvetica Neue", "Segoe UI", Arial, sans-serif;}
+      body { font-family: -apple-system, system-ui, "Helvetica Neue", "Segoe UI", Arial, sans-serif; font-size: 13px; }
       .bg-passed { background-color: rgb(168, 217, 167); }
       .text-passed { color: #79B530; }
       .bg-failed,.bg-undefined { background-color: rgb(254, 205, 204); }
@@ -15,7 +15,7 @@
       .bg-skipped { background-color: #eee; }
       .text-skipped { color: #e6e04c; }
       .tag { background-color:#f6f7f9; }
-      pre {white-space: pre-wrap; margin-bottom: 0; max-height: 20rem; overflow-y: scroll; }
+      pre {white-space: pre-wrap; margin-bottom: 0; max-height: 15rem; overflow-y: auto; }
     </style>
   </head>
   <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" yahoo="fix" bgcolor="#F7F8F9" style="box-sizing:border-box;margin:0;padding:0;width:100%;word-break:break-word;-webkit-font-smoothing:antialiased;">
@@ -81,22 +81,22 @@
           <table width="650">
             <tr>
               <td bgcolor="#FFFFFF" style="padding:20px 40px;font-size:14px;">
-                <span style="font-size:20px;font-weight:500;">Tags</span>
+                <span style="font-size:15px;font-weight:500;">Tags</span>
                 <table><tr><td style="height:10px;"></td></tr></table>
                 <table>
                   <tr style="font-weight:500;">
                     <td width="250">Name</td>
                     <td width="23"></td>
-                    <td style="" width="60">Passed</td>
+                    <td style="" width="60">Pass</td>
                     <td class="padding" width="10"></td>
-                    <td style="" width="60">Failed</td>
+                    <td style="" width="60">Fail</td>
                     <td class="padding" width="10"></td>
-                    <td style="" width="60">Skipped</td>
+                    <td style="" width="60">Skip</td>
                   </tr>
                   <#list build.tagStats as tag>
                   <tr style="height:10px;"></tr>
                   <tr>
-                    <td width="250">${tag.name}</td>
+                    <td width="350">${tag.name}</td>
                       <td width="23"></td>
                       <td style="" width="60">${tag.passed}</td>
                       <td class="padding" width="10"></td>
@@ -122,11 +122,11 @@
           <#if test.result != 'PASSED'>
           <table width="650">
             <tr>
-              <td bgcolor="#FFF" style="padding:20px;">
+              <td bgcolor="#FFF" style="padding:10px 20px;">
                 <table>
                   <tr>
                     <td width="650px" style="padding:10px;">
-                      <p style="font-size:18px;font-weight:500;margin:0;margin-bottom:1px;">
+                      <p class="text-${test.result?lower_case}" style="font-size:14px;font-weight:500;margin:0;margin-bottom:5px;">
                         ${test.name}
                       <p style="font-size:12px;margin:0;">
                         <span>${test.startedAt?number_to_datetime} / ${test.durationPretty}</span>
@@ -138,16 +138,16 @@
                   </tr>
                   <#list test.children as child>
                   <tr>
-                    <td width="650px" class="bg-${child.result?lower_case}" style="padding:7px 20px;margin-top:10px;">
-                      <p style="font-size:13px;font-weight:500;margin:0;margin-bottom:1px;">
+                    <td width="650px" class="bg-${child.result?lower_case}" style="padding:7px 10px;">
+                      <p style="font-size:13px;margin:0;">
                         ${child.name}
                       </p>
                     </td>
                   </tr>
                   <#list child.children as leaf>
                   <tr>
-                    <td width="650px" class="bg-${leaf.result?lower_case}" style="padding:7px 30px;">
-                      <p style="font-size:13px;font-weight:500;margin:0;margin-bottom:1px;">
+                    <td width="650px" class="bg-${leaf.result?lower_case}" style="padding:7px 20px;">
+                      <p style="font-size:13px;margin:0;">
                         ${leaf.name}
                         <#if leaf.error??>
 <pre>${leaf.error}</pre>

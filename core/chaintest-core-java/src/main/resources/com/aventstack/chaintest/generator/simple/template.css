@@ -214,7 +214,7 @@ pre {
   min-width: 4.75rem;
 }
 .h6 {
-  font-size: .95rem;
+  font-size: .85rem;
   font-weight: 500;
 }
 .badge.text-bg-secondary {
@@ -222,22 +222,25 @@ pre {
   color: #000 !important;
   font-weight: normal !important;
 }
-.tag-list {
-  margin-left: -2px;
+.page:not(.bdd) .tag-list {
+    margin-left: 1.25rem;
 }
 
 /* bdd */
-.page.true .passed.bg {
+.page.bdd .passed.bg {
   background-color: var(--success-border);
 }
-.page.true .failed.bg {
+.page.bdd .failed.bg {
   background-color: var(--danger-border);;
 }
-.page.true .skipped.bg {
+.page.bdd .skipped.bg {
   background-color: lightgrey;
 }
 .bg {
   margin-bottom: .5px;
   padding-top: 3px;
   padding-bottom: 3px;
+}
+.page.bdd .tag-list {
+  margin-left: -2px;
 }

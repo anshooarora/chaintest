@@ -15,7 +15,7 @@
 
 <body>
   <!-- page wrapper -->
-  <div class="page ${build.isBDD()?c}">
+  <div class="page ${build.isBDD()?then('bdd', '')}">
 
     <!-- navbar -->
     <nav class="navbar navbar-expand-md">
@@ -52,12 +52,12 @@
       <div id="dashboard" class="mt-4 mb-3">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-6">
-              <div class="card card-custom" style="height: 200px">
+            <div class="col-${build.isBDD()?then('3', '6')}">
+              <div class="card card-custom" style="height: 175px">
                 <div class="card-header">
-                  Tests
+                  ${build.isBDD()?then('Features', 'Tests')}
                 </div>
-                <div class="card-body d-flex justify-content-center" style="height: 120px;">
+                <div class="card-body d-flex justify-content-center" style="height: 90px;">
                   <div class="chart-view center" style="margin-left: -1rem;">
                     <canvas id="stats"></canvas>
                   </div>
@@ -71,8 +71,29 @@
                 </div>
               </div>
             </div>
+            <#if build.isBDD()>
+            <div class="col-3">
+              <div class="card card-custom" style="height: 175px">
+                <div class="card-header">
+                  Scenarios
+                </div>
+                <div class="card-body d-flex justify-content-center" style="height: 90px;">
+                  <div class="chart-view center" style="margin-left: -1rem;">
+                    <canvas id="stats2"></canvas>
+                  </div>
+                </div>
+                <div class="card-header small">
+                  <#if build.runStats?? && build.runStats?size != 0>
+                  ${build.runStats[1].passed} Passed,
+                  ${build.runStats[1].failed} Failed,
+                  ${build.runStats[1].skipped} Skipped,
+                  </#if>
+                </div>
+              </div>
+            </div>
+            </#if>
             <div class="col-6">
-              <div class="card card-custom" style="height: 200px">
+              <div class="card card-custom" style="height: 175px">
                 <div class="card-header mb-2">
                   Summary
                 </div>
@@ -178,8 +199,8 @@
     (async function() {
       const data = [
         { result: 'Passed', count: ${build.runStats[0].passed}, bg: 'rgb(43,189,86)' },
-        { result: 'Failed', count: ${build.runStats[0].failed}, bg: 'red' },
-        { result: 'Skipped', count: ${build.runStats[0].skipped}, bg: 'yellow' }
+        { result: 'Failed', count: ${build.runStats[0].failed}, bg: 'rgb(233,80,113)' },
+        { result: 'Skipped', count: ${build.runStats[0].skipped}, bg: 'rgb(227,203,94),' }
       ];
 
       const donut = {
@@ -205,6 +226,7 @@
           },
           options: {
             plugins: {
+              responsive: true,
               legend: {
                 display: false
               }
@@ -213,6 +235,47 @@
         }
       );
     })();
+    <#if build.isBDD()>
+    (async function() {
+      const data = [
+        { result: 'Passed', count: ${build.runStats[1].passed}, bg: 'rgb(43,189,86)' },
+        { result: 'Failed', count: ${build.runStats[1].failed}, bg: 'rgb(233,80,113)' },
+        { result: 'Skipped', count: ${build.runStats[1].skipped}, bg: 'rgb(227,203,94),' }
+      ];
+
+      const donut = {
+        labels: [
+          'Passed',
+          'Failed',
+          'Skipped'
+        ]
+      };
+
+      new Chart(
+        document.getElementById('stats2'),
+        {
+          type: 'doughnut',
+          data: {
+            labels: donut.labels,
+            datasets: [
+              {
+                data: data.map(row => row.count),
+                backgroundColor: data.map(row => row.bg)
+              }
+            ]
+          },
+          options: {
+            plugins: {
+              responsive: true,
+              legend: {
+                display: false
+              }
+            }
+          }
+        }
+      );
+    })();
+    </#if>
   </script>
   </#if>
 </body>

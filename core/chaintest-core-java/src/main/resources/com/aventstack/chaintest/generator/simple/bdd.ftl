@@ -11,7 +11,7 @@
             </#list>
           </div>
           </#if>
-          <a href="#" class="secondary">
+          <a href="#" class="secondary feature">
             <span class="h6">
               <#if feature.result=='PASSED'>
               <i class="bi bi-check-circle-fill text-success me-1"></i>
@@ -32,12 +32,19 @@
         <div class="mt-3">
           <#list feature.children as scenario>
           <div class="mt-3">
-            <div class="py-1 px-2 ${scenario.result?lower_case} bg d-flex justify-content-between">
-              <div>${scenario.name}</div>
+            <div class="py-1 pe-2 scenario ${scenario.result?lower_case} d-flex justify-content-between">
+              <div>
+                <#if scenario.result=='PASSED'>
+                  <i class="bi bi-check-circle-fill text-success me-1"></i>
+                  <#else>
+                  <i class="bi bi-exclamation-octagon-fill text-danger me-1"></i>
+                </#if>
+                ${scenario.name}
+              </div>
               <div><span class="badge bg-outline-light">${scenario.durationPretty}</span></div>
             </div>
             <#list scenario.children as step>
-            <div class="${step.result?lower_case} ps-3 pe-2 bg">
+            <div class="step ${step.result?lower_case} ps-3 pe-2 bg">
               <div class="d-flex justify-content-between">
                 <div>${step.name}</div>
                 <div><span class="badge bg-outline-light">${step.durationPretty}</span></div>
