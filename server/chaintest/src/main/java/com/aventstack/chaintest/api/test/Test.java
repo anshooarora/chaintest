@@ -47,6 +47,9 @@ public class Test implements Taggable {
     @Column(name = "build_id")
     private long buildId;
 
+    @Column(name = "project_id")
+    private long projectId;
+
     @CreatedDate
     @Column(name = "started", nullable = false)
     private long startedAt = System.currentTimeMillis();
