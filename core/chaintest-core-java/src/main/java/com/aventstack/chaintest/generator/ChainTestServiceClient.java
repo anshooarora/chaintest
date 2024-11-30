@@ -67,7 +67,8 @@ public class ChainTestServiceClient implements Generator {
         }
 
         if (config.isEmpty()) {
-            log.debug("Unable to load ChainTestServiceClient configuration, generator will now shutdown and no output will be produced");
+            log.debug("Unable to load {} configuration, generator will now shutdown and no output will be produced",
+                    ChainTestServiceClient.class.getSimpleName());
             return;
         }
 

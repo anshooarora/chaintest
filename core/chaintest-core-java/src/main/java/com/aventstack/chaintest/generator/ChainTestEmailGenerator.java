@@ -31,7 +31,8 @@ public class ChainTestEmailGenerator extends FileGenerator implements Generator 
     @Override
     public void start(final Optional<Map<String, String>> config, final String testRunner, final Build build) {
         if (config.isEmpty()) {
-            log.debug("Unable to load ChainTestSimpleGenerator configuration, generator will now shutdown and no output will be produced");
+            log.debug("Unable to load {} configuration, generator will now shutdown and no output will be produced",
+                    ChainTestEmailGenerator.class.getSimpleName());
             return;
         }
 
