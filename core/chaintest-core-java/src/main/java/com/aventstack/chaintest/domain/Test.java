@@ -37,6 +37,7 @@ public class Test implements ChainTestEntity {
     private volatile List<Test> children = Collections.synchronizedList(new ArrayList<>());
     private int depth;
     private UUID clientId = UUID.randomUUID();
+    private boolean isBDD;
 
     public Test() { }
 
@@ -278,6 +279,15 @@ public class Test implements ChainTestEntity {
 
     public void setClientId(UUID clientId) {
         this.clientId = clientId;
+    }
+
+    public boolean isBDD() {
+        return isBDD;
+    }
+
+    public void setBDD(boolean BDD) {
+        isBDD = BDD;
+        children.forEach(x -> x.setBDD(BDD));
     }
 
 }

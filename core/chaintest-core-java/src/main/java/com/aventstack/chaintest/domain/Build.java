@@ -60,6 +60,7 @@ public class Build implements ChainTestEntity {
         setResult(Result.computePriority(getResult(), test.getResult()).getResult());
         updateRunStats(test);
         updateTagStats(test);
+        test.setBDD(isBDD());
     }
 
     private void updateRunStats(final Test test) {
