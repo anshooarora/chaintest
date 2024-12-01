@@ -46,7 +46,7 @@ a.secondary {
 pre {
   white-space: pre-wrap;
   margin-bottom: 0;
-  max-height: 20rem;
+  max-height: 15rem;
 }
 
 /* background */
@@ -208,6 +208,9 @@ pre {
 .card.card-custom .card-header, .card.card-custom .card-footer {
   background: none;
 }
+.card.failed {
+  border-color: var(--danger-border) !important;
+}
 
 /* content */
 #status-filter > button {
@@ -223,7 +226,14 @@ pre {
   font-weight: normal !important;
 }
 .page:not(.bdd) .tag-list {
-    margin-left: 1.25rem;
+  margin-left: 1.25rem;
+}
+#tag-summary th:not(:first-child) {
+  width: 100px !important;
+}
+.test-name {
+  word-break: break-all;
+  max-width: 75%;
 }
 
 /* bdd */

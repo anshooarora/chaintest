@@ -23,7 +23,6 @@ public class ChainTestServiceClient implements Generator {
     private static final Logger log = LoggerFactory.getLogger(ChainTestServiceClient.class);
     private static final String NAME = "http";
     private static final String HTTP_CLIENT_ENABLED = "chaintest.generator.http.enabled";
-    private static final String PROJECT_NAME = "chaintest.project.name";
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _wrappedResponses = new ConcurrentHashMap<>();
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
 
@@ -89,7 +88,7 @@ public class ChainTestServiceClient implements Generator {
 
         log.trace("Starting new build, but events will only be sent to API if build is successfully created");
 
-        final String projectName = _client.config().getConfig().getOrDefault(PROJECT_NAME, "");
+        final String projectName = _client.config().getConfig().getOrDefault(ChainTestPropertyKeys.PROJECT_NAME, "");
         Build buildForId;
         if (!projectName.isBlank()) {
             buildForId = new Build(projectName, _testRunner);

@@ -3,7 +3,7 @@
   <div class="card card-custom test-result ${test.result?lower_case}">
     <div class="card-body">
       <div class="d-flex justify-content-between">
-        <div>
+        <div class="test-name">
           <a href="#" class="secondary">
             <span class="h6">
               <#if test.result=='PASSED'>
@@ -11,7 +11,7 @@
               <#else>
               <i class="bi bi-exclamation-octagon-fill text-danger me-1"></i>
               </#if>
-              ${test.name}
+              ${test.className}.${test.name}
             </span>
           </a>
           <#if test.tags?? && test.tags?has_content>
@@ -28,7 +28,7 @@
         </div>
       </div>
       <#if test.error??>
-  <pre class="py-2">${test.error}</pre>
+        <pre class="ms-4 py-2">${test.error}</pre>
       </#if>
       <div>
         <#if build.isBDD()>
@@ -46,7 +46,7 @@
                 <div><span class="badge bg-outline-light">${step.durationPretty}</span></div>
               </div>
               <#if step.error??>
-<pre class="py-2">${step.error}</pre>
+                <pre class="py-2">${step.error}</pre>
               </#if>
             </div>
             </#list>

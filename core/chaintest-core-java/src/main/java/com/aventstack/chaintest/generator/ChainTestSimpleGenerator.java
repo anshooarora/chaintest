@@ -27,6 +27,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String DEFAULT_OUT_DIR = "target/chaintest/";
 
     private Build _build;
+    private String _projectName;
     private String _outFileName;
     private boolean _offline;
 
@@ -54,6 +55,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
             saveResources();
         }
 
+        _projectName = config.get().get(ChainTestPropertyKeys.PROJECT_NAME);
+        _projectName = null == _projectName ? "" : _projectName;
         _build = build;
 
         log.trace("Start was called for testRunner: {}", testRunner);
@@ -97,7 +100,9 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     public void flush(final List<Test> tests) {
         processTemplate(Map.of("build", _build,
                 "tests", tests,
-                "config", Map.of("offline", _offline)), _outFileName);
+                "config", Map.of(
+                        "offline", _offline,
+                        "projectName", _projectName)), _outFileName);
     }
 
     @Override

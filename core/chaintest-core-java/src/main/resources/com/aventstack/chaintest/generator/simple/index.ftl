@@ -25,7 +25,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav me-auto mb-0">
             <li class="nav-item ms-5 me-2">
-              <span class="nav-link">chaintest-core</span>
+              <span class="nav-link">${config['projectName']}</span>
             </li>
             <#if build.tags?? && build.tags?has_content>
             <li class="nav-item mx-2">
@@ -138,10 +138,10 @@
                 <table id="tag-summary" class="table">
                   <thead>
                     <tr>
-                      <th scope="col" style="width: 60%">Name</th>
+                      <th scope="col">Name</th>
                       <th scope="col">Total</th>
-                      <th scope="col">Failed</th>
                       <th scope="col">Passed</th>
+                      <th scope="col">Failed</th>
                       <th scope="col">Time</th>
                     </tr>
                   </thead>
@@ -151,7 +151,7 @@
                       <td class="tag"><a href="#" class="secondary">${tag.name}</a></td>
                       <td>${tag.total}</td>
                       <td>${tag.passed}</td>
-                      <td>${tag.skipped}</td>
+                      <td>${tag.failed}</td>
                       <td>${tag.durationPretty}</td>
                     </tr>
                     </#list>
