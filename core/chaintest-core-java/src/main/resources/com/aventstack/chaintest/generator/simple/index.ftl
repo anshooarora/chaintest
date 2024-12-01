@@ -37,8 +37,8 @@
             </li>
           </ul>
           <form class="d-flex" role="search">
-            <span class="badge bg-outline-light me-1">${build.startedAt?number_to_datetime}</span>
-            <span class="badge bg-outline-light">${build.durationPretty}</span>
+            <span class="btn btn-outline-light btn-sm me-1">${build.startedAt?number_to_datetime}</span>
+            <span class="btn btn-outline-light btn-sm">${build.durationPretty}</span>
           </form>
         </div>
       </div>
