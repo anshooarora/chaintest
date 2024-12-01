@@ -21,7 +21,9 @@ public abstract class FileGenerator {
     protected String processTemplate(final Map<String, Object> objectModel, final String outputFile) {
         final File file = new File(outputFile);
         final File dir = Files.isDirectory(file.toPath()) ? file : file.getParentFile();
-        dir.mkdirs();
+        if (null != dir) {
+            dir.mkdirs();
+        }
 
         try (final FileWriter out = new FileWriter(outputFile)) {
             _template.process(objectModel, out);

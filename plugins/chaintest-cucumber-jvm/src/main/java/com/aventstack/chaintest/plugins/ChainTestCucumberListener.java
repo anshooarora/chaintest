@@ -42,13 +42,13 @@ public class ChainTestCucumberListener implements EventListener {
     private final Map<URI, Test> _features = new HashMap<>();
     private ChainPluginService _service;
 
-    public ChainTestCucumberListener(final String ignored) throws IOException {
+    public ChainTestCucumberListener(final String ignored) {
         _service = new ChainPluginService(CUCUMBER_JVM);
+        _service.getBuild().setBDD(true);
         _service.register(new ChainTestSimpleGenerator());
         _service.register(new ChainTestServiceClient());
         _service.register(new ChainTestEmailGenerator());
         _service.start();
-        _service.getBuild().setBDD(true);
     }
 
     @Override

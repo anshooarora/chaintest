@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <title>chaintest</title>
-  <#if config[offline]>
+  <#if config['offline']>
   <link id="style" href="bootstrap.min.css" rel="stylesheet">
   <link id="icons" href="bootstrap-icons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="template.css">
@@ -20,7 +20,7 @@
 
     <!-- navbar -->
     <nav class="navbar navbar-expand-md">
-      <div class="container-fluid">
+      <div class="container">
         <a class="navbar-brand primary" href="#">ChainTest</a>
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav me-auto mb-0">
@@ -51,7 +51,7 @@
 
       <!-- dashboard section -->
       <div id="dashboard" class="mt-4 mb-3">
-        <div class="container-fluid">
+        <div class="container">
           <div class="row">
             <div class="col-${build.isBDD()?then('3', '6')}">
               <div class="card card-custom" style="height: 175px">
@@ -125,7 +125,7 @@
       </div>
       <!-- /dashboard section -->
 
-      <div class="container-fluid tags mt-4 mb-4">
+      <div class="container tags mt-4 mb-4">
 
         <!-- tag section -->
         <div id="tags" class="row">
@@ -165,7 +165,7 @@
       <!-- /tag section -->
 
       <!-- test section -->
-      <div id="tests" class="container-fluid tests mb-5">
+      <div id="tests" class="container tests mb-5">
         <div class="mt-3 mb-3 d-flex justify-content-between">
           <div id="status-filter" class="btn-group" role="group" aria-label="Filter tests with status">
             <button type="button" id="passed" class="btn btn-success">Passed</button>

@@ -20,7 +20,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String GENERATOR_NAME = "simple";
     private static final String BASE_PROPERTY = "chaintest.generator.simple";
     private static final String PROP_ENABLED = BASE_PROPERTY + ".enabled";
-    private static final String PROP_OUT_FILE_NAME = BASE_PROPERTY + ".out-file-name";
+    private static final String PROP_OUT_FILE_NAME = BASE_PROPERTY + ".output-file";
     private static final String PROP_SAVE_OFFLINE = BASE_PROPERTY + ".offline";
     private static final String BASE_TEMPLATE_NAME = "index.ftl";
     private static final String DEFAULT_OUT_FILE_NAME = "Simple.html";
@@ -46,10 +46,14 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
 
         _outFileName = config.get().get(PROP_OUT_FILE_NAME);
         if (null == _outFileName || _outFileName.isEmpty()) {
-            _outFileName = DEFAULT_OUT_DIR;
+            _outFileName = DEFAULT_OUT_DIR + DEFAULT_OUT_FILE_NAME;
         }
 
         _offline = Boolean.parseBoolean(config.get().get(PROP_SAVE_OFFLINE));
+        if (_offline) {
+            saveResources();
+        }
+
         _build = build;
 
         log.trace("Start was called for testRunner: {}", testRunner);
@@ -67,6 +71,13 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
                     ChainTestSimpleGenerator.class.getName(), GENERATOR_NAME);
             return;
         }
+
+        File outputDir = new File(_outFileName);
+        if (!outputDir.isDirectory()) {
+            outputDir = outputDir.getParentFile();
+            outputDir.mkdirs();
+        }
+
         try {
             final File dir = new File(url.toURI());
             for (final File f : dir.listFiles()) {
@@ -76,7 +87,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
                 log.trace("Copying classpath resource {}", f.getPath());
                 IOUtil.copyClassPathResource(ChainTestSimpleGenerator.class,
                         GENERATOR_NAME + "/" + f.getName(),
-                        _outFileName + f.getName());
+                        outputDir.getPath() + "/" + f.getName());
             }
         } catch (final URISyntaxException e) {
             log.error("Failed to construct URI from url {}", url);
@@ -86,7 +97,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     public void flush(final List<Test> tests) {
         processTemplate(Map.of("build", _build,
                 "tests", tests,
-                "config", Map.of("offline", _offline)), DEFAULT_OUT_FILE_NAME);
+                "config", Map.of("offline", _offline)), _outFileName);
     }
 
     @Override
