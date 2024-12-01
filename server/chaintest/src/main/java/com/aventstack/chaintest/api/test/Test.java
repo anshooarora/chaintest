@@ -45,10 +45,10 @@ public class Test implements Taggable {
     private Build build;
 
     @Column(name = "build_id")
-    private long buildId;
+    private Long buildId;
 
     @Column(name = "project_id")
-    private long projectId;
+    private Integer projectId;
 
     @CreatedDate
     @Column(name = "started", nullable = false)

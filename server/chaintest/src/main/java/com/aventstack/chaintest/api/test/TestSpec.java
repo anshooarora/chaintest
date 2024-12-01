@@ -13,9 +13,16 @@ import java.util.List;
 public class TestSpec implements Specification<Test> {
 
     private final Test _test;
+    private final Predicate.BooleanOperator _op;
 
     public TestSpec(final Test test) {
         _test = test;
+        _op = Predicate.BooleanOperator.AND;
+    }
+
+    public TestSpec(final Test test, final Predicate.BooleanOperator op) {
+        _test = test;
+        _op = op;
     }
 
     @Override
@@ -24,6 +31,10 @@ public class TestSpec implements Specification<Test> {
 
         if (!StringUtils.isBlank(_test.getName())) {
             predicates.add(cb.like(cb.lower(root.get(Test_.name)), "%" + _test.getName().toLowerCase() + "%"));
+        }
+
+        if (_test.getProjectId() > 0) {
+            predicates.add(cb.equal(root.get(Test_.projectId), _test.getProjectId()));
         }
 
         if (_test.getBuildId() > 0) {
@@ -46,7 +57,13 @@ public class TestSpec implements Specification<Test> {
             predicates.add(cb.equal(root.get(Test_.result), _test.getResult()));
         }
 
-        final Predicate predicate = cb.and(predicates.toArray(new Predicate[0]));
+        Predicate predicate;
+        if (_op.equals(Predicate.BooleanOperator.AND)) {
+            predicate = cb.and(predicates.toArray(new Predicate[0]));
+        } else {
+            predicate = cb.or(predicates.toArray(new Predicate[0]));
+        }
+
         return predicate;
     }
 

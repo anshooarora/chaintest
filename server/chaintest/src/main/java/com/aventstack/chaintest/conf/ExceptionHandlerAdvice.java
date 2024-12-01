@@ -1,7 +1,7 @@
 package com.aventstack.chaintest.conf;
 
 import com.aventstack.chaintest.api.domain.ErrorResponse;
-import com.aventstack.chaintest.api.project.ProjectNotFoundException;
+import com.aventstack.chaintest.api.domain.exception.BaseNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +18,7 @@ import org.springframework.web.util.WebUtils;
 public class ExceptionHandlerAdvice {
 
     @ExceptionHandler({
-            ProjectNotFoundException.class
+            BaseNotFoundException.class
     })
     public final ResponseEntity<ErrorResponse> handleException(final Exception ex, final WebRequest request) {
         log.error("Handling exception: {}", ex.getClass().getSimpleName());

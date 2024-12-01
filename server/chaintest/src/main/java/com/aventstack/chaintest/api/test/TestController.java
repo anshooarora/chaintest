@@ -26,13 +26,15 @@ public class TestController {
 
     @GetMapping
     public ResponseEntity<Page<Test>> findAll(@RequestParam(required = false) final String name,
-                                              @RequestParam(required = false) final Long buildId,
+                                              @RequestParam(required = false, defaultValue = "0") final Integer projectId,
+                                              @RequestParam(required = false, defaultValue = "0") final Long buildId,
                                               @RequestParam(required = false) final Integer depth,
                                               @RequestParam(required = false) final String result,
                                               @RequestParam(required = false) final Set<String> tags,
                                               @RequestParam(required = false) final String error,
+                                              @RequestParam(required = false) final String op,
                                               final Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(name, buildId, depth, result, tags, error, pageable));
+        return ResponseEntity.ok(service.findAll(name, projectId, buildId, depth, result, tags, error, op, pageable));
     }
 
     @GetMapping("/{id}")

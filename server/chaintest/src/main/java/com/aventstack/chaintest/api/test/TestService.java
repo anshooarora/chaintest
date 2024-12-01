@@ -3,6 +3,7 @@ package com.aventstack.chaintest.api.test;
 import com.aventstack.chaintest.api.build.BuildService;
 import com.aventstack.chaintest.api.tag.TagService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Predicate;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,12 +38,12 @@ public class TestService {
         this.buildService = buildService;
     }
 
-    @Cacheable(value = "tests", unless = "#result == null || #result.size == 0")
-    public Page<Test> findAll(final String name, final Long buildId, final Integer depth, final String result,
-                              final Set<String> tags, final String error, final Pageable pageable) {
+    public Page<Test> findAll(final String name, final int projectId, final long buildId, final Integer depth, final String result,
+                              final Set<String> tags, final String error, final String op, final Pageable pageable) {
         final Test test = new Test();
         test.setName(name);
-        test.setBuildId(buildId == null ? 0 : buildId);
+        test.setProjectId(projectId);
+        test.setBuildId(buildId);
         test.setResult(result);
         if (null != depth) {
             test.setDepth(depth);
@@ -50,7 +52,10 @@ public class TestService {
             test.setTag(tags);
         }
         test.setError(error);
-        final TestSpec spec = new TestSpec(test);
+        final Predicate.BooleanOperator operator = StringUtils.isBlank(op) || op.equalsIgnoreCase("and")
+                ? Predicate.BooleanOperator.AND
+                : Predicate.BooleanOperator.OR;
+        final TestSpec spec = new TestSpec(test, operator);
         return repository.findAll(spec, pageable);
     }
 
@@ -115,6 +120,11 @@ public class TestService {
         log.info("Test id: {} was deleted successfully", id);
     }
 
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "tests", allEntries = true),
+            @CacheEvict(value = "test", allEntries = true)
+    })
     public void deleteForBuild(final long buildId) {
         log.info("Deleting all tests for build-id {}", buildId);
         repository.deleteByBuildId(buildId);
