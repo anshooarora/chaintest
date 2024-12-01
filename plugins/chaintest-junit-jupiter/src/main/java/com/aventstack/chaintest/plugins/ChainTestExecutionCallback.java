@@ -1,8 +1,6 @@
 package com.aventstack.chaintest.plugins;
 
 import com.aventstack.chaintest.domain.Test;
-import com.aventstack.chaintest.generator.ChainTestEmailGenerator;
-import com.aventstack.chaintest.generator.ChainTestSimpleGenerator;
 import com.aventstack.chaintest.http.ChainTestApiClient;
 import com.aventstack.chaintest.service.ChainPluginService;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -34,8 +32,6 @@ public class ChainTestExecutionCallback
         }
         log.trace("Creating instance of {}", ChainTestApiClient.class);
         _service = new ChainPluginService(JUNIT_JUPITER);
-        _service.register(new ChainTestSimpleGenerator());
-        _service.register(new ChainTestEmailGenerator());
         _service.start();
     }
 
