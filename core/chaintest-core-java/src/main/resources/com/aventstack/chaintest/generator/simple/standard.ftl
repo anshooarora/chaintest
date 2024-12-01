@@ -23,7 +23,7 @@
           </#if>
         </div>
         <div class="ms-1 small">
-          <i class="bi bi-clock"></i> <span class="ms-1">${test.startedAt?number_to_datetime}</span>
+          <i class="bi bi-clock"></i> <span class="ms-1">${test.startedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
           <i class="bi bi-hourglass ms-2"></i> <span class="ms-1" data-duration="${test.durationMs}">${test.durationPretty}</span>
         </div>
       </div>

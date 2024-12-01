@@ -37,7 +37,7 @@
             </li>
           </ul>
           <form class="d-flex" role="search">
-            <span class="btn btn-outline-light btn-sm me-1">${build.startedAt?number_to_datetime}</span>
+            <span class="btn btn-outline-light btn-sm me-1">${build.startedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
             <span class="btn btn-outline-light btn-sm">${build.durationPretty}</span>
           </form>
         </div>
@@ -102,11 +102,11 @@
                   <div class="row pb-2">
                     <div class="col text-center">
                       <label class="fs-10">Started</label>
-                      <p class="fw-bold">${build.startedAt?number_to_datetime}</p>
+                      <p class="fw-bold">${build.startedAt?number_to_datetime?string(config['datetimeFormat'])}</p>
                     </div>
                     <div class="col border-start text-center">
                       <label class="fs-10">Ended</label>
-                      <p class="fw-bold">${build.endedAt?number_to_datetime}</p>
+                      <p class="fw-bold">${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</p>
                     </div>
                   </div>
                   <#if build.runStats?? && build.runStats?size != 0 && build.runStats[0].total != 0>

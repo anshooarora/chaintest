@@ -22,13 +22,16 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String PROP_ENABLED = BASE_PROPERTY + ".enabled";
     private static final String PROP_OUT_FILE_NAME = BASE_PROPERTY + ".output-file";
     private static final String PROP_SAVE_OFFLINE = BASE_PROPERTY + ".offline";
+    private static final String PROP_DATETIME_FORMAT = BASE_PROPERTY + "datetime-format";
     private static final String BASE_TEMPLATE_NAME = "index.ftl";
     private static final String DEFAULT_OUT_FILE_NAME = "Simple.html";
     private static final String DEFAULT_OUT_DIR = "target/chaintest/";
+    private static final String DATETIME_FORMAT = "MM-dd-yyyy hh:mm:ss a";
 
     private Build _build;
     private String _projectName;
     private String _outFileName;
+    private String _datetimeFormat;
     private boolean _offline;
 
     @Override
@@ -57,6 +60,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
 
         _projectName = config.get().get(ChainTestPropertyKeys.PROJECT_NAME);
         _projectName = null == _projectName ? "" : _projectName;
+        _datetimeFormat = config.get().get(PROP_DATETIME_FORMAT);
+        _datetimeFormat = null == _datetimeFormat || _datetimeFormat.isBlank() ? DATETIME_FORMAT : _datetimeFormat;
         _build = build;
 
         log.trace("Start was called for testRunner: {}", testRunner);
@@ -101,8 +106,9 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
         processTemplate(Map.of("build", _build,
                 "tests", tests,
                 "config", Map.of(
+                        "projectName", _projectName,
                         "offline", _offline,
-                        "projectName", _projectName)), _outFileName);
+                        "datetimeFormat", _datetimeFormat)), _outFileName);
     }
 
     @Override
