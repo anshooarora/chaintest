@@ -84,7 +84,6 @@ public class ChainPluginService {
     }
 
     public void afterTest(final Test test, final Optional<Throwable> throwable) {
-        test.complete(throwable);
         _tests.add(test);
         _build.updateStats(test);
         _generators.forEach(x -> x.afterTest(test, throwable));
