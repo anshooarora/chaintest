@@ -1,9 +1,6 @@
 package com.aventstack.chaintest.plugins;
 
 import com.aventstack.chaintest.domain.Test;
-import com.aventstack.chaintest.generator.ChainTestEmailGenerator;
-import com.aventstack.chaintest.generator.ChainTestServiceClient;
-import com.aventstack.chaintest.generator.ChainTestSimpleGenerator;
 import com.aventstack.chaintest.service.ChainPluginService;
 import io.cucumber.gherkin.GherkinParser;
 import io.cucumber.messages.types.Envelope;
@@ -20,6 +17,7 @@ import io.cucumber.plugin.event.TestCaseStarted;
 import io.cucumber.plugin.event.TestRunFinished;
 import io.cucumber.plugin.event.TestSourceRead;
 import io.cucumber.plugin.event.TestStepFinished;
+import io.cucumber.plugin.event.TestStepStarted;
 import io.cucumber.plugin.event.WriteEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,16 +36,14 @@ public class ChainTestCucumberListener implements EventListener {
     private static final Logger log = LoggerFactory.getLogger(ChainTestCucumberListener.class);
     private static final String CUCUMBER_JVM = "cucumber-jvm";
 
-    private final Map<UUID, Test> _scenarios = new HashMap<>();
     private final Map<URI, Test> _features = new HashMap<>();
+    private final Map<UUID, Test> _scenarios = new HashMap<>();
+    private final Map<UUID, Test> _steps = new HashMap<>();
     private ChainPluginService _service;
 
     public ChainTestCucumberListener(final String ignored) {
         _service = new ChainPluginService(CUCUMBER_JVM);
         _service.getBuild().setBDD(true);
-        _service.register(new ChainTestSimpleGenerator());
-        _service.register(new ChainTestServiceClient());
-        _service.register(new ChainTestEmailGenerator());
         _service.start();
     }
 
@@ -56,6 +52,7 @@ public class ChainTestCucumberListener implements EventListener {
         publisher.registerHandlerFor(TestSourceRead.class, testSourceReadHandler);
         publisher.registerHandlerFor(TestCaseStarted.class, caseStartedHandler);
         publisher.registerHandlerFor(TestCaseFinished.class, caseFinishedHandler);
+        publisher.registerHandlerFor(TestStepStarted.class, stepStartedHandler);
         publisher.registerHandlerFor(TestStepFinished.class, stepFinishedHandler);
         publisher.registerHandlerFor(EmbedEvent.class, embedEventhandler);
         publisher.registerHandlerFor(WriteEvent.class, writeEventhandler);
@@ -116,12 +113,18 @@ public class ChainTestCucumberListener implements EventListener {
         scenario.complete(event.getResult().getError());
     };
 
-    private final EventHandler<TestStepFinished> stepFinishedHandler = event -> {
-        log.debug("Step: {}", event.getTestCase().getName());
+    private final EventHandler<TestStepStarted> stepStartedHandler = event -> {
+        log.debug("Step starting: {}", event.getTestCase().getName());
         final PickleStepTestStep pickle = ((PickleStepTestStep) event.getTestStep());
         final Test step = new Test(pickle.getStep().getKeyword() + pickle.getStep().getText(),
                 Optional.of("Step"));
         _scenarios.get(event.getTestCase().getId()).addChild(step);
+        _steps.put(event.getTestStep().getId(), step);
+    };
+
+    private final EventHandler<TestStepFinished> stepFinishedHandler = event -> {
+        log.debug("Step ending: {}", event.getTestCase().getName());
+        final Test step = _steps.get(event.getTestStep().getId());
         step.setResult(event.getResult().getStatus().name());
         step.complete(event.getResult().getError());
     };
