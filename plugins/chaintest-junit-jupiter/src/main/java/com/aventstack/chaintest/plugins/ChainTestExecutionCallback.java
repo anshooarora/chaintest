@@ -46,6 +46,7 @@ public class ChainTestExecutionCallback
     @Override
     public void afterTestExecution(final ExtensionContext context) throws Exception {
         final Test test = TESTS.get(context.getUniqueId());
+        test.complete(context.getExecutionException());
         _service.afterTest(test, context.getExecutionException());
         log.trace("Ended test {} with status {}", test.getName(), test.getResult());
     }
