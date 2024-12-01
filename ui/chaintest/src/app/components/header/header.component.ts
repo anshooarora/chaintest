@@ -20,6 +20,7 @@ export class HeaderComponent {
   searchTerm: string;
   error: any;
   page: Page<Test>;
+  pageNum: number = 0;
 
   constructor(private testService: TestService, private errorService: ErrorHandlerService) { }
 
@@ -27,19 +28,27 @@ export class HeaderComponent {
     this.offcanvasService.open(content, { position: 'start', panelClass: 'w-75' });
   }
 
-  search(content: TemplateRef<any>): void {
+  search(content: TemplateRef<any>, open: boolean = true, num: number = 0): void {
     if (!this.searchTerm) {
       return;
     }
 
-    this.openEnd(content);
+    if (open) {
+      this.openEnd(content);
+    }
 
-    this.testService.search(0, this.searchTerm)
+    this.pageNum = num;
+    
+    this.testService.search(0, this.searchTerm, 0, -1, '', '', this.searchTerm, this.pageNum, 'OR')
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (tests: Page<Test>) => {
-        this.page = tests;
-        console.log(tests)
+        if (this.pageNum == 0) {
+          this.page = tests;
+        } else {
+          this.page.content.push(...tests.content);
+        }
+        console.log(this.page)
       },
       error: (err) => {
         this.error = this.errorService.getError(err);

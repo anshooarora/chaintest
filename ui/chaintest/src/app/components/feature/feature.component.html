@@ -1,0 +1,32 @@
+<div class="card test-card">
+  <div class="card-body">
+    <h5 class="card-title feature" [ngClass]="feature.result">{{feature.name}}</h5>
+    <div class="small">
+      <span class="me-2">
+        <i class="bi bi-clock me-1"></i> {{feature.startedAt | date:'yyyy-MM-dd h:m:s a'}} - {{feature.endedAt | date:'yyyy-MM-dd h:m:s a'}}
+      </span>
+      <span class="">
+        <i class="bi bi-hourglass me-1"></i> {{feature.durationMs | prettyTime}}
+      </span>
+    </div>
+    <div *ngIf="feature.children">
+      <div *ngFor="let scenario of feature.children">
+        <div class="scenario" [ngClass]="scenario.result">{{scenario.name}}
+          <div *ngIf="scenario.children">
+            <div *ngFor="let step of scenario.children">
+              <div class="step d-flex justify-content-between" [ngClass]="step.result">
+                <div>
+                  {{step.name}}
+                  <pre *ngIf="step.error">{{step.error}}</pre>
+                </div>
+                <div>
+                  <span class="me-3 badge bg-light-subtle text-secondary fw-semibold">{{step.durationMs | prettyTime}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

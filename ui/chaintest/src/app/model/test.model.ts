@@ -14,4 +14,5 @@ export class Test extends Page<Test> {
     tags: Tag[];
     children: Test[];
     error: string;
+    bdd: boolean;
 }

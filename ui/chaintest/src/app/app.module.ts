@@ -16,6 +16,8 @@ import { TestListingComponent } from './pages/test/test-listing/test-listing.com
 import { PaginateComponent } from './components/paginate/paginate.component';
 import { BuildComponent } from './pages/build/build/build.component';
 import { PrettyTimePipe } from './pipes/pretty-time.pipe';
+import { FeatureComponent } from './components/feature/feature.component';
+import { TestComponent } from './components/test/test.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { PrettyTimePipe } from './pipes/pretty-time.pipe';
     TestListingComponent,
     PaginateComponent,
     BuildComponent,
-    PrettyTimePipe
+    PrettyTimePipe,
+    FeatureComponent,
+    TestComponent
   ],
   imports: [
     BrowserModule,

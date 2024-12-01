@@ -11,7 +11,9 @@
       </ul>
 
       <form class="w-25 me-3" role="search">
-        <input type="search" class="form-control rounded-3" placeholder="Search..." aria-label="Search">
+        <input type="search" name="searchTerm" class="form-control rounded-3" placeholder="Search..." 
+          aria-label="Search" [(ngModel)]="searchTerm" (keyup.enter)="search(content, true)">
+        <input type="submit" style="display: none" />
       </form>
 
       <span class="pointer border rounded-5 px-2 py-1"><i class="bi bi-sliders"></i></span>
@@ -20,28 +22,25 @@
 </header>
 
 <ng-template #content let-offcanvas>
-  <div class="offcanvas-header">
-    <h4 class="offcanvas-title">Offcanvas title</h4>
+  <div class="offcanvas-header d-flex justify-content-between">
+    <input type="search" name="searchTerm" class="ms-2 w-50 form-control rounded-3" placeholder="Search..." 
+          aria-label="Search" [(ngModel)]="searchTerm" (keyup.enter)="search(content, false)">
     <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
   </div>
-  <div class="offcanvas-body">
+  <div class="offcanvas-body px-4">
     <div *ngIf="page && page.content">
-      <div *ngFor="let feature of page.content">
-        {{feature.name}}
-        <div *ngIf="feature.children">
-          <div *ngFor="let scenario of feature.children">
-            &nbsp; &nbsp; {{scenario.name}}
-            <div *ngIf="scenario.children">
-              <div *ngFor="let step of scenario.children">
-                &nbsp; &nbsp; &nbsp; &nbsp; {{step.name}}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ng-container *ngFor="let test of page.content">
+        <ng-container *ngIf="test.bdd">
+          <app-feature [feature]="test" />
+        </ng-container>
+
+        <ng-container *ngIf="!test.bdd">
+          <app-test [test]="test" />
+        </ng-container>
+      </ng-container>
     </div>
-    <div class="text-end">
-      <button type="button" class="btn btn-outline-secondary" (click)="offcanvas.close('Close click')">Close</button>
+    <div class="text-center py-5">
+      <button type="button" class="btn btn-outline-primary" (click)="search(content, false, pageNum + 1)">Load more results</button>
     </div>
   </div>
 </ng-template>
