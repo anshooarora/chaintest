@@ -1,0 +1,10 @@
+<div class="card pb-2" *ngIf="trendData.labels && trendData.labels.length">
+  <div class="card-header">
+    <h6>Trend</h6>
+  </div>
+  <div class="card-body py-0">
+    <div class="mx-auto" style="max-height: 125px;">
+      <canvas baseChart [type]="trendChartType" [data]="trendData" [options]="trendChartOptions"></canvas>
+    </div>
+  </div>
+</div>
