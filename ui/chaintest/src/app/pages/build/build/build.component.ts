@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { ChartData, ChartOptions, LegendItem } from 'chart.js';
@@ -15,7 +15,7 @@ import { Test } from '../../../model/test.model';
   templateUrl: './build.component.html',
   styleUrl: './build.component.scss'
 })
-export class BuildComponent implements OnInit {
+export class BuildComponent implements OnInit, OnDestroy {
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   

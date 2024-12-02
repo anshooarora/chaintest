@@ -6,8 +6,7 @@
       </a>
 
       <ul class="nav col-auto me-auto justify-content-center mb-md-0">
-        <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
-        <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
+        <li *ngIf="project"><a href="#" class="nav-link px-2 link-secondary">{{project.name}}</a></li>
       </ul>
 
       <form class="w-25 me-3" role="search">
