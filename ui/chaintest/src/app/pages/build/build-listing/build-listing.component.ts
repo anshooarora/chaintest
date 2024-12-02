@@ -30,7 +30,7 @@ export class BuildListingComponent implements OnInit, OnDestroy {
   tagstats: TagStats[];
   pageNum: number = 0;
 
-  /* chart */
+  /* build tests chart */
   chartType: any = 'doughnut';
   statsTitle: string = 'Tests';
   stats: ChartData<any> = {
@@ -62,8 +62,8 @@ export class BuildListingComponent implements OnInit, OnDestroy {
   };
 
   constructor(private route: ActivatedRoute,
-    private _buildService: BuildService,
-    private _errorService: ErrorHandlerService) { }
+    private buildService: BuildService,
+    private errorService: ErrorHandlerService) { }
 
   ngOnInit(): void {
     const projectId = this.route.snapshot.paramMap.get('projectId') || '0';
@@ -78,8 +78,8 @@ export class BuildListingComponent implements OnInit, OnDestroy {
     this._destroyDel$.complete();
   }
 
-  findBuilds(page: number = 0, pageSize: number = 5): void {
-    this._buildService.findByProjectId(this.projectId, page, pageSize, 'id,desc')
+  findBuilds(page: number = 0, pageSize: number = 20): void {
+    this.buildService.findByProjectId(this.projectId, page, pageSize, 'id,desc')
       .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: (builds: Page<Build>) => {
@@ -94,7 +94,7 @@ export class BuildListingComponent implements OnInit, OnDestroy {
           console.log(this.builds)
         },
         error: (err) => {
-          this.error = this._errorService.getError(err);
+          this.error = this.errorService.getError(err);
         }
       });
   }
@@ -106,10 +106,10 @@ export class BuildListingComponent implements OnInit, OnDestroy {
 
   selectBuild(build: Build) {
     this.selectedBuild = build;
-    this.showMetrics(build);
+    this.showSelectedBuildMetrics(build);
   }
 
-  showMetrics(build: Build) {
+  showSelectedBuildMetrics(build: Build) {
     this.tagstats = [];
     this.stats.datasets[0].data = [];
     if (!build.runStats || !build.runStats.length) {
@@ -129,14 +129,14 @@ export class BuildListingComponent implements OnInit, OnDestroy {
   }
 
   del(build: Build): void {
-    this._buildService.delete(build)
+    this.buildService.delete(build)
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (response: any) => {
         console.log(response)
       },
       error: (err) => {
-        this.error = this._errorService.getError(err);
+        this.error = this.errorService.getError(err);
       }
     });
   }
