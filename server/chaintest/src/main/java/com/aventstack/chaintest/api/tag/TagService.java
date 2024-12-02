@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -49,7 +50,7 @@ public class TagService {
         return Optional.of(CACHE.get(tagName));
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     @CacheEvict(value = "tags", allEntries = true)
     @CachePut(value = "tag", key = "#tag.id")
     public Tag create(final Tag tag) {

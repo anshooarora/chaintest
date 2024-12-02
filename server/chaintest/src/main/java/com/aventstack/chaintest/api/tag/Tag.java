@@ -14,14 +14,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import java.util.List;
 
 @Data
 @ToString(exclude = {"builds", "tests"})
 @EqualsAndHashCode(of = "name")
 @Entity
-@Table(name = "tag", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
+@Table(name = "tag")
 public class Tag {
 
     @Id

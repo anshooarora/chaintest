@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -23,14 +24,14 @@ public class TagStatsService {
         return repository.findById(id);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     @CachePut(value = "tagStat", key = "#tagStat.id")
     public TagStats create(final TagStats stats) {
         return repository.save(stats);
     }
 
-    @Transactional
-    @CachePut(value = "tagStat", key = "#tagStat.id")
+    @Transactional(propagation = Propagation.MANDATORY)
+    @CachePut(value = "tagStat", key = "#stats.id")
     public TagStats update(final TagStats stats) {
         log.info("Updating TagStats: {}", stats);
         return repository.save(stats);
