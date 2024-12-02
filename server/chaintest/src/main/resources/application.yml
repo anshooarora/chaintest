@@ -1,13 +1,17 @@
 server:
   port: 80
+  tomcat:
+    threads:
+      max: 20
+
 spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none # [ validate, create, update, none, create-drop ]
+      ddl-auto: update # [ validate, create, update, none, create-drop ]
   datasource:
     hikari:
-      maxLifeTime: 30000
+      maximumPoolSize: 20
   main:
     allow-bean-definition-overriding: true
 logging:
