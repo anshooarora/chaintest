@@ -6,5 +6,7 @@ export class Project extends Page<Project> {
   name: string;
   createdAt: number;
 
+  // used in project-listing.component
   builds: Page<Build>;
+  display: boolean = true;
 }

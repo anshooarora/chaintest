@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
@@ -13,13 +13,14 @@ import { Build } from "../../../model/build.model";
   templateUrl: './project-listing.component.html',
   styleUrl: './project-listing.component.scss'
 })
-export class ProjectListingComponent implements OnInit {
+export class ProjectListingComponent implements OnInit, OnDestroy {
 
   private _destroy$: Subject<any> = new Subject<any>();
   private _build$: Subject<any> = new Subject<any>();
 
   moment: any = moment;
 
+  q: string;
   error: any;
   projectPage: Page<Project>;
 
@@ -31,6 +32,11 @@ export class ProjectListingComponent implements OnInit {
     this.findAllProjects();
   }
 
+  ngOnDestroy(): void {
+    this._destroy$.next(null);
+    this._destroy$.complete();
+  }
+
   findAllProjects(pageNumber: number = 0): void {
     this.projectService.findAll(pageNumber, 9)
     .pipe(takeUntil(this._destroy$))
@@ -38,6 +44,7 @@ export class ProjectListingComponent implements OnInit {
         next: (response: Page<Project>) => {
           this.projectPage = response;
           response.content.forEach(project => {
+            project.display = true;
             this.findBuilds(project);
           });
         },
@@ -59,6 +66,21 @@ export class ProjectListingComponent implements OnInit {
           this.error = this.errorService.getError(err);
         }
     });
+  }
+
+  search(): void {
+    this.projectPage.content.forEach(x => {
+      x.display = true;
+      let includesTag = false;
+      let matchesTestRunner = false;
+      if (x.builds.content.length) {
+        includesTag = x.builds.content.flatMap(ts => ts.tagStats).some(t => t.name.includes(this.q));
+        matchesTestRunner = x.builds.content[0].testRunner.includes(this.q);
+      }
+      if (!x.name.includes(this.q) && !includesTag && !matchesTestRunner) {
+        x.display = false;
+      }
+    })
   }
 
 }
