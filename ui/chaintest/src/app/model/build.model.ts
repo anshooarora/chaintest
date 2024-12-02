@@ -15,7 +15,7 @@ export class Build extends Page<Build> {
   executionStage: ExecutionStage;
   testRunner: string;
   name: string;
-  result: Result;
+  result: string;
   tags: Tag[];
   bdd: boolean;
 }
