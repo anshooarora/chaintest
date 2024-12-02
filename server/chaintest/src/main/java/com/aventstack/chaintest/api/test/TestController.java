@@ -26,8 +26,8 @@ public class TestController {
 
     @GetMapping
     public ResponseEntity<Page<Test>> findAll(@RequestParam(required = false) final String name,
-                                              @RequestParam(required = false, defaultValue = "0") final Integer projectId,
-                                              @RequestParam(required = false, defaultValue = "0") final Long buildId,
+                                              @RequestParam(required = false) final Integer projectId,
+                                              @RequestParam(required = false) final Long buildId,
                                               @RequestParam(required = false) final Integer depth,
                                               @RequestParam(required = false) final String result,
                                               @RequestParam(required = false) final Set<String> tags,

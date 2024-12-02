@@ -33,11 +33,11 @@ public class TestSpec implements Specification<Test> {
             predicates.add(cb.like(cb.lower(root.get(Test_.name)), "%" + _test.getName().toLowerCase() + "%"));
         }
 
-        if (_test.getProjectId() > 0) {
+        if (null != _test.getProjectId() && _test.getProjectId() > 0) {
             predicates.add(cb.equal(root.get(Test_.projectId), _test.getProjectId()));
         }
 
-        if (_test.getBuildId() > 0) {
+        if (null != _test.getBuildId() && _test.getBuildId() > 0) {
             predicates.add(cb.equal(root.get(Test_.buildId), _test.getBuildId()));
         }
 

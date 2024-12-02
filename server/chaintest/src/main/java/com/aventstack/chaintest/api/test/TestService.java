@@ -39,8 +39,8 @@ public class TestService {
     }
 
     public Page<Test> findAll(final String name,
-                              final int projectId,
-                              final long buildId,
+                              final Integer projectId,
+                              final Long buildId,
                               final Integer depth,
                               final String result,
                               final Set<String> tags,

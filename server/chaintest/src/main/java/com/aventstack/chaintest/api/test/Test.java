@@ -68,7 +68,7 @@ public class Test implements Taggable {
     private String name;
 
     @Column
-    private Integer depth = 0;
+    private Integer depth;
 
     @Column
     private String result;

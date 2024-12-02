@@ -37,7 +37,7 @@ export class TestService extends BaseService<Test> {
     }
     params = params.set('op', op);
     params = params.set('page', pageNum);
-    params = params.set('sort', 'id,desc')
+    params = params.set('sort', 'id,desc');
     return super.query(params)
   }
 
