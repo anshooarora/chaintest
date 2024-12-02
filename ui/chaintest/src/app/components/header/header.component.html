@@ -10,7 +10,7 @@
       </ul>
 
       <form class="w-25 me-3" role="search">
-        <input type="search" name="searchTerm" class="form-control rounded-3" placeholder="Search..." 
+        <input type="search" name="searchTerm" class="form-control rounded-3" placeholder="Search everywhere..." 
           aria-label="Search" [(ngModel)]="searchTerm" (keyup.enter)="search(content, true)">
         <input type="submit" style="display: none" />
       </form>
@@ -22,7 +22,7 @@
 
 <ng-template #content let-offcanvas>
   <div class="offcanvas-header d-flex justify-content-between">
-    <input type="search" name="searchTerm" class="ms-2 w-50 form-control rounded-3" placeholder="Search..." 
+    <input type="search" name="searchTerm" class="ms-2 w-50 form-control rounded-3" placeholder="Search everywhere..." 
           aria-label="Search" [(ngModel)]="searchTerm" (keyup.enter)="search(content, false)">
     <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
   </div>
