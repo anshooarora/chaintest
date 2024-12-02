@@ -72,7 +72,7 @@ public class TestService {
         if (clientId.contains(test.getClientId())) {
             log.error("Attempt to save a duplicate test with clientId {}", test.getClientId());
             return repository.findByClientId(test.getClientId())
-                    .orElseThrow(() -> new IllegalStateException("Unable to save and get existing test with clientId "
+                    .orElseThrow(() -> new DuplicateClientIdException("Unable to save and get existing test with clientId "
                             + test.getClientId()));
         }
         clientId.add(test.getClientId());
@@ -81,7 +81,7 @@ public class TestService {
             throw new MissingBuildPropertyException("Mandatory field [buildId] was not provided for this test");
         }
 
-        if (0L == test.getProjectId()) {
+        if (null == test.getProjectId() || 0L == test.getProjectId()) {
             final int projectId = buildService.findById(test.getBuildId()).getProjectId();
             test.setProjectId(projectId);
         }
