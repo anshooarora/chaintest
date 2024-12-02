@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Entity
 @EqualsAndHashCode
 @DiscriminatorOptions(force = true)
-@Table(name = "tag_stats")
+@Table(name = "tag_stat")
 public class TagStats {
 
     @Id

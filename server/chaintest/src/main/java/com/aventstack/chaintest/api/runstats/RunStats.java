@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @ToString(exclude = "build")
 @Entity
 @EqualsAndHashCode
-@Table(name = "run_stats")
+@Table(name = "run_stat")
 public class RunStats {
 
     @Id
