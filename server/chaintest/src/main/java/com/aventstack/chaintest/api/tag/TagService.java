@@ -56,7 +56,7 @@ public class TagService {
     public Tag create(final Tag tag) {
         final Optional<Tag> found = findByName(tag.getName());
         return found.orElseGet(() -> {
-            log.debug("Saving tag: " + tag);
+            log.debug("Saving tag: {}", tag);
             synchronized (lock) {
                 if (CACHE.containsKey(tag.getName())) {
                     log.debug("Tag " + tag + " exists, returning value from cache");
@@ -70,11 +70,10 @@ public class TagService {
         });
     }
 
-    @Transactional
     @CacheEvict(value = "tags", allEntries = true)
     @CachePut(value = "tag", key = "#tag.id")
     public Tag update(final Tag tag) {
-        log.info("Saving b " + tag);
+        log.info("Saving b {}", tag);
         repository.findById(tag.getId()).ifPresentOrElse(
                 x -> repository.save(tag),
                 () -> { throw new TagNotFoundException("Tag with ID " + tag.getId() + " was not found"); }
@@ -82,22 +81,22 @@ public class TagService {
         return tag;
     }
 
-    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "tags", allEntries = true, condition = "#id > 0"),
             @CacheEvict(value = "tag", key = "#id", condition="#id > 0")
     })
     public void delete(final long id) {
-        log.info("Deleting tag with id " + id);
+        log.info("Deleting tag with id {}", id);
         repository.deleteById(id);
-        log.info("Tag id: " + id + " was deleted successfully");
+        log.info("Tag id: {} was deleted successfully", id);
     }
 
     public void createAssignTags(final Taggable taggable) {
         if (null != taggable.getTags() && !taggable.getTags().isEmpty()) {
             final Set<Tag> tags = taggable.getTags();
             for (final Tag tag : tags) {
-                final Tag created = findByName(tag.getName()).orElse(create(tag));
+                final Tag created = findByName(tag.getName())
+                        .orElse(create(tag));
                 tag.setId(created.getId());
             }
             if (taggable instanceof Test) {

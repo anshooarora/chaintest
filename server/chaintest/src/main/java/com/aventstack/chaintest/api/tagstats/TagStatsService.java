@@ -11,9 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Service
-@Transactional(readOnly = true)
 @Slf4j
+@Service
 public class TagStatsService {
 
     @Autowired
@@ -37,7 +36,6 @@ public class TagStatsService {
         return repository.save(stats);
     }
 
-    @Transactional
     @CacheEvict(value = "tagStat", key = "#id")
     public void delete(final long id) {
         log.info("Deleting TagStats with ID {}", id);

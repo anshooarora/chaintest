@@ -32,9 +32,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
 @Slf4j
-@Transactional(readOnly = true)
+@Service
 public class BuildService {
 
     private static final Map<Long, Map<Integer, RunStats>> RUN_STATS = new ConcurrentHashMap<>();

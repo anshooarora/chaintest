@@ -11,9 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Service
-@Transactional(readOnly = true)
 @Slf4j
+@Service
 public class RunStatsService {
 
     @Autowired
@@ -42,7 +41,6 @@ public class RunStatsService {
         return stats;
     }
 
-    @Transactional
     @CacheEvict(value = "runStat", key = "#id")
     public void delete(final long id) {
         log.info("Deleting RunStats with ID {}", id);

@@ -12,15 +12,15 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
 @Slf4j
-@Transactional(readOnly = true)
+@Service
 public class TestService {
 
     private final Set<String> clientId = ConcurrentHashMap.newKeySet();
@@ -38,14 +38,20 @@ public class TestService {
         this.buildService = buildService;
     }
 
-    public Page<Test> findAll(final String name, final int projectId, final long buildId, final Integer depth, final String result,
-                              final Set<String> tags, final String error, final String op, final Pageable pageable) {
+    public Page<Test> findAll(final String name,
+                              final int projectId,
+                              final long buildId,
+                              final Integer depth,
+                              final String result,
+                              final Set<String> tags,
+                              final String error,
+                              final String op, final Pageable pageable) {
         final Test test = new Test();
         test.setName(name);
         test.setProjectId(projectId);
         test.setBuildId(buildId);
         test.setResult(result);
-        if (null != depth) {
+        if (null != depth && depth >= 0) {
             test.setDepth(depth);
         }
         if (null != tags) {
@@ -62,7 +68,7 @@ public class TestService {
     @Cacheable(value = "test", key = "#id")
     public Test findById(final long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new TestNotFoundException("Not found"));
+                .orElseThrow(() -> new TestNotFoundException("Test with ID " + id + " was not found"));
     }
 
     @Transactional
@@ -93,7 +99,6 @@ public class TestService {
         return repository.save(test);
     }
 
-    @Transactional
     @CacheEvict(value = "tests", allEntries = true)
     @CachePut(value = "test", key = "#test.id")
     public Test update(final Test test) {
@@ -109,7 +114,6 @@ public class TestService {
         return test;
     }
 
-    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "tests", allEntries = true, condition = "#id > 0"),
             @CacheEvict(value = "test", key = "#id", condition="#id > 0")
@@ -120,7 +124,7 @@ public class TestService {
         log.info("Test id: {} was deleted successfully", id);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     @Caching(evict = {
             @CacheEvict(value = "tests", allEntries = true),
             @CacheEvict(value = "test", allEntries = true)
