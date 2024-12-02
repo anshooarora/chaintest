@@ -21,7 +21,7 @@ public class BuildSpec implements Specification<Build> {
     public Predicate toPredicate(final Root<Build> root, final CriteriaQuery<?> query, final CriteriaBuilder cb) {
         final List<Predicate> predicates = new ArrayList<>();
 
-        if (_build.getProjectId() > 0) {
+        if (null != _build.getProjectId() && _build.getProjectId() > 0) {
             predicates.add(cb.equal(root.get(Build_.projectId), _build.getProjectId()));
         }
 

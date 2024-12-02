@@ -28,7 +28,7 @@ public class BuildController {
     private ProjectService projectService;
 
     @GetMapping
-    public ResponseEntity<Page<Build>> findAll(@RequestParam(required = false, defaultValue = "0") final int projectId,
+    public ResponseEntity<Page<Build>> findAll(@RequestParam(required = false) final Integer projectId,
                                                final Pageable pageable) {
         return ResponseEntity.ok(service.findAll(projectId, pageable));
     }

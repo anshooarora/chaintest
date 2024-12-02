@@ -36,7 +36,7 @@ public class Build implements Taggable {
     private long id;
 
     @Column(name = "project_id")
-    private int projectId;
+    private Integer projectId;
 
     @Transient
     private String projectName;

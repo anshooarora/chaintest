@@ -63,7 +63,7 @@ public class BuildService {
     }
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
-    public Page<Build> findAll(final int projectId, final Pageable pageable) {
+    public Page<Build> findAll(final Integer projectId, final Pageable pageable) {
         final Build build = new Build();
         build.setProjectId(projectId);
         final BuildSpec spec = new BuildSpec(build);
