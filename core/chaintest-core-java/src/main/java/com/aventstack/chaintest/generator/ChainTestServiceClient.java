@@ -89,22 +89,16 @@ public class ChainTestServiceClient implements Generator {
         log.trace("Starting new build, but events will only be sent to API if build is successfully created");
 
         final String projectName = _client.config().getConfig().getOrDefault(ChainTestPropertyKeys.PROJECT_NAME, "");
-        Build buildForId;
-        if (!projectName.isBlank()) {
-            buildForId = new Build(projectName, _testRunner);
-        } else {
-            buildForId = new Build(_testRunner);
-        }
-
-        buildForId.setSystemInfo(build.getSystemInfo());
+        Build buildReq = new Build(projectName, _testRunner);
+        buildReq.setSystemInfo(build.getSystemInfo());
 
         try {
-            final HttpResponse<Build> response = _client.retryHandler().trySend(buildForId, Build.class, HttpMethod.POST);
+            final HttpResponse<Build> response = _client.retryHandler().trySend(buildReq, Build.class, HttpMethod.POST);
             if (200 == response.statusCode()) {
-                buildForId = response.body();
+                buildReq = response.body();
                 _build = build;
-                _build.setId(buildForId.getId());
-                _build.setProjectId(buildForId.getProjectId());
+                _build.setId(buildReq.getId());
+                _build.setProjectId(buildReq.getProjectId());
                 CALLBACK_INVOKED.set(true);
                 log.debug("All tests in this run will be associated with buildId: {}", _build.getId());
             }
@@ -163,9 +157,7 @@ public class ChainTestServiceClient implements Generator {
     private void updateAttributes(final Test test) {
         test.setBuildId(_build.getId());
         _build.addTags(test.getTags());
-        if (null != test.getChildren()) {
-            test.getChildren().forEach(this::updateAttributes);
-        }
+        test.getChildren().forEach(this::updateAttributes);
     }
 
     @Override

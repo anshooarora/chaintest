@@ -19,8 +19,6 @@ import java.util.stream.Stream;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Test implements ChainTestEntity {
 
-    private static final Object lock = new Object();
-
     private long id;
     private long buildId;
     private String name;
