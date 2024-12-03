@@ -16,17 +16,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChainPluginService {
-
+    
     private static final Logger log = LoggerFactory.getLogger(ChainPluginService.class);
     private static final String GEN_PATTERN = "chaintest.generator.[a-zA-Z]+.enabled";
     private static final List<Test> _tests = Collections.synchronizedList(new ArrayList<>());
     private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
-    private final String[] props = new String[] {
+    private static final List<String> SYS_PROPS = List.of(
             "java.version",
             "java.vm.name",
             "java.vm.vendor",
@@ -35,8 +34,7 @@ public class ChainPluginService {
             "os.name",
             "os.arch",
             "os.version"
-    };
-
+    );
     public static ChainPluginService INSTANCE;
 
     private final Build _build;
@@ -51,11 +49,8 @@ public class ChainPluginService {
     }
 
     private List<SystemInfo> getProps() {
-        final Properties systemProperties = System.getProperties();
         final List<SystemInfo> list = new ArrayList<>();
-        for (final String prop : props) {
-            list.add(new SystemInfo(prop, systemProperties.getProperty(prop)));
-        }
+        SYS_PROPS.forEach(x -> list.add(new SystemInfo(x, System.getProperties().getProperty(x))));
         return list;
     }
 

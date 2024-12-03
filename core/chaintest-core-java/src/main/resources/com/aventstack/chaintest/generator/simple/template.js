@@ -70,17 +70,22 @@ tags.forEach((e) => {
   })
 });
 
+// resets state: clear all filters and removes modals
+const resetState = () => {
+  filterTests('');
+  toggleSysInfo(false);
+}
+
 // on key down events (shortcuts)
 window.onkeydown = evt => {
   if (evt.metaKey) {
     return;
   }
   const k = evt.key.toLowerCase();
-  console.log(k)
   k === 'p' && filterTests('passed');
   k === 'f' && filterTests('failed');
   k === 's' && filterTests('skipped');
-  k === 'escape' && filterTests('');
+  k === 'escape' && resetState();
 }
 
 // filter only failed tests on load
@@ -88,3 +93,15 @@ const failures = document.querySelectorAll('.test-result.failed').length;
 if (failures > 0) {
     filterTests('failed');
 }
+
+// system-info modal
+const toggleSysInfo = (show) => {
+  let display = 'none';
+  if (show) {
+    display = 'block';
+  }
+  document.querySelector("#sys-info-modal").style.display = display;
+}
+document.querySelector("#sys-info").addEventListener('click', el => {
+    toggleSysInfo(true);
+});

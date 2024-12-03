@@ -7,7 +7,7 @@
   <title>chaintest</title>
   <#if config['offline']>
   <link id="style" href="bootstrap.min.css" rel="stylesheet">
-  <link id="icons" href="bootstrap-icons.min.css" rel="stylesheet">
+  <link id="icons" href="bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="template.css">
   <#else>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -39,6 +39,9 @@
           <form class="d-flex" role="search">
             <span class="btn btn-outline-light btn-sm me-1">${build.startedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
             <span class="btn btn-outline-light btn-sm">${build.durationPretty}</span>
+            <#if build.systemInfo?? && build.systemInfo?has_content>
+            <span id="sys-info" class="btn btn-outline-light btn-sm ms-1"><i class="bi bi-pc-display-horizontal"></i></span>
+            </#if>
           </form>
         </div>
       </div>
@@ -278,6 +281,34 @@
     })();
     </#if>
   </script>
+  </#if>
+
+  <#if build.systemInfo?? && build.systemInfo?has_content>
+  <div id="sys-info-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">SystemInfo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="toggleSysInfo(false)"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <tbody>
+              <#list build.systemInfo as s>
+              <tr>
+                <td>${s.name}</td>
+                <td>${s.value}</td>
+              </tr>
+              </#list>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="toggleSysInfo(false)">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   </#if>
 </body>
 
