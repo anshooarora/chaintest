@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.api.build;
 
+import com.aventstack.chaintest.api.build.system.SystemInfoService;
 import com.aventstack.chaintest.api.project.Project;
 import com.aventstack.chaintest.api.project.ProjectNotSpecifiedException;
 import com.aventstack.chaintest.api.project.ProjectService;
@@ -46,6 +47,7 @@ public class BuildService {
     private final RunStatsService runStatsService;
     private final TagStatsService tagStatsService;
     private final TestService testService;
+    private final SystemInfoService systemInfoService;
 
     @Autowired
     public BuildService(final BuildRepository repository,
@@ -53,13 +55,15 @@ public class BuildService {
                         final ProjectService projectService,
                         final RunStatsService runStatsService,
                         final TagStatsService tagStatsService,
-                        @Lazy final TestService testService) {
+                        @Lazy final TestService testService,
+                        final SystemInfoService systemInfoService) {
         this.repository = repository;
         this.tagService = tagService;
         this.projectService = projectService;
         this.runStatsService = runStatsService;
         this.tagStatsService = tagStatsService;
         this.testService = testService;
+        this.systemInfoService = systemInfoService;
     }
 
     @Cacheable(value = "builds", unless = "#result == null || #result.size == 0")
@@ -107,6 +111,10 @@ public class BuildService {
 
         final Build persisted = repository.save(build);
         initStatsTracker(persisted);
+        if (null != build.getSystemInfo()) {
+            build.getSystemInfo().forEach(x -> x.setBuild(persisted));
+            systemInfoService.saveAll(persisted.getSystemInfo());
+        }
         return persisted;
     }
 
