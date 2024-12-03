@@ -2,6 +2,7 @@ package com.aventstack.chaintest.service;
 
 import com.aventstack.chaintest.conf.ConfigurationManager;
 import com.aventstack.chaintest.domain.Build;
+import com.aventstack.chaintest.domain.SystemInfo;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.generator.Generator;
 import com.aventstack.chaintest.util.RegexUtil;
@@ -15,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -24,6 +26,16 @@ public class ChainPluginService {
     private static final String GEN_PATTERN = "chaintest.generator.[a-zA-Z]+.enabled";
     private static final List<Test> _tests = Collections.synchronizedList(new ArrayList<>());
     private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
+    private final String[] props = new String[] {
+            "java.version",
+            "java.vm.name",
+            "java.vm.vendor",
+            "java.class.version",
+            "java.runtime.name",
+            "os.name",
+            "os.arch",
+            "os.version"
+    };
 
     public static ChainPluginService INSTANCE;
 
@@ -34,7 +46,17 @@ public class ChainPluginService {
     public ChainPluginService(final String testRunner) {
         INSTANCE = this;
         _build = new Build(testRunner);
+        _build.setSystemInfo(getProps());
         _testRunner = testRunner;
+    }
+
+    private List<SystemInfo> getProps() {
+        final Properties systemProperties = System.getProperties();
+        final List<SystemInfo> list = new ArrayList<>();
+        for (final String prop : props) {
+            list.add(new SystemInfo(prop, systemProperties.getProperty(prop)));
+        }
+        return list;
     }
 
     public Build getBuild() {

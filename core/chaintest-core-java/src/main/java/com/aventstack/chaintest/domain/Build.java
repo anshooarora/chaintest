@@ -38,6 +38,7 @@ public class Build implements ChainTestEntity {
     private String gitTags;
     private String gitCommitMessage;
     private boolean isBDD;
+    private List<SystemInfo> systemInfo;
 
     public Build() { }
 
@@ -281,4 +282,13 @@ public class Build implements ChainTestEntity {
     public void setBDD(boolean val) {
         isBDD = val;
     }
+
+    public List<SystemInfo> getSystemInfo() {
+        return systemInfo;
+    }
+
+    public void setSystemInfo(List<SystemInfo> systemInfo) {
+        this.systemInfo = systemInfo;
+    }
+
 }

@@ -96,6 +96,8 @@ public class ChainTestServiceClient implements Generator {
             buildForId = new Build(_testRunner);
         }
 
+        buildForId.setSystemInfo(build.getSystemInfo());
+
         try {
             final HttpResponse<Build> response = _client.retryHandler().trySend(buildForId, Build.class, HttpMethod.POST);
             if (200 == response.statusCode()) {
@@ -160,6 +162,7 @@ public class ChainTestServiceClient implements Generator {
 
     private void updateAttributes(final Test test) {
         test.setBuildId(_build.getId());
+        _build.addTags(test.getTags());
         if (null != test.getChildren()) {
             test.getChildren().forEach(this::updateAttributes);
         }
