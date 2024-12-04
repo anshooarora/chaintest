@@ -6,9 +6,9 @@
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <title>${config['documentTitle']}</title>
   <#if config['offline']>
-  <link id="style" href="bootstrap.min.css" rel="stylesheet">
-  <link id="icons" href="bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="template.css">
+  <link id="style" href="resources/bootstrap.min.css" rel="stylesheet">
+  <link id="icons" href="resources/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="resources/template.css">
   <#else>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   </#if>
@@ -197,8 +197,12 @@
   </div>
   <!-- /page wrapper -->
 
+  <#if config['offline']>
+  <script src="resources/chart.umd.js"></script>
+  <#else>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-  <script src="template.js"></script>
+  </#if>
+  <script src="resources/template.js"></script>
   <#if build.runStats?? && build.runStats?size != 0>
   <script>
     (async function() {
