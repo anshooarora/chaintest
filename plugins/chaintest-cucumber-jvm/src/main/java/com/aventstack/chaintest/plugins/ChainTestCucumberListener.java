@@ -11,6 +11,8 @@ import io.cucumber.plugin.EventListener;
 import io.cucumber.plugin.event.EmbedEvent;
 import io.cucumber.plugin.event.EventHandler;
 import io.cucumber.plugin.event.EventPublisher;
+import io.cucumber.plugin.event.HookTestStep;
+import io.cucumber.plugin.event.HookType;
 import io.cucumber.plugin.event.PickleStepTestStep;
 import io.cucumber.plugin.event.TestCaseFinished;
 import io.cucumber.plugin.event.TestCaseStarted;
@@ -115,25 +117,44 @@ public class ChainTestCucumberListener implements EventListener {
     };
 
     private final EventHandler<TestStepStarted> stepStartedHandler = event -> {
-        log.debug("Step starting: {}", event.getTestCase().getName());
-        final PickleStepTestStep pickle = ((PickleStepTestStep) event.getTestStep());
-        final Test step = new Test(pickle.getStep().getKeyword() + pickle.getStep().getText(),
-                Optional.of("Step"));
-        _scenarios.get(event.getTestCase().getId()).addChild(step);
-        _steps.put(event.getTestStep().getId(), step);
+        if (event.getTestStep() instanceof PickleStepTestStep) {
+            final PickleStepTestStep pickle = ((PickleStepTestStep) event.getTestStep());
+            log.debug("Step starting: {}", pickle.getStep().getText());
+            final Test step = new Test(pickle.getStep().getKeyword() + pickle.getStep().getText(),
+                    Optional.of("Step"));
+            _scenarios.get(event.getTestCase().getId()).addChild(step);
+            _steps.put(event.getTestStep().getId(), step);
+        } else {
+            final HookTestStep step = ((HookTestStep) event.getTestStep());
+            HookType type = step.getHookType();
+            System.out.println(type.name());
+        }
     };
 
     private final EventHandler<TestStepFinished> stepFinishedHandler = event -> {
-        log.debug("Step ending: {}", event.getTestCase().getName());
-        final Test step = _steps.get(event.getTestStep().getId());
-        step.setResult(event.getResult().getStatus().name());
-        step.complete(event.getResult().getError());
+        Test step = null;
+        if (event.getTestStep() instanceof PickleStepTestStep) {
+            step = _steps.get(event.getTestStep().getId());
+        } else if (!event.getResult().getStatus().isOk()) {
+            final HookTestStep hook = ((HookTestStep) event.getTestStep());
+            step = new Test("Hook: " + hook.getHookType().name(), Optional.of("Hook"));
+            _scenarios.get(event.getTestCase().getId()).addChild(step);
+        } else {
+            log.error("Unknown Step type of: {}", event.getTestStep().getClass().getName());
+        }
+        if (null != step) {
+            log.debug("Step ending: {}", step.getName());
+            step.complete(event.getResult().getError());
+            step.setResult(event.getResult().getStatus().name());
+        }
     };
 
     private final EventHandler<EmbedEvent> embedEventhandler = event -> {
+        System.out.println("Embed event: " + event.getData());
     };
 
     private final EventHandler<WriteEvent> writeEventhandler = event -> {
+        _scenarios.get(event.getTestCase().getId()).addLog(event.getText());
     };
 
     private final EventHandler<TestRunFinished> runFinishedHandler = event -> {

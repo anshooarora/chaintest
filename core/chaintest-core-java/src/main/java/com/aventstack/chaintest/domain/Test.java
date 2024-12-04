@@ -33,6 +33,7 @@ public class Test implements ChainTestEntity {
     @JsonIgnore
     private Test parent;
     private volatile List<Test> children = Collections.synchronizedList(new ArrayList<>());
+    private List<String> logs = Collections.synchronizedList(new ArrayList<>());
     private int depth;
     private UUID clientId = UUID.randomUUID();
     private boolean isBDD;
@@ -269,6 +270,18 @@ public class Test implements ChainTestEntity {
 
     public void setDepth(int depth) {
         this.depth = depth;
+    }
+
+    public List<String> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<String> logs) {
+        this.logs = logs;
+    }
+
+    public void addLog(final String log) {
+        logs.add(log);
     }
 
     public UUID getClientId() {

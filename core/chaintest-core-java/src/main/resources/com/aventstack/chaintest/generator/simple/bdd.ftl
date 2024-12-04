@@ -50,10 +50,20 @@
                 <div><span class="badge bg-outline-light">${step.durationPretty}</span></div>
               </div>
               <#if step.error??>
-<pre class="py-2">${step.error}</pre>
+              <pre class="py-2">${step.error}</pre>
               </#if>
             </div>
             </#list>
+            <#if scenario.logs?has_content>
+            <div class="mt-3 mx-2">
+              <p class="h6">Logs</p>
+              <pre>
+              <#list scenario.logs as log>
+${log}
+              </#list>
+              </pre>
+            </div>
+            </#if>
           </div>
           </#list>
         </div>
