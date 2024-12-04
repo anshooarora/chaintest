@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <title>chaintest</title>
+  <title>${config['documentTitle']}</title>
   <#if config['offline']>
   <link id="style" href="bootstrap.min.css" rel="stylesheet">
   <link id="icons" href="bootstrap-icons.css" rel="stylesheet">
