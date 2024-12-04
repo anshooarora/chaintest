@@ -25,6 +25,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String PROP_SAVE_OFFLINE = BASE_PROPERTY + ".offline";
     private static final String PROP_DATETIME_FORMAT = BASE_PROPERTY + ".datetime-format";
     private static final String PROP_DOCUMENT_TITLE = BASE_PROPERTY + ".document-title";
+    private static final String PROP_JS = BASE_PROPERTY + ".js";
+    private static final String PROP_CSS = BASE_PROPERTY + ".css";
     private static final String BASE_TEMPLATE_NAME = "index.ftl";
     private static final String DEFAULT_OUT_FILE_NAME = "Simple.html";
     private static final String DEFAULT_OUT_DIR = "target/chaintest/";
@@ -35,6 +37,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private String _outFileName;
     private String _datetimeFormat;
     private String _documentTitle;
+    private String _js;
+    private String _css;
     private boolean _offline;
 
     @Override
@@ -68,6 +72,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
                 ? DATETIME_FORMAT : _datetimeFormat;
         _documentTitle = config.get().get(PROP_DOCUMENT_TITLE);
         _documentTitle = null == _documentTitle ? ChainTestPropertyKeys.CHAINTEST : _documentTitle;
+        _js = config.get().get(PROP_JS);
+        _css = config.get().get(PROP_CSS);
         _build = build;
 
         log.trace("Start was called for testRunner: {}", testRunner);
@@ -115,7 +121,9 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
                         "documentTitle", _documentTitle,
                         "projectName", _projectName,
                         "offline", _offline,
-                        "datetimeFormat", _datetimeFormat)), _outFileName);
+                        "datetimeFormat", _datetimeFormat,
+                        "js", _js,
+                        "css", _css)), _outFileName);
     }
 
     @Override

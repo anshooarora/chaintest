@@ -12,6 +12,7 @@
   <#else>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   </#if>
+  <#if config['css']??><style>${config['css']}</style></#if>
 </head>
 
 <body>
@@ -280,6 +281,7 @@
       );
     })();
     </#if>
+    <#if config['js']??>${config['js']}</#if>
   </script>
   </#if>
 
