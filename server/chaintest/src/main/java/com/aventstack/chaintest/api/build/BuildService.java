@@ -210,16 +210,11 @@ public class BuildService {
 
     private void persistStats(final Build build) {
         final Map<Integer, RunStats> runStatsMap = RUN_STATS.get(build.getId());
-        for (Map.Entry<Integer, RunStats> entry : runStatsMap.entrySet()) {
-            runStatsService.update(entry.getValue());
-        }
+        runStatsService.updateAll(runStatsMap.values());
 
         final Map<Integer, List<TagStats>> tagStatsMap = TAG_STATS.get(build.getId());
         for (Map.Entry<Integer, List<TagStats>> entry : tagStatsMap.entrySet()) {
-            final List<TagStats> list = entry.getValue();
-            for (final TagStats stat : list) {
-                tagStatsService.update(stat);
-            }
+            tagStatsService.updateAll(entry.getValue());
         }
 
         // if executionStage == {FINISHED}, remove entry from collection

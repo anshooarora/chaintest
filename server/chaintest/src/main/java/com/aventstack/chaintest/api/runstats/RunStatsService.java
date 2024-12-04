@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Slf4j
@@ -39,6 +40,13 @@ public class RunStatsService {
         log.info("Updating run stats: {}", stats);
         repository.save(stats);
         return stats;
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    @Cacheable(value = "runStat")
+    public void updateAll(final Collection<RunStats> stats) {
+        log.info("Updating multiple run stats: {}", stats);
+        repository.saveAll(stats);
     }
 
     @CacheEvict(value = "runStat", key = "#id")

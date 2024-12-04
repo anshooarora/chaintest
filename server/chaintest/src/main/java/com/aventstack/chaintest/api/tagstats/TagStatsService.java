@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -34,6 +35,13 @@ public class TagStatsService {
     public TagStats update(final TagStats stats) {
         log.info("Updating TagStats: {}", stats);
         return repository.save(stats);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    @Cacheable(value = "tagStat")
+    public void updateAll(final List<TagStats> stats) {
+        log.info("Updating list of TagStats: {}", stats);
+        repository.saveAll(stats);
     }
 
     @CacheEvict(value = "tagStat", key = "#id")
