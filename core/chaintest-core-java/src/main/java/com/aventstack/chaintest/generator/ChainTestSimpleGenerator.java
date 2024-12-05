@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.generator;
 
 import com.aventstack.chaintest.domain.Build;
+import com.aventstack.chaintest.domain.Embed;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.util.DateTimeUtil;
 import com.aventstack.chaintest.util.IOUtil;
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class ChainTestSimpleGenerator extends FileGenerator implements Generator {
 
@@ -35,7 +37,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
 
     private Build _build;
     private String _projectName;
-    private String _outFileName;
+    private File _outFile;
     private String _datetimeFormat;
     private String _documentTitle;
     private String _js;
@@ -56,13 +58,14 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
             return;
         }
 
-        _outFileName = config.get().get(PROP_OUT_FILE_NAME);
-        if (null == _outFileName || _outFileName.isEmpty()) {
-            _outFileName = DEFAULT_OUT_DIR + DEFAULT_OUT_FILE_NAME;
+        String outputFileName = config.get().get(PROP_OUT_FILE_NAME);
+        if (null == outputFileName || outputFileName.isEmpty()) {
+            outputFileName = DEFAULT_OUT_DIR + DEFAULT_OUT_FILE_NAME;
         }
-        if (!(_outFileName.endsWith("htm") || _outFileName.endsWith("html"))) {
-            _outFileName += "/" + DEFAULT_OUT_FILE_NAME;
+        if (!(outputFileName.endsWith("htm") || outputFileName.endsWith("html"))) {
+            outputFileName += "/" + DEFAULT_OUT_FILE_NAME;
         }
+        _outFile = new File(outputFileName);
 
         _offline = Boolean.parseBoolean(config.get().get(PROP_SAVE_OFFLINE));
         if (_offline) {
@@ -96,11 +99,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
             return;
         }
 
-        File outputDir = new File(_outFileName);
-        if (!outputDir.isDirectory()) {
-            outputDir = outputDir.getParentFile();
-        }
-        new File(outputDir.getPath() + RESOURCES_DIR).mkdirs();
+        final File parentDir = _outFile.getParentFile();
+        new File(parentDir.getPath() + RESOURCES_DIR).mkdirs();
 
         try {
             final File dir = new File(url.toURI());
@@ -111,7 +111,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
                 log.trace("Copying classpath resource {}", f.getPath());
                 IOUtil.copyClassPathResource(ChainTestSimpleGenerator.class,
                         GENERATOR_NAME + "/" + f.getName(),
-                        outputDir.getPath() + RESOURCES_DIR + "/" + f.getName());
+                        parentDir.getPath() + RESOURCES_DIR + "/" + f.getName());
             }
         } catch (final URISyntaxException e) {
             log.error("Failed to construct URI from url {}", url);
@@ -119,6 +119,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     }
 
     public void flush(final List<Test> tests) {
+        final File resourceDir = new File(_outFile.getParentFile().getPath() + RESOURCES_DIR);
+        saveEmbeds(tests, resourceDir);
         processTemplate(Map.of("build", _build,
                 "tests", tests,
                 "config", Map.of(
@@ -127,7 +129,23 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
                         "offline", _offline,
                         "datetimeFormat", _datetimeFormat,
                         "js", _js,
-                        "css", _css)), _outFileName);
+                        "css", _css)), _outFile);
+    }
+
+    private void saveEmbeds(final List<Test> tests, final File resourceDir) {
+        for (final Test test : tests) {
+            for (final Embed embed : test.getEmbeds()) {
+                final File toFile = embed.makePath(resourceDir);
+                try {
+                    embed.save(toFile);
+                } catch (final Exception e) {
+                    log.error("Failed to save embed for test {} to resource dir {}", test.getName(), resourceDir.getPath());
+                }
+            }
+            if (!test.getChildren().isEmpty()) {
+                saveEmbeds(test.getChildren(), resourceDir);
+            }
+        }
     }
 
     @Override

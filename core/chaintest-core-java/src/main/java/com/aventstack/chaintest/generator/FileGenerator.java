@@ -18,9 +18,8 @@ public abstract class FileGenerator {
 
     private Template _template;
 
-    protected String processTemplate(final Map<String, Object> objectModel, final String outputFile) {
-        final File file = new File(outputFile);
-        final File dir = Files.isDirectory(file.toPath()) ? file : file.getParentFile();
+    protected String processTemplate(final Map<String, Object> objectModel, final File outputFile) {
+        final File dir = Files.isDirectory(outputFile.toPath()) ? outputFile : outputFile.getParentFile();
         if (null != dir) {
             dir.mkdirs();
         }
@@ -31,6 +30,10 @@ public abstract class FileGenerator {
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected String processTemplate(final Map<String, Object> objectModel, final String outputFile) {
+        return processTemplate(objectModel, new File(outputFile));
     }
 
     protected void cacheTemplate(final Class<?> classForTemplateLoading, final String basePackagePath,

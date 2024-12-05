@@ -5,6 +5,7 @@ import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +35,7 @@ public class Test implements ChainTestEntity {
     private Test parent;
     private volatile List<Test> children = Collections.synchronizedList(new ArrayList<>());
     private List<String> logs = Collections.synchronizedList(new ArrayList<>());
+    private List<Embed> embeds = new ArrayList<>();
     private int depth;
     private UUID clientId = UUID.randomUUID();
     private boolean isBDD;
@@ -299,6 +301,26 @@ public class Test implements ChainTestEntity {
     public void setBDD(boolean BDD) {
         isBDD = BDD;
         children.forEach(x -> x.setBDD(BDD));
+    }
+
+    public List<Embed> getEmbeds() {
+        return embeds;
+    }
+
+    public void setEmbeds(List<Embed> embeds) {
+        this.embeds = embeds;
+    }
+
+    public void addEmbed(final String base64, final String mediaType) {
+        embeds.add(new Embed(base64, mediaType));
+    }
+
+    public void addEmbed(final File file, final String mediaType) {
+        embeds.add(new Embed(file, mediaType));
+    }
+
+    public void addEmbed(final byte[] bytes, final String mediaType) {
+        embeds.add(new Embed(bytes, mediaType));
     }
 
 }

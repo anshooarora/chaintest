@@ -64,6 +64,15 @@ ${log}
               </pre>
             </div>
             </#if>
+            <#if scenario.embeds?has_content>
+              <div class="row">
+              <#list scenario.embeds as embed>
+                <div class="embed col-3 mb-1">
+                  <img src="resources/${embed.name}" />
+                </div>
+              </#list>
+              </div>
+            </#if>
           </div>
           </#list>
         </div>

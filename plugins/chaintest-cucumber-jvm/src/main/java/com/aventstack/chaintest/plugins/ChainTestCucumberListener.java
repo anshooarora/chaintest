@@ -12,7 +12,6 @@ import io.cucumber.plugin.event.EmbedEvent;
 import io.cucumber.plugin.event.EventHandler;
 import io.cucumber.plugin.event.EventPublisher;
 import io.cucumber.plugin.event.HookTestStep;
-import io.cucumber.plugin.event.HookType;
 import io.cucumber.plugin.event.PickleStepTestStep;
 import io.cucumber.plugin.event.TestCaseFinished;
 import io.cucumber.plugin.event.TestCaseStarted;
@@ -124,10 +123,6 @@ public class ChainTestCucumberListener implements EventListener {
                     Optional.of("Step"));
             _scenarios.get(event.getTestCase().getId()).addChild(step);
             _steps.put(event.getTestStep().getId(), step);
-        } else {
-            final HookTestStep step = ((HookTestStep) event.getTestStep());
-            HookType type = step.getHookType();
-            System.out.println(type.name());
         }
     };
 
@@ -150,7 +145,7 @@ public class ChainTestCucumberListener implements EventListener {
     };
 
     private final EventHandler<EmbedEvent> embedEventhandler = event -> {
-        System.out.println("Embed event: " + event.getData());
+        _scenarios.get(event.getTestCase().getId()).addEmbed(event.getData(), event.getMediaType());
     };
 
     private final EventHandler<WriteEvent> writeEventhandler = event -> {
