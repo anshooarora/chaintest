@@ -65,8 +65,8 @@ public class Embed {
     }
 
     public String getName() {
-        final String mediaType = this.mediaType.split("/")[1];
-        return uuid + "." + mediaType;
+        final String ext = this.mediaType.split("/")[1];
+        return uuid + "." + ext;
     }
 
     public String id() {
