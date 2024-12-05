@@ -17,6 +17,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+/**
+ * Represents a test in the ChainTest framework.
+ * This class contains information about the test such as its name, description,
+ * class name, start and end times, result, tags, error details, and child tests.
+ * It also provides methods to complete the test and update its statistics.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Test implements ChainTestEntity {
 
@@ -40,8 +46,19 @@ public class Test implements ChainTestEntity {
     private UUID clientId = UUID.randomUUID();
     private boolean isBDD;
 
+    /**
+     * Default constructor.
+     */
     public Test() { }
 
+    /**
+     * Constructs a Test with the specified build ID, name, optional class name, and tags.
+     *
+     * @param buildId the build ID
+     * @param name the name of the test
+     * @param testClass the optional class name of the test
+     * @param tags the tags associated with the test
+     */
     public Test(final long buildId, final String name, final Optional<String> testClass, final Collection<String> tags) {
         setBuildId(buildId);
         setName(name);
@@ -51,6 +68,14 @@ public class Test implements ChainTestEntity {
         testClass.ifPresent(Test.this::setClassName);
     }
 
+    /**
+     * Constructs a Test with the specified build ID, name, optional class name, and tags.
+     *
+     * @param buildId the build ID
+     * @param name the name of the test
+     * @param testClass the optional class name of the test
+     * @param tags the tags associated with the test
+     */
     public Test(final long buildId, final String name, final Optional<String> testClass, final Stream<String> tags) {
         setBuildId(buildId);
         setName(name);
@@ -60,66 +85,162 @@ public class Test implements ChainTestEntity {
         testClass.ifPresent(Test.this::setClassName);
     }
 
+    /**
+     * Constructs a Test with the specified name, optional class name, and tags.
+     *
+     * @param name the name of the test
+     * @param testClass the optional class name of the test
+     * @param tags the tags associated with the test
+     */
     public Test(final String name, final Optional<String> testClass, final Collection<String> tags) {
         this(0L, name, testClass, tags);
     }
 
+    /**
+     * Constructs a Test with the specified name, optional class name, and tags.
+     *
+     * @param name the name of the test
+     * @param testClass the optional class name of the test
+     * @param tags the tags associated with the test
+     */
     public Test(final String name, final Optional<String> testClass, final Stream<String> tags) {
         this(0L, name, testClass, tags);
     }
 
+    /**
+     * Constructs a Test with the specified build ID, name, and optional class name.
+     *
+     * @param buildId the build ID
+     * @param name the name of the test
+     * @param testClass the optional class name of the test
+     */
     public Test(final long buildId, final String name, final Optional<String> testClass) {
         this(buildId, name, testClass, Stream.empty());
     }
 
+    /**
+     * Constructs a Test with the specified name and optional class name.
+     *
+     * @param name the name of the test
+     * @param testClass the optional class name of the test
+     */
     public Test(final String name, final Optional<String> testClass) {
         this(0L, name, testClass);
     }
 
+    /**
+     * Constructs a Test with the specified build ID, name, and tags.
+     *
+     * @param buildId the build ID
+     * @param name the name of the test
+     * @param tags the tags associated with the test
+     */
     public Test(final long buildId, final String name, final Collection<String> tags) {
         this(buildId, name, Optional.empty(), tags);
     }
 
+    /**
+     * Constructs a Test with the specified build ID, name, and tags.
+     *
+     * @param buildId the build ID
+     * @param name the name of the test
+     * @param tags the tags associated with the test
+     */
     public Test(final long buildId, final String name, final Stream<String> tags) {
         this(buildId, name, Optional.empty(), tags);
     }
 
+    /**
+     * Constructs a Test with the specified name and tags.
+     *
+     * @param name the name of the test
+     * @param tags the tags associated with the test
+     */
     public Test(final String name, final Collection<String> tags) {
         this(0L, name, tags);
     }
 
+    /**
+     * Constructs a Test with the specified name and tags.
+     *
+     * @param name the name of the test
+     * @param tags the tags associated with the test
+     */
     public Test(final String name, final Stream<String> tags) {
         this(0L, name, tags);
     }
 
+    /**
+     * Constructs a Test with the specified build ID and name.
+     *
+     * @param buildId the build ID
+     * @param name the name of the test
+     */
     public Test(final long buildId, final String name) {
         this(buildId, name, Stream.empty());
     }
 
+    /**
+     * Constructs a Test with the specified name.
+     *
+     * @param name the name of the test
+     */
     public Test(final String name) {
         setName(name);
     }
 
+    /**
+     * Constructs a Test with the specified build ID, method, and tags.
+     *
+     * @param buildId the build ID
+     * @param method the method representing the test
+     * @param tags the tags associated with the test
+     */
     public Test(final long buildId, final Method method, final Collection<String> tags) {
         this(buildId, method.getName(), tags);
     }
 
+    /**
+     * Constructs a Test with the specified method and tags.
+     *
+     * @param method the method representing the test
+     * @param tags the tags associated with the test
+     */
     public Test(final Method method, final Collection<String> tags) {
         this(0L, method, tags);
     }
 
+    /**
+     * Constructs a Test with the specified build ID and method.
+     *
+     * @param buildId the build ID
+     * @param method the method representing the test
+     */
     public Test(final long buildId, final Method method) {
         this(buildId, method.getName());
     }
 
+    /**
+     * Constructs a Test with the specified method.
+     *
+     * @param method the method representing the test
+     */
     public Test(final Method method) {
         this(0L, method);
     }
 
+    /**
+     * Completes the test with the current result.
+     */
     public void complete() {
         complete(Optional.empty());
     }
 
+    /**
+     * Completes the test with the specified error.
+     *
+     * @param error the optional error that occurred during the test
+     */
     public void complete(final Optional<Throwable> error) {
         setEndedAt(System.currentTimeMillis());
         error.ifPresent(x -> {
@@ -132,9 +253,16 @@ public class Test implements ChainTestEntity {
         }
     }
 
+    /**
+     * Completes the test with the specified error.
+     *
+     * @param error the error that occurred during the test
+     */
     public void complete(final Throwable error) {
         complete(Optional.ofNullable(error));
     }
+
+    // Getters and setters for the fields
 
     public long getId() {
         return id;

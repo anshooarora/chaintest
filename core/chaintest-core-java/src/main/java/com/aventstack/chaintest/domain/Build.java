@@ -13,6 +13,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+/**
+ * Represents a build in the ChainTest framework.
+ * This class contains information about the build such as project details,
+ * execution stage, test runner, git information, and statistics.
+ * It also provides methods to update and complete the build.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Build implements ChainTestEntity {
 
@@ -40,22 +46,47 @@ public class Build implements ChainTestEntity {
     private boolean isBDD;
     private List<SystemInfo> systemInfo;
 
+    /**
+     * Default constructor.
+     */
     public Build() { }
 
+    /**
+     * Constructs a Build with the specified project ID and test runner.
+     *
+     * @param projectId the project ID
+     * @param testRunner the test runner
+     */
     public Build(final int projectId, final String testRunner) {
         this.projectId = projectId;
         this.testRunner = testRunner;
     }
 
+    /**
+     * Constructs a Build with the specified project name and test runner.
+     *
+     * @param projectName the project name
+     * @param testRunner the test runner
+     */
     public Build(final String projectName, final String testRunner) {
         this.projectName = projectName;
         this.testRunner = testRunner;
     }
 
+    /**
+     * Constructs a Build with the specified test runner.
+     *
+     * @param testRunner the test runner
+     */
     public Build(final String testRunner) {
         this.testRunner = testRunner;
     }
 
+    /**
+     * Updates the statistics of the build based on the provided test.
+     *
+     * @param test the test to update statistics from
+     */
     public void updateStats(final Test test) {
         setEndedAt(System.currentTimeMillis());
         setResult(Result.computePriority(getResult(), test.getResult()).getResult());
@@ -96,14 +127,24 @@ public class Build implements ChainTestEntity {
         }
     }
 
+    /**
+     * Completes the build with the specified result.
+     *
+     * @param result the result to set
+     */
     public void complete(final Result result) {
         setEndedAt(System.currentTimeMillis());
         setResult(result.getResult());
     }
 
+    /**
+     * Completes the build with the current result.
+     */
     public void complete() {
         complete(Result.valueOf(result));
     }
+
+    // Getters and setters for the fields
 
     public long getId() {
         return id;
@@ -290,5 +331,4 @@ public class Build implements ChainTestEntity {
     public void setSystemInfo(List<SystemInfo> systemInfo) {
         this.systemInfo = systemInfo;
     }
-
 }
