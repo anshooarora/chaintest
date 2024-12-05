@@ -50,7 +50,9 @@ public class ChainPluginService {
 
     private List<SystemInfo> getProps() {
         final List<SystemInfo> list = new ArrayList<>();
-        SYS_PROPS.forEach(x -> list.add(new SystemInfo(x, System.getProperties().getProperty(x))));
+        for (final String prop : SYS_PROPS) {
+            list.add(new SystemInfo(prop, System.getProperty(prop)));
+        }
         return list;
     }
 

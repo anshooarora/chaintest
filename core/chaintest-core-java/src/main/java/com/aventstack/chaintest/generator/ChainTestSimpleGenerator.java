@@ -51,16 +51,14 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
             return;
         }
 
-        final String enabled = config.get().get(PROP_ENABLED);
-        if (!Boolean.parseBoolean(enabled)) {
+        if (!Boolean.parseBoolean(config.get().get(PROP_ENABLED))) {
             log.debug("{} generator was not enabled. To enable, set property {}=true in your configuration", GENERATOR_NAME, PROP_ENABLED);
             return;
         }
 
-        String outputFileName = config.get().get(PROP_OUT_FILE_NAME);
-        if (null == outputFileName || outputFileName.isEmpty()) {
-            outputFileName = DEFAULT_OUT_DIR + DEFAULT_OUT_FILE_NAME;
-        }
+        String outputFileName = Optional.ofNullable(config.get().get(PROP_OUT_FILE_NAME))
+                .filter(name -> !name.isEmpty())
+                .orElse(DEFAULT_OUT_DIR + DEFAULT_OUT_FILE_NAME);
         if (!(outputFileName.endsWith("htm") || outputFileName.endsWith("html"))) {
             outputFileName += "/" + DEFAULT_OUT_FILE_NAME;
         }
@@ -71,13 +69,12 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
             saveResources();
         }
 
-        _projectName = config.get().get(ChainTestPropertyKeys.PROJECT_NAME);
-        _projectName = null == _projectName ? "" : _projectName;
-        _datetimeFormat = config.get().get(PROP_DATETIME_FORMAT);
-        _datetimeFormat = null == _datetimeFormat || _datetimeFormat.isBlank() || !DateTimeUtil.isPatternValid(_datetimeFormat)
-                ? DATETIME_FORMAT : _datetimeFormat;
-        _documentTitle = config.get().get(PROP_DOCUMENT_TITLE);
-        _documentTitle = null == _documentTitle ? ChainTestPropertyKeys.CHAINTEST : _documentTitle;
+        _projectName = Optional.ofNullable(config.get().get(ChainTestPropertyKeys.PROJECT_NAME)).orElse("");
+        _datetimeFormat = Optional.ofNullable(config.get().get(PROP_DATETIME_FORMAT))
+                .filter(DateTimeUtil::isPatternValid)
+                .orElse(DATETIME_FORMAT);
+        _documentTitle = Optional.ofNullable(config.get().get(PROP_DOCUMENT_TITLE))
+                .orElse(ChainTestPropertyKeys.CHAINTEST);
         _js = config.get().get(PROP_JS);
         _css = config.get().get(PROP_CSS);
         _build = build;
@@ -104,13 +101,12 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
         try {
             final File dir = new File(url.toURI());
             for (final File f : dir.listFiles()) {
-                if (f.getName().endsWith("ftl")) {
-                    continue;
+                if (!f.getName().endsWith("ftl")) {
+                    log.trace("Copying classpath resource {}", f.getPath());
+                    IOUtil.copyClassPathResource(ChainTestSimpleGenerator.class,
+                            GENERATOR_NAME + "/" + f.getName(),
+                            parentDir.getPath() + RESOURCES_DIR + "/" + f.getName());
                 }
-                log.trace("Copying classpath resource {}", f.getPath());
-                IOUtil.copyClassPathResource(ChainTestSimpleGenerator.class,
-                        GENERATOR_NAME + "/" + f.getName(),
-                        parentDir.getPath() + RESOURCES_DIR + "/" + f.getName());
             }
         } catch (final URISyntaxException e) {
             log.error("Failed to construct URI from url {}", url);
