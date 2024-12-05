@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.http;
 
+import com.aventstack.chaintest.conf.ConfigurationManager;
 import com.aventstack.chaintest.domain.ChainTestEntity;
 import com.aventstack.chaintest.domain.Test;
 import org.slf4j.Logger;
@@ -29,19 +30,13 @@ public class HttpRetryHandler {
     private final boolean _throwAfterMaxRetryAttempts;
 
     public HttpRetryHandler(final ChainTestApiClient client, final Map<String, String> config) {
-        this._client = client;
+        _client = client;
 
-        final String maxRetries = config.get(CLIENT_MAX_RETRIES);
-        _maxRetryAttempts = null != maxRetries && maxRetries.matches("\\d+")
-                ? Integer.parseInt(maxRetries) : MAX_RETRY_ATTEMPTS;
+        _maxRetryAttempts = ConfigurationManager.parseConfig(config.get(CLIENT_MAX_RETRIES), MAX_RETRY_ATTEMPTS);
         log.debug("Creating HttpRetryHandler instance for {} retry attempts", _maxRetryAttempts);
 
-        final String retryInterval = config.get(CLIENT_RETRY_INTERVAL);
-        _retryIntervalMs = null != retryInterval && retryInterval.matches("\\d+")
-                ? Integer.parseInt(retryInterval) : RETRY_INTERVAL;
-
-        final String throwAfterMaxRetryAttempts = config.get(CLIENT_THROW_AFTER_RETRY_ATTEMPTS_EXCEEDED);
-        _throwAfterMaxRetryAttempts = Boolean.parseBoolean(throwAfterMaxRetryAttempts);
+        _retryIntervalMs = ConfigurationManager.parseConfig(config.get(CLIENT_RETRY_INTERVAL), RETRY_INTERVAL);
+        _throwAfterMaxRetryAttempts = Boolean.parseBoolean(config.get(CLIENT_THROW_AFTER_RETRY_ATTEMPTS_EXCEEDED));
     }
 
     public HttpRetryHandler(final ChainTestApiClient client, final int maxRetryAttempts,
@@ -69,23 +64,25 @@ public class HttpRetryHandler {
                     return response;
                 }
             } catch (final IOException | InterruptedException e) {
-                if (e instanceof ConnectException) {
-                    log.debug("Failed to connect to the ChainTest service", e);
-                } else if (e instanceof HttpTimeoutException) {
-                    log.debug("Timed out while waiting for ChainTest service response", e);
-                } else {
-                    log.debug("An exception occurred while sending entity", e);
-                }
-                if (i == maxRetryAttempts) {
-                    if (_throwAfterMaxRetryAttempts) {
-                        throw e;
-                    }
-                    break;
-                }
+                handleException(e, i, maxRetryAttempts);
             }
             Thread.sleep(_retryIntervalMs);
         }
         return null;
+    }
+
+    private void handleException(final Exception e, final int attempt, final int maxRetryAttempts) throws IOException, InterruptedException {
+        if (e instanceof ConnectException) {
+            log.debug("Failed to connect to the ChainTest service", e);
+        } else if (e instanceof HttpTimeoutException) {
+            log.debug("Timed out while waiting for ChainTest service response", e);
+        } else {
+            log.debug("An exception occurred while sending entity", e);
+        }
+        if (attempt == maxRetryAttempts && _throwAfterMaxRetryAttempts) {
+            if (e instanceof IOException) throw (IOException) e;
+            if (e instanceof InterruptedException) throw (InterruptedException) e;
+        }
     }
 
     public <T extends ChainTestEntity> HttpResponse<T> trySend(final T entity, final Class<T> clazz, final HttpMethod httpMethod)
@@ -112,16 +109,20 @@ public class HttpRetryHandler {
                 } catch (final InterruptedException ignored) {}
             }
         }
+        handleFailures(failures, size);
+        return failures;
+    }
+
+    private void handleFailures(final Map<String, WrappedResponseAsync<Test>> failures, final int size) {
         if (!failures.isEmpty()) {
             final String message = String.format("Failed to transfer %d of %d tests. Make sure " +
                     "the ChainTest API is UP, ensure client-side logging is enabled or investigate API " +
-            "logs to find the underlying cause.", failures.size(), size);
+                    "logs to find the underlying cause.", failures.size(), size);
             log.error(message);
             if (_throwAfterMaxRetryAttempts) {
                 throw new IllegalStateException(message);
             }
         }
-        return failures;
     }
 
     private void trySendAsyncCollection(final Map<String, WrappedResponseAsync<Test>> collection) {

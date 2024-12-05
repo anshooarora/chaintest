@@ -54,4 +54,12 @@ public class ConfigurationManager {
         return null;
     }
 
+    public static int parseConfig(final String value, final int defaultValue) {
+        return (value != null && value.matches("\\d+")) ? Integer.parseInt(value) : defaultValue;
+    }
+
+    public static long parseConfig(final String value, final long defaultValue) {
+        return (value != null && value.matches("\\d+")) ? Long.parseLong(value) : defaultValue;
+    }
+
 }
