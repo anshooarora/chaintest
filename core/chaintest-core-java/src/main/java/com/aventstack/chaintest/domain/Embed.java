@@ -16,7 +16,12 @@ public class Embed {
     private static final Logger log = LoggerFactory.getLogger(Embed.class);
     private static final List<String> SUPPORTED_MEDIA_TYPES = List.of(
             "image/png",
-            "image/jpg"
+            "image/jpg",
+            "image/jpeg",
+            "image/gif",
+            "image/bmp",
+            "image/webp",
+            "image/tiff"
     );
 
     private final UUID uuid = UUID.randomUUID();

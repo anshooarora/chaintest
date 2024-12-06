@@ -28,6 +28,8 @@ public class Test implements ChainTestEntity {
 
     private long id;
     private long buildId;
+    private UUID clientId = UUID.randomUUID();
+    private String externalId;
     private String name;
     private String description;
     private String className;
@@ -43,7 +45,6 @@ public class Test implements ChainTestEntity {
     private List<String> logs = Collections.synchronizedList(new ArrayList<>());
     private List<Embed> embeds = new ArrayList<>();
     private int depth;
-    private UUID clientId = UUID.randomUUID();
     private boolean isBDD;
 
     /**
@@ -280,6 +281,22 @@ public class Test implements ChainTestEntity {
         this.buildId = buildId;
     }
 
+    public UUID getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
     public String getName() {
         return name;
     }
@@ -414,14 +431,6 @@ public class Test implements ChainTestEntity {
         logs.add(log);
     }
 
-    public UUID getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(UUID clientId) {
-        this.clientId = clientId;
-    }
-
     public boolean isBDD() {
         return isBDD;
     }
@@ -449,6 +458,10 @@ public class Test implements ChainTestEntity {
 
     public void addEmbed(final byte[] bytes, final String mediaType) {
         embeds.add(new Embed(bytes, mediaType));
+    }
+
+    public void addEmbed(final Embed embed) {
+        embeds.add(embed);
     }
 
 }
