@@ -26,7 +26,7 @@ public class ChainTestExecutionCallback
     private static ChainPluginService _service;
 
     @Override
-    public void beforeAll(final ExtensionContext extensionContext) throws Exception {
+    public void beforeAll(final ExtensionContext extensionContext) {
         if (CALLBACK_INVOKED.getAndSet(true)) {
             return;
         }
@@ -36,7 +36,7 @@ public class ChainTestExecutionCallback
     }
 
     @Override
-    public void beforeTestExecution(final ExtensionContext context) throws Exception {
+    public void beforeTestExecution(final ExtensionContext context) {
         final Test test = new Test(context.getDisplayName(),
                 context.getTestClass().map(Class::getName),
                 context.getTags());
@@ -44,7 +44,7 @@ public class ChainTestExecutionCallback
     }
 
     @Override
-    public void afterTestExecution(final ExtensionContext context) throws Exception {
+    public void afterTestExecution(final ExtensionContext context) {
         final Test test = TESTS.get(context.getUniqueId());
         test.complete(context.getExecutionException());
         _service.afterTest(test, context.getExecutionException());

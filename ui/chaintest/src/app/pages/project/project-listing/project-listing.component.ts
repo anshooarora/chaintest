@@ -15,8 +15,8 @@ import { Build } from "../../../model/build.model";
 })
 export class ProjectListingComponent implements OnInit, OnDestroy {
 
-  private _destroy$: Subject<any> = new Subject<any>();
-  private _build$: Subject<any> = new Subject<any>();
+  private readonly _destroy$: Subject<any> = new Subject<any>();
+  private readonly _build$: Subject<any> = new Subject<any>();
 
   moment: any = moment;
 
@@ -35,6 +35,8 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroy$.next(null);
     this._destroy$.complete();
+    this._build$.next(null);
+    this._build$.complete();
   }
 
   findAllProjects(pageNumber: number = 0): void {

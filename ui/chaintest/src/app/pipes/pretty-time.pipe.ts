@@ -6,22 +6,21 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class PrettyTimePipe implements PipeTransform {
 
   transform(value: number, ...args: unknown[]): unknown {
-    if (1000 > value) {
+    if (value < 1000) {
       return `${value}ms`;
     }
     
-    const millis = value % 1000;
     const secs = Math.floor((value / 1000) % 60);
-    if (60000 > value) {
+    if (value < 60000) {
       return `${secs}s`;
     }
 
     const mins = Math.floor((value / (60 * 1000)) % 60);
-    if (3600000 > value) {
+    if (value < 3600000) {
       return `${mins}m ${secs}s`;
     }
 
-    const hours = Math.floor((value / (3600 * 1000)) % 3600);
+    const hours = Math.floor(value / (3600 * 1000));
     return `${hours}h ${mins}m ${secs}s`;
   }
 

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BuildListingComponent } from './pages/build/build-listing/build-listing.component';
 import { ProjectListingComponent } from './pages/project/project-listing/project-listing.component';
-import { TestListingComponent } from './pages/test/test-listing/test-listing.component';
 import { BuildComponent } from './pages/build/build/build.component';
 
 const routes: Routes = [
