@@ -11,4 +11,7 @@ export class TestComponent {
   @Input()
   test: Test;
 
+  @Input()
+  bdd: boolean;
+
 }

@@ -1,4 +1,4 @@
-<div class="card test-card test" [ngClass]="test.result">
+<div class="card test-card test" [ngClass]="test.result" *ngIf="!bdd">
   <div class="card-body">
     <h5 class="card-title">{{test.name}}</h5>
     <div class="d-flex justify-content-between">
@@ -16,5 +16,38 @@
       </div>
     </div>
     <pre class="mt-3" *ngIf="test.error">{{test.error}}</pre>
+  </div>
+</div>
+
+<div class="card test-card" [ngClass]="{'bdd': test.bdd}" *ngIf="bdd">
+  <div class="card-body">
+    <h5 class="card-title feature" [ngClass]="test.result">{{test.name}}</h5>
+    <div class="small">
+      <span class="me-2">
+        <i class="bi bi-clock me-1"></i> {{test.startedAt | date:'yyyy-MM-dd h:m:s a'}} - {{test.endedAt | date:'yyyy-MM-dd h:m:s a'}}
+      </span>
+      <span class="">
+        <i class="bi bi-hourglass me-1"></i> {{test.durationMs | prettyTime}}
+      </span>
+    </div>
+    <div *ngIf="test.children">
+      <div *ngFor="let scenario of test.children">
+        <div class="scenario" [ngClass]="scenario.result">{{scenario.name}}
+          <div *ngIf="scenario.children">
+            <div *ngFor="let step of scenario.children">
+              <div class="step d-flex justify-content-between" [ngClass]="step.result">
+                <div>
+                  {{step.name}}
+                  <pre *ngIf="step.error">{{step.error}}</pre>
+                </div>
+                <div>
+                  <span class="me-3 badge bg-light-subtle text-secondary fw-semibold">{{step.durationMs | prettyTime}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

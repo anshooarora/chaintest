@@ -29,12 +29,8 @@
   <div class="offcanvas-body px-4">
     <div *ngIf="page && page.content">
       <ng-container *ngFor="let test of page.content">
-        <ng-container *ngIf="test.bdd">
-          <app-feature [feature]="test" />
-        </ng-container>
-
-        <ng-container *ngIf="!test.bdd">
-          <app-test [test]="test" />
+        <ng-container>
+          <app-test [test]="test" [bdd]="test.bdd" />
         </ng-container>
       </ng-container>
     </div>

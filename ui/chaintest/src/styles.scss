@@ -19,13 +19,9 @@
   --light-bg: rgb(235, 238, 242);
 }
 
-html:not([data-theme-mode=dark]) body {
-  background-color: #fff;
-}
-
 body {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, Ubuntu, 'Helvetica Neue', sans-serif;
-  font-size: 0.9rem;;
+  font-size: 0.9rem;
 }
 
 a {

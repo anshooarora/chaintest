@@ -73,6 +73,9 @@ public class Test implements Taggable {
     @Column
     private String result;
 
+    @Column
+    private Boolean bdd;
+
     @ManyToMany
     @JoinTable(
             name = "test_tag_rel",
