@@ -21,7 +21,12 @@
 
 <div class="card test-card" [ngClass]="{'bdd': test.bdd}" *ngIf="bdd">
   <div class="card-body">
-    <h5 class="card-title feature" [ngClass]="test.result">{{test.name}}</h5>
+    <div class="d-flex justify-content-between">
+      <h5 class="card-title feature" [ngClass]="test.result">{{test.name}}</h5>
+      <div *ngIf="showMeta">
+        <a [routerLink]="['builds', test.buildId]"><span class="badge bg-outline-light me-1">Go to build <i class="ms-1 bi bi-arrow-up-right-square"></i></span></a>
+      </div>
+    </div>
     <div class="small">
       <span class="me-2">
         <i class="bi bi-clock me-1"></i> {{test.startedAt | date:'yyyy-MM-dd h:m:s a'}} - {{test.endedAt | date:'yyyy-MM-dd h:m:s a'}}

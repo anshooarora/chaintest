@@ -10,12 +10,16 @@
       </ul>
 
       <form class="w-25 me-3" role="search">
-        <input type="search" name="searchTerm" class="form-control rounded-3" placeholder="Search everywhere..." 
-          aria-label="Search" [(ngModel)]="searchTerm" (keyup.enter)="search(content, true)">
-        <input type="submit" style="display: none" />
+        <div class="input-group">
+          <input type="search" name="searchTerm" class="form-control" placeholder="Search everywhere..." 
+            aria-label="Search" [(ngModel)]="searchTerm" (keyup.enter)="search(content, true)">
+          <span class="input-group-text pointer" *ngIf="page && page.content" 
+            (click)="openEnd(content)"><i class="bi bi-layout-text-sidebar"></i></span>
+          <input type="submit" style="display: none" />
+        </div>
       </form>
 
-      <span class="pointer border rounded-5 px-2 py-1"><i class="bi bi-sliders"></i></span>
+      <span class="pointer px-2 py-1"><i class="bi bi-sliders"></i></span>
     </div>
   </div>
 </header>
@@ -30,7 +34,7 @@
     <div *ngIf="page && page.content">
       <ng-container *ngFor="let test of page.content">
         <ng-container>
-          <app-test [test]="test" [bdd]="test.bdd" />
+          <app-test [test]="test" [bdd]="test.bdd" [showMeta]="true" />
         </ng-container>
       </ng-container>
     </div>

@@ -14,4 +14,7 @@ export class TestComponent {
   @Input()
   bdd: boolean;
 
+  @Input()
+  showMeta: boolean;
+
 }
