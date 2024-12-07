@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -143,7 +144,8 @@ public class ChainPluginService {
     }
 
     private void embed(final List<Test> tests, final String externalId, final Embed embed) {
-        final Optional<Test> any = tests.stream().filter(test -> null != test.getExternalId() && test.getExternalId().equals(externalId)).findAny();
+        final Predicate<Test> predicate = test -> null != test.getExternalId() && test.getExternalId().equals(externalId);
+        final Optional<Test> any = tests.stream().filter(predicate).findAny();
         if (any.isPresent()) {
             any.get().addEmbed(embed);
             _embeds.remove(externalId);
