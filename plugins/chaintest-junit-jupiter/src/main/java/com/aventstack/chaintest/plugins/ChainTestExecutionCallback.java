@@ -40,6 +40,7 @@ public class ChainTestExecutionCallback
         final Test test = new Test(context.getDisplayName(),
                 context.getTestClass().map(Class::getName),
                 context.getTags());
+        test.setExternalId(context.getUniqueId());
         TESTS.put(context.getUniqueId(), test);
     }
 
