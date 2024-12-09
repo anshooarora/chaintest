@@ -1,0 +1,10 @@
+<div class="card pb-3" *ngIf="data.labels && data.labels.length">
+  <div class="card-header pt-3">
+    <h6>Duration <small class="text-secondary">(seconds)</small></h6>
+  </div>
+  <div class="card-body py-0">
+    <div class="mx-auto" style="max-height: 125px;">
+      <canvas baseChart [type]="chartType" [data]="data" [options]="options"></canvas>
+    </div>
+  </div>
+</div>

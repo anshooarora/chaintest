@@ -19,6 +19,7 @@ import { PrettyTimePipe } from './pipes/pretty-time.pipe';
 import { FeatureComponent } from './components/feature/feature.component';
 import { TestComponent } from './components/test/test.component';
 import { BuildsTrendComponent } from './components/builds-trend/builds-trend.component';
+import { BuildsDurationComponent } from './components/builds-duration/builds-duration.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { BuildsTrendComponent } from './components/builds-trend/builds-trend.com
     PrettyTimePipe,
     FeatureComponent,
     TestComponent,
-    BuildsTrendComponent
+    BuildsTrendComponent,
+    BuildsDurationComponent
   ],
   imports: [
     BrowserModule,
