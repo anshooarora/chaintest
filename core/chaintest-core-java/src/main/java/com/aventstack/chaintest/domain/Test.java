@@ -28,6 +28,7 @@ public class Test implements ChainTestEntity {
 
     private long id;
     private long buildId;
+    private long projectId;
     private UUID clientId = UUID.randomUUID();
     private String externalId;
     private String name;
@@ -279,6 +280,14 @@ public class Test implements ChainTestEntity {
 
     public void setBuildId(long buildId) {
         this.buildId = buildId;
+    }
+
+    public long getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(long projectId) {
+        this.projectId = projectId;
     }
 
     public UUID getClientId() {

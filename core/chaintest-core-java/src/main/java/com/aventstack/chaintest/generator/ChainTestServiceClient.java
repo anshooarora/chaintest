@@ -156,6 +156,7 @@ public class ChainTestServiceClient implements Generator {
 
     private void updateAttributes(final Test test) {
         test.setBuildId(_build.getId());
+        test.setProjectId(_build.getProjectId());
         _build.addTags(test.getTags());
         test.getChildren().forEach(this::updateAttributes);
     }
