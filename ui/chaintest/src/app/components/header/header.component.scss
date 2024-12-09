@@ -1,78 +1,11 @@
-pre {
-  white-space: pre-wrap;
-  margin-bottom: 0;
-  max-height: 20rem;
+.nav-link {
+  color: inherit;
 }
 
-.test-card {
-  font-size: .85rem;
-}
-
-.test {
-  .card-title {
-    font-size: .95rem !important;
-  }
-
-  &.FAILED {
-    border-color: rgb(230, 51, 78);
-
-    .card-title {
-      color: rgb(230, 51, 78);
-    }
-  }
-}
-
-.bdd {
-  .feature {
-    font-size: 1rem !important;
-    
-    &.FAILED {
-      color: rgb(230, 51, 78);
-    }
-  }
-
-  .scenario {
-    margin-top: 1.5rem !important;
-
-    &.FAILED::before {
-      font-family:'Bootstrap-icons';
-      content:'\F332';
-      color: rgb(230, 51, 78);
-      margin-right: .25rem;
-    }
-
-    > div > div:first-child {
-      margin-top: .5rem
-    }
-
-    > div > div:first-child > div {
-      border-top-left-radius: .5rem;
-      border-top-right-radius: .5rem;
-    }
-
-    > div > div:last-child > div {
-      border-bottom-left-radius: .5rem;
-      border-bottom-right-radius: .5rem;
-    }
-  }
-
-  .step {
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-left: 1rem;
-    margin-bottom: 1px;
-
-    &.FAILED {
-      background-color: rgb(253, 237, 243);
-      color: rgb(184, 34, 72);
-    }
-    &.PASSED {
-      background-color: rgb(234, 250, 240);
-      color: rgb(40, 97, 61);
-    }
-    &.SKIPPED {
-      background-color: rgb(254, 248, 230);
-      color: rgb(116, 88, 36);
-    }
+.header-link {
+  &.active {
+    color: var(--primary-bg);
+    border-bottom: 2px solid var(--primary-bg);
+    margin-bottom: -10px;
   }
 }

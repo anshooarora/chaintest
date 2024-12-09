@@ -10,7 +10,7 @@ import { Page } from '../model/page.model';
 export abstract class BaseService<T> {
 
   protected _path: string;
-  protected _api_endpoint: URL;  
+  protected _api_endpoint: URL;
 
   protected constructor(uri: string, protected http: HttpClient) {
     this._path = environment.apiVersion + uri;

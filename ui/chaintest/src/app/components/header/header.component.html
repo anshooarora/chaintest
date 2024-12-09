@@ -6,7 +6,14 @@
       </a>
 
       <ul class="nav col-auto me-auto justify-content-center mb-md-0">
-        <li *ngIf="project"><a [routerLink]="[]" class="nav-link px-2 link-secondary">{{project.name}}</a></li>
+        <li><a [routerLink]="['/']" class="nav-link px-2 link-dark">Projects <i class="bi bi-chevron-right" *ngIf="project"></i></a></li>
+        <li *ngIf="project"><a [routerLink]="[]" class="nav-link px-2 link-dark">{{project.name}} <i class="bi bi-chevron-right"></i></a></li>
+        <li class="header-link" [ngClass]="{'active': uri == 'builds'}" *ngIf="project">
+          <a [routerLink]="['projects', projectId, 'builds']" class="nav-link">Builds</a>
+        </li>
+        <li class="header-link" [ngClass]="{'active': uri == 'tags'}" *ngIf="project">
+          <a [routerLink]="['projects', projectId, 'tags']" class="nav-link">Tags</a>
+        </li>
       </ul>
 
       <form class="w-25 me-3" role="search">

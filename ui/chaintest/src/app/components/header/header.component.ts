@@ -25,8 +25,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   error: any;
   page: Page<Test>;
   pageNum: number = 0;
-  project: Project;
+  project: Project | null;
   uri: any;
+  projectId: any;
 
   constructor(private router: Router,
     private projectService: ProjectService,
@@ -36,8 +37,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.router.events.subscribe(val => {
       if (val instanceof RoutesRecognized) {
+        console.log(val)
         this.uri = val.state.root.firstChild?.url.at(-1)?.path;
-        this.findProject(val.state.root.firstChild?.params['projectId']);
+        this.projectId = val.state.root.firstChild?.params['projectId'];
+        this.findProject(this.projectId);
       }
     });
   }
@@ -50,6 +53,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   findProject(id: any): void {
+    if (typeof id === 'undefined') {
+      this.project = null;
+      return;
+    }
+
     this.projectService.find(id)
     .pipe(takeUntil(this._destroyProject$))
     .subscribe({

@@ -19,7 +19,18 @@ export class BuildsDurationComponent {
   data: ChartData<any> = {
     labels: [],
     datasets: [
-      { label: 'Duration', data: [], borderWidth: 1, pointRadius: 3 }
+      { 
+        label: 'Duration', 
+        data: [], 
+        borderWidth: 2, 
+        pointRadius: 1, 
+        stepped: false, 
+        fill: { 
+          target: 'origin', 
+          above: 'rgba(0, 123, 255, 0.1)',
+          below: 'rgba(0, 123, 255, 0.1)',
+        } 
+      }
     ]
   };
   options: ChartOptions<any> = {
