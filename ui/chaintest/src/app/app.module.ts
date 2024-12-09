@@ -20,6 +20,7 @@ import { FeatureComponent } from './components/feature/feature.component';
 import { TestComponent } from './components/test/test.component';
 import { BuildsTrendComponent } from './components/builds-trend/builds-trend.component';
 import { BuildsDurationComponent } from './components/builds-duration/builds-duration.component';
+import { TagListingComponent } from './pages/tag/tag-listing/tag-listing.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { BuildsDurationComponent } from './components/builds-duration/builds-dur
     FeatureComponent,
     TestComponent,
     BuildsTrendComponent,
-    BuildsDurationComponent
+    BuildsDurationComponent,
+    TagListingComponent
   ],
   imports: [
     BrowserModule,
