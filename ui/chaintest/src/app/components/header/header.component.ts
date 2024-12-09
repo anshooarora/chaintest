@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { Router, RoutesRecognized } from '@angular/router';
 import { TestService } from '../../services/test.service';
 import { Test } from '../../model/test.model';
 import { Page } from '../../model/page.model';
@@ -26,17 +26,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   page: Page<Test>;
   pageNum: number = 0;
   project: Project;
+  uri: any;
 
-  constructor(private route: ActivatedRoute, 
+  constructor(private router: Router,
     private projectService: ProjectService,
     private testService: TestService, 
     private errorService: ErrorHandlerService) { }
 
   ngOnInit(): void {
-    const projectId = this.route.snapshot.paramMap.get('projectId');
-    if (projectId) {
-      this.findProject(projectId);
-    }
+    this.router.events.subscribe(val => {
+      if (val instanceof RoutesRecognized) {
+        this.uri = val.state.root.firstChild?.url.at(-1)?.path;
+        this.findProject(val.state.root.firstChild?.params['projectId']);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -52,6 +55,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (project: Project) => {
         this.project = project;
+        console.log(this.project)
       },
       error: (err) => {
         this.error = this.errorService.getError(err);
@@ -74,7 +78,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.pageNum = num;
     
-    this.testService.search(0, this.searchTerm, 0, -1, '', '', this.searchTerm, this.pageNum, 'OR')
+    this.testService.q(this.searchTerm, this.pageNum)
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (tests: Page<Test>) => {

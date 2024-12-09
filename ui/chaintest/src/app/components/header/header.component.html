@@ -1,4 +1,4 @@
-<header class="px-3 py-2 mb-3 border-bottom">
+<header class="px-3 py-2 border-bottom">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       <a [routerLink]="['']" class="pointer text-primary fw-semibold fs-6 me-5">
@@ -6,11 +6,12 @@
       </a>
 
       <ul class="nav col-auto me-auto justify-content-center mb-md-0">
-        <li *ngIf="project"><a href="#" class="nav-link px-2 link-secondary">{{project.name}}</a></li>
+        <li *ngIf="project"><a [routerLink]="[]" class="nav-link px-2 link-secondary">{{project.name}}</a></li>
       </ul>
 
       <form class="w-25 me-3" role="search">
         <div class="input-group">
+          <span class="input-group-text bg-body"><i class="bi bi-search small"></i></span>
           <input type="search" name="searchTerm" class="form-control" placeholder="Search everywhere..." 
             aria-label="Search" [(ngModel)]="searchTerm" (keyup.enter)="search(content, true)">
           <span class="input-group-text pointer" *ngIf="page && page.content" 
