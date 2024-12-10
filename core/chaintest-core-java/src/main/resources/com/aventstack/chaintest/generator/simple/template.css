@@ -244,10 +244,10 @@ pre {
   background-color: rgb(221, 91, 96) !important;
 }
 .page.bdd .passed.bg {
-  background-color: rgb(234, 250, 240) !important;
+  background-color: rgb(184, 217, 154) !important;
 }
 .page.bdd .failed.bg {
-  background-color: rgb(253, 237, 243) !important;
+  background-color: rgb(252, 169, 189) !important;
 }
 .page.bdd .skipped.bg {
   background-color: lightgrey;
