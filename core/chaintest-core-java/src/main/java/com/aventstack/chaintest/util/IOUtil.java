@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 public class IOUtil {
@@ -15,6 +14,10 @@ public class IOUtil {
     public static void copyClassPathResource(final Class<?> clazz, final String resourcePath, final String copyToPath) {
         try {
             final InputStream in = clazz.getResourceAsStream(resourcePath);
+            if (null == in) {
+                throw new IllegalArgumentException("Unable to find resource " + resourcePath);
+            }
+
             final FileOutputStream out = new FileOutputStream(copyToPath);
             final byte[] b = new byte[1024];
             int noOfBytes = 0;
@@ -25,7 +28,7 @@ public class IOUtil {
             out.close();
         } catch (final FileNotFoundException e) {
             log.error("Resource file {} was not found", resourcePath, e);
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             log.error("An exception occurred while moving resource {} to {}", resourcePath, copyToPath, e);
         }
     }

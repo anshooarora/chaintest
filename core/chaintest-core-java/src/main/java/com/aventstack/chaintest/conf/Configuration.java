@@ -64,18 +64,21 @@ public class Configuration {
     public void loadFromClasspathResource(final String resource) throws IOException {
         log.trace("Loading configuration from resource {}", resource);
         final Properties properties = new Properties();
-        final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-        if (null != is) {
-            properties.load(is);
-            loadFromProperties(properties);
+        try (final InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource)) {
+            if (is != null) {
+                properties.load(is);
+                loadFromProperties(properties);
+            }
         }
         log.trace("Configuration entries after loading from resource {}: {}", resource, _config);
     }
 
     public void loadFromProperties(final Properties properties) {
-        properties.stringPropertyNames().stream()
-                .filter(x -> x.startsWith(APP_NAME))
-                .forEach(x -> _config.put(x, properties.getProperty(x)));
+        properties.forEach((key, value) -> {
+            if (key.toString().startsWith(APP_NAME)) {
+                _config.put(key.toString(), value.toString());
+            }
+        });
     }
 
 }
