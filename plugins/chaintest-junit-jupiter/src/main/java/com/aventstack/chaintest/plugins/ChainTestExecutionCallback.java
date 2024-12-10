@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,25 +38,39 @@ public class ChainTestExecutionCallback
 
     @Override
     public void beforeTestExecution(final ExtensionContext context) {
-        final Test test = new Test(context.getDisplayName(),
-                context.getTestClass().map(Class::getName),
-                context.getTags());
+        final String className = context.getTestClass().get().getName();
+        TESTS.computeIfAbsent(className, key -> {
+            final Test test = new Test(className, Optional.of(className), context.getTags());
+            test.setExternalId("C" + context.getUniqueId());
+            return test;
+        });
+
+        final Test test = new Test(context.getDisplayName(), Optional.of(className), context.getTags());
         test.setExternalId(context.getUniqueId());
-        TESTS.put(context.getUniqueId(), test);
+        TESTS.get(className).addChild(test);
     }
 
     @Override
     public void afterTestExecution(final ExtensionContext context) {
-        final Test test = TESTS.get(context.getUniqueId());
+        final Test test = TESTS.get(context.getTestClass().get().getName())
+                .getChildren()
+                .stream()
+                .filter(t -> t.getExternalId().equals(context.getUniqueId()))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("Test not found"));
         test.complete(context.getExecutionException());
-        _service.afterTest(test, context.getExecutionException());
         log.trace("Ended test {} with status {}", test.getName(), test.getResult());
     }
 
     @Override
     public void afterAll(final ExtensionContext extensionContext) {
         log.trace("Executing afterAll hook");
-        _service.flush();
+        final String className = extensionContext.getTestClass().get().getName();
+        final Test test = TESTS.get(extensionContext.getTestClass().get().getName());
+        if (null != test) {
+            _service.afterTest(test, Optional.empty());
+            _service.flush();
+        }
     }
 
 }
