@@ -237,14 +237,23 @@ pre {
 .text-danger, .text-failed {
   color: rgb(221, 91, 96) !important;
 }
-.page.bdd .passed.bg, .bg-success {
+.bg-success {
   background-color: rgb(140, 197, 83) !important;
 }
-.page.bdd .failed.bg, .bg-danger {
+.bg-danger {
   background-color: rgb(221, 91, 96) !important;
+}
+.page.bdd .passed.bg {
+  background-color: rgb(234, 250, 240) !important;
+}
+.page.bdd .failed.bg {
+  background-color: rgb(253, 237, 243) !important;
 }
 .page.bdd .skipped.bg {
   background-color: lightgrey;
+}
+.page.bdd pre {
+  background-color: transparent !important
 }
 .bg {
   margin-bottom: .5px;
