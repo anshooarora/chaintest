@@ -44,7 +44,6 @@ public class ChainTestExecutionCallback
             test.setExternalId("C" + context.getUniqueId());
             return test;
         });
-
         final Test test = new Test(context.getDisplayName(), Optional.of(className), context.getTags());
         test.setExternalId(context.getUniqueId());
         TESTS.get(className).addChild(test);
@@ -53,10 +52,8 @@ public class ChainTestExecutionCallback
     @Override
     public void afterTestExecution(final ExtensionContext context) {
         final Test test = TESTS.get(context.getTestClass().get().getName())
-                .getChildren()
-                .stream()
-                .filter(t -> t.getExternalId().equals(context.getUniqueId()))
-                .findAny()
+                .getChildren().stream()
+                .filter(t -> t.getExternalId().equals(context.getUniqueId())).findAny()
                 .orElseThrow(() -> new IllegalStateException("Test not found"));
         test.complete(context.getExecutionException());
         log.trace("Ended test {} with status {}", test.getName(), test.getResult());
@@ -65,7 +62,6 @@ public class ChainTestExecutionCallback
     @Override
     public void afterAll(final ExtensionContext extensionContext) {
         log.trace("Executing afterAll hook");
-        final String className = extensionContext.getTestClass().get().getName();
         final Test test = TESTS.get(extensionContext.getTestClass().get().getName());
         if (null != test) {
             _service.afterTest(test, Optional.empty());
