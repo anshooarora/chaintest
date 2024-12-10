@@ -34,24 +34,15 @@ public class ConfigurationManager {
     }
 
     public static Map<String, String> getConfig() {
-        if (getConfiguration().isPresent()) {
-            return getConfiguration().get().getConfig();
-        }
-        return null;
+        return getConfiguration().map(Configuration::getConfig).orElse(null);
     }
 
     public static boolean containsKey(final String key) {
-        if (getConfiguration().isPresent()) {
-            return getConfiguration().get().getConfig().containsKey(key);
-        }
-        return false;
+        return getConfiguration().map(config -> config.getConfig().containsKey(key)).orElse(false);
     }
 
     public static String getValue(final String key) {
-        if (getConfiguration().isPresent()) {
-            return getConfiguration().get().getConfig().get(key);
-        }
-        return null;
+        return getConfiguration().map(config -> config.getConfig().get(key)).orElse(null);
     }
 
     public static int parseConfig(final String value, final int defaultValue) {
