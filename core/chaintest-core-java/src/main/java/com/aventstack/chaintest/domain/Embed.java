@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.domain;
 
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +12,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
+@Data
 public class Embed {
 
     private static final Logger log = LoggerFactory.getLogger(Embed.class);
@@ -78,27 +80,4 @@ public class Embed {
         return uuid.toString();
     }
 
-    public String getBase64() {
-        return base64;
-    }
-
-    public void setBase64(String base64) {
-        this.base64 = base64;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public byte[] getBytes() {
-        return bytes;
-    }
-
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
-    }
 }

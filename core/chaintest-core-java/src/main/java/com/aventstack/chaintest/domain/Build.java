@@ -3,6 +3,7 @@ package com.aventstack.chaintest.domain;
 import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
  * It also provides methods to update and complete the build.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class Build implements ChainTestEntity {
 
     private long id;
@@ -49,12 +51,13 @@ public class Build implements ChainTestEntity {
     /**
      * Default constructor.
      */
-    public Build() { }
+    public Build() {
+    }
 
     /**
      * Constructs a Build with the specified project ID and test runner.
      *
-     * @param projectId the project ID
+     * @param projectId  the project ID
      * @param testRunner the test runner
      */
     public Build(final int projectId, final String testRunner) {
@@ -66,7 +69,7 @@ public class Build implements ChainTestEntity {
      * Constructs a Build with the specified project name and test runner.
      *
      * @param projectName the project name
-     * @param testRunner the test runner
+     * @param testRunner  the test runner
      */
     public Build(final String projectName, final String testRunner) {
         this.projectName = projectName;
@@ -92,7 +95,7 @@ public class Build implements ChainTestEntity {
         setResult(Result.computePriority(getResult(), test.getResult()).getResult());
         updateRunStats(test);
         updateTagStats(test);
-        test.setBDD(isBDD());
+        test.setIsBdd(isBDD());
     }
 
     private void updateRunStats(final Test test) {
@@ -144,110 +147,18 @@ public class Build implements ChainTestEntity {
         complete(Result.valueOf(result));
     }
 
-    // Getters and setters for the fields
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public int getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(int projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public long getStartedAt() {
-        return startedAt;
-    }
-
-    public void setStartedAt(long startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public Long getEndedAt() {
-        return endedAt;
-    }
-
-    public void setEndedAt(Long endedAt) {
+    public void setEndedAt(final Long endedAt) {
         this.endedAt = endedAt;
         setDurationMs(endedAt - startedAt);
-    }
-
-    public long getDurationMs() {
-        return durationMs;
-    }
-
-    public void setDurationMs(long durationMs) {
-        this.durationMs = durationMs;
     }
 
     public String getDurationPretty() {
         return TimeUtil.getPrettyTime(getDurationMs());
     }
 
-    public List<RunStats> getRunStats() {
-        return runStats;
-    }
-
-    public Set<TagStats> getTagStats() {
-        return tagStats;
-    }
-
-    public ExecutionStage getExecutionStage() {
-        return executionStage;
-    }
-
-    public void setExecutionStage(ExecutionStage executionStage) {
-        this.executionStage = executionStage;
-    }
-
-    public String getTestRunner() {
-        return testRunner;
-    }
-
-    public void setTestRunner(String testRunner) { this.testRunner = testRunner; }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
-
-    public void setEndedAt(long endedAt) {
+    public void setEndedAt(final long endedAt) {
         this.endedAt = endedAt;
         this.durationMs = endedAt - startedAt;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
     }
 
     public void addTags(final List<String> tags) {
@@ -264,71 +175,20 @@ public class Build implements ChainTestEntity {
         }
     }
 
-    public void addTags(Collection<Tag> tags) {
+    public void addTags(final Collection<Tag> tags) {
         if (null != tags && !tags.isEmpty()) {
             this.tags.addAll(tags);
         }
     }
 
-    public void addTags(Stream<Tag> tags) {
+    public void addTags(final Stream<Tag> tags) {
         if (null != tags) {
             tags.forEach(this.tags::add);
         }
     }
 
-    public String getGitRepository() {
-        return gitRepository;
-    }
-
-    public void setGitRepository(String gitRepository) {
-        this.gitRepository = gitRepository;
-    }
-
-    public String getGitBranch() {
-        return gitBranch;
-    }
-
-    public void setGitBranch(String gitBranch) {
-        this.gitBranch = gitBranch;
-    }
-
-    public String getGitCommitHash() {
-        return gitCommitHash;
-    }
-
-    public void setGitCommitHash(String gitCommitHash) {
-        this.gitCommitHash = gitCommitHash;
-    }
-
-    public String getGitTags() {
-        return gitTags;
-    }
-
-    public void setGitTags(String gitTags) {
-        this.gitTags = gitTags;
-    }
-
-    public String getGitCommitMessage() {
-        return gitCommitMessage;
-    }
-
-    public void setGitCommitMessage(String gitCommitMessage) {
-        this.gitCommitMessage = gitCommitMessage;
-    }
-
-    public boolean isBDD() {
-        return isBDD;
-    }
-
-    public void setBDD(boolean val) {
+    public void setIsBdd(boolean val) {
         isBDD = val;
     }
 
-    public List<SystemInfo> getSystemInfo() {
-        return systemInfo;
-    }
-
-    public void setSystemInfo(List<SystemInfo> systemInfo) {
-        this.systemInfo = systemInfo;
-    }
 }

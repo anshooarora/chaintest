@@ -4,6 +4,7 @@ import com.aventstack.chaintest.util.ExceptionsUtil;
 import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -24,29 +25,106 @@ import java.util.stream.Stream;
  * It also provides methods to complete the test and update its statistics.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class Test implements ChainTestEntity {
 
+    /**
+     * The unique identifier for the test.
+     */
     private long id;
+
+    /**
+     * The identifier for the build associated with the test.
+     */
     private long buildId;
+
+    /**
+     * The identifier for the project associated with the test.
+     */
     private long projectId;
-    private UUID clientId = UUID.randomUUID();
+
+    /**
+     * The unique client identifier for the test.
+     */
+    private final UUID clientId = UUID.randomUUID();
+
+    /**
+     * The external identifier for the test.
+     */
     private String externalId;
+
+    /**
+     * The name of the test.
+     */
     private String name;
+
+    /**
+     * The description of the test.
+     */
     private String description;
+
+    /**
+     * The class name associated with the test.
+     */
     private String className;
+
+    /**
+     * The start time of the test in milliseconds.
+     */
     private long startedAt = System.currentTimeMillis();
+
+    /**
+     * The end time of the test in milliseconds.
+     */
     private long endedAt;
+
+    /**
+     * The duration of the test in milliseconds.
+     */
     private long durationMs;
+
+    /**
+     * The result of the test.
+     */
     private String result = Result.PASSED.getResult();
-    private Set<Tag> tags;
+
+    /**
+     * The tags associated with the test.
+     */
+    private final Set<Tag> tags = new HashSet<>();
+
+    /**
+     * The error details if the test failed.
+     */
     private String error;
+
+    /**
+     * The child tests of this test.
+     */
+    private volatile List<Test> children = Collections.synchronizedList(new ArrayList<>());
+
+    /**
+     * The logs associated with the test.
+     */
+    private final List<String> logs = Collections.synchronizedList(new ArrayList<>());
+
+    /**
+     * The embedded media associated with the test.
+     */
+    private final List<Embed> embeds = new ArrayList<>();
+
+    /**
+     * The depth of the test in the test hierarchy.
+     */
+    private int depth;
+
+    /**
+     * Indicates if the test is a BDD (Behavior-Driven Development) test.
+     */
+    private boolean isBDD;
+
     @JsonIgnore
     private Test parent;
-    private volatile List<Test> children = Collections.synchronizedList(new ArrayList<>());
-    private List<String> logs = Collections.synchronizedList(new ArrayList<>());
-    private List<Embed> embeds = new ArrayList<>();
-    private int depth;
-    private boolean isBDD;
 
     /**
      * Default constructor.
@@ -264,154 +342,27 @@ public class Test implements ChainTestEntity {
         complete(Optional.ofNullable(error));
     }
 
-    // Getters and setters for the fields
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getBuildId() {
-        return buildId;
-    }
-
-    public void setBuildId(long buildId) {
-        this.buildId = buildId;
-    }
-
-    public long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(long projectId) {
-        this.projectId = projectId;
-    }
-
-    public UUID getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(UUID clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getExternalId() {
-        return externalId;
-    }
-
-    public void setExternalId(String externalId) {
-        this.externalId = externalId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public long getStartedAt() {
-        return startedAt;
-    }
-
-    public void setStartedAt(long startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public Long getEndedAt() {
-        return endedAt;
-    }
-
-    public void setEndedAt(Long endedAt) {
+    public void setEndedAt(final Long endedAt) {
         this.endedAt = endedAt;
         setDurationMs(endedAt - startedAt);
     }
 
-    public long getDurationMs() {
-        return durationMs;
-    }
-
-    public void setDurationMs(long durationMs) {
-        this.durationMs = durationMs;
-    }
-
+    /**
+     * Returns the duration of the test in a human-readable format.
+     *
+     * @return the duration of the test as a pretty string
+     */
     public String getDurationPretty() {
         return TimeUtil.getPrettyTime(getDurationMs());
     }
 
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public void addTags(Collection<String> tags) {
-        if (null == this.tags) {
-            this.tags = new HashSet<>();
-        }
+    public void addTags(final Collection<String> tags) {
         tags.stream().map(Tag::new)
                 .forEach(this.tags::add);
     }
 
-    public void addTag(String tag) {
-        if (null == this.tags) {
-            this.tags = new HashSet<>();
-        }
+    public void addTag(final String tag) {
         this.tags.add(new Tag(tag));
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public Test getParent() {
-        return parent;
-    }
-
-    public void setParent(final Test test) {
-        this.parent = test;
-    }
-
-    public List<Test> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<Test> children) {
-        this.children = children;
     }
 
     public void addChild(final Test child) {
@@ -420,55 +371,60 @@ public class Test implements ChainTestEntity {
         children.add(child);
     }
 
-    public int getDepth() {
-        return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public List<String> getLogs() {
-        return logs;
-    }
-
-    public void setLogs(List<String> logs) {
-        this.logs = logs;
-    }
-
+    /**
+     * Adds a log entry to the test.
+     *
+     * @param log the log entry to add
+     */
     public void addLog(final String log) {
         logs.add(log);
     }
 
-    public boolean isBDD() {
-        return isBDD;
+    /**
+     * Sets whether the test is a BDD (Behavior-Driven Development) test.
+     *
+     * @param isBDD true if the test is a BDD test, false otherwise
+     */
+    public void setIsBdd(final boolean isBDD) {
+        this.isBDD = isBDD;
+        children.forEach(x -> x.setIsBdd(isBDD));
     }
 
-    public void setBDD(boolean BDD) {
-        isBDD = BDD;
-        children.forEach(x -> x.setBDD(BDD));
-    }
-
-    public List<Embed> getEmbeds() {
-        return embeds;
-    }
-
-    public void setEmbeds(List<Embed> embeds) {
-        this.embeds = embeds;
-    }
-
+    /**
+     * Adds an embedded media to the test.
+     *
+     * @param base64 the base64-encoded media
+     * @param mediaType the media type
+     */
     public void addEmbed(final String base64, final String mediaType) {
         embeds.add(new Embed(base64, mediaType));
     }
 
+    /**
+     * Adds an embedded media to the test from a file.
+     *
+     * @param file the file containing the media
+     * @param mediaType the media type
+     */
     public void addEmbed(final File file, final String mediaType) {
         embeds.add(new Embed(file, mediaType));
     }
 
+    /**
+     * Adds an embedded media to the test from a byte array.
+     *
+     * @param bytes the byte array containing the media
+     * @param mediaType the media type
+     */
     public void addEmbed(final byte[] bytes, final String mediaType) {
         embeds.add(new Embed(bytes, mediaType));
     }
 
+    /**
+     * Adds an embedded media to the test.
+     *
+     * @param embed the embedded media to add
+     */
     public void addEmbed(final Embed embed) {
         embeds.add(embed);
     }
