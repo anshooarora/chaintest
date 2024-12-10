@@ -2,10 +2,12 @@ package com.aventstack.chaintest.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class Stat {
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public abstract class Stat {
 
     private int depth;
     private int total;
@@ -17,7 +19,7 @@ public class Stat {
         this.depth = depth;
     }
 
-    public void update(final Test test) {
+    protected void update(final Test test) {
         total++;
         if (Result.PASSED.getResult().equalsIgnoreCase(test.getResult())) {
             ++passed;

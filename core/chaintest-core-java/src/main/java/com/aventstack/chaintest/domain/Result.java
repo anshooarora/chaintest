@@ -8,7 +8,7 @@ public enum Result {
     PASSED("PASSED", 0),
     UNDEFINED("UNDEFINED", 10),
     SKIPPED("SKIPPED", 20),
-    FAILED("FAILED", 30), ;
+    FAILED("FAILED", 30);
 
     private final String _result;
     private final int _priority;
