@@ -64,7 +64,7 @@
                 </div>
                 <div class="card-body d-flex justify-content-center" style="height: 90px;">
                   <div class="chart-view center" style="margin-left: -1rem;">
-                    <canvas id="stats"></canvas>
+                    <canvas id="stats1"></canvas>
                   </div>
                 </div>
                 <div class="card-header small">
@@ -218,135 +218,33 @@
   <!-- /page wrapper -->
 
   <#if config['offline']>
-  <script src="resources/chart.umd.js"></script>
-  <#else>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <script src="resources/chart.umd.js"></script>
+    <#else>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   </#if>
-  <script src="resources/template.js"></script>
   <#if build.runStats?? && build.runStats?size != 0>
   <script>
-    (async function() {
-      const data = [
-        { result: 'Passed', count: ${build.runStats[0].passed}, bg: 'rgb(140, 197, 83)' },
-        { result: 'Failed', count: ${build.runStats[0].failed}, bg: 'rgb(233,80,113)' },
-        { result: 'Skipped', count: ${build.runStats[0].skipped}, bg: 'rgb(221, 91, 96)' }
-      ];
-
-      const donut = {
-        labels: [
-          'Passed',
-          'Failed',
-          'Skipped'
-        ]
-      };
-
-      new Chart(
-        document.getElementById('stats'),
-        {
-          type: 'doughnut',
-          data: {
-            labels: donut.labels,
-            datasets: [
-              {
-                data: data.map(row => row.count),
-                backgroundColor: data.map(row => row.bg)
-              }
-            ]
-          },
-          options: {
-            plugins: {
-              responsive: true,
-              legend: {
-                display: false
-              }
-            }
-          }
-        }
-      );
-    })();
-    (async function() {
-      const data = [
-        { result: 'Passed', count: ${build.runStats[1].passed}, bg: 'rgb(140, 197, 83)' },
-        { result: 'Failed', count: ${build.runStats[1].failed}, bg: 'rgb(233,80,113)' },
-        { result: 'Skipped', count: ${build.runStats[1].skipped}, bg: 'rgb(221, 91, 96)' }
-      ];
-
-      const donut = {
-        labels: [
-          'Passed',
-          'Failed',
-          'Skipped'
-        ]
-      };
-
-      new Chart(
-        document.getElementById('stats2'),
-        {
-          type: 'doughnut',
-          data: {
-            labels: donut.labels,
-            datasets: [
-              {
-                data: data.map(row => row.count),
-                backgroundColor: data.map(row => row.bg)
-              }
-            ]
-          },
-          options: {
-            plugins: {
-              responsive: true,
-              legend: {
-                display: false
-              }
-            }
-          }
-        }
-      );
-    })();
-    <#if build.isBDD()>
-    (async function() {
-      const data = [
+    const stats1 = [
+      { result: 'Passed', count: ${build.runStats[0].passed}, bg: 'rgb(140, 197, 83)' },
+      { result: 'Failed', count: ${build.runStats[0].failed}, bg: 'rgb(233,80,113)' },
+      { result: 'Skipped', count: ${build.runStats[0].skipped}, bg: 'rgb(221, 91, 96)' }
+    ];
+    const stats2 = [
+      { result: 'Passed', count: ${build.runStats[1].passed}, bg: 'rgb(140, 197, 83)' },
+      { result: 'Failed', count: ${build.runStats[1].failed}, bg: 'rgb(233,80,113)' },
+      { result: 'Skipped', count: ${build.runStats[1].skipped}, bg: 'rgb(221, 91, 96)' }
+    ];
+    <#if build.runStats?size == 3>
+      const stats3 = [
         { result: 'Passed', count: ${build.runStats[2].passed}, bg: 'rgb(140, 197, 83)' },
         { result: 'Failed', count: ${build.runStats[2].failed}, bg: 'rgb(233,80,113)' },
         { result: 'Skipped', count: ${build.runStats[2].skipped}, bg: 'rgb(221, 91, 96)' }
       ];
-
-      const donut = {
-        labels: [
-          'Passed',
-          'Failed',
-          'Skipped'
-        ]
-      };
-
-      new Chart(
-        document.getElementById('stats3'),
-        {
-          type: 'doughnut',
-          data: {
-            labels: donut.labels,
-            datasets: [
-              {
-                data: data.map(row => row.count),
-                backgroundColor: data.map(row => row.bg)
-              }
-            ]
-          },
-          options: {
-            plugins: {
-              responsive: true,
-              legend: {
-                display: false
-              }
-            }
-          }
-        }
-      );
-    })();
     </#if>
     <#if config['js']??>${config['js']}</#if>
   </script>
   </#if>
+  <script src="resources/template.js"></script>
 
   <#if build.systemInfo?? && build.systemInfo?has_content>
   <div id="sys-info-modal" class="modal" tabindex="-1">

@@ -1,3 +1,86 @@
+// chart: Features or Classes
+(async function() {
+  new Chart(
+    document.getElementById('stats1'),
+    {
+      type: 'doughnut',
+      data: {
+        labels: ['Passed', 'Failed', 'Skipped'],
+        datasets: [
+          {
+            data: stats1.map(row => row.count),
+            backgroundColor: stats1.map(row => row.bg)
+          }
+        ]
+      },
+      options: {
+        plugins: {
+          responsive: true,
+          legend: {
+            display: false
+          }
+        }
+      }
+    }
+  );
+})();
+
+// chart: Scenarios or Methods
+(async function() {
+  new Chart(
+    document.getElementById('stats2'),
+    {
+      type: 'doughnut',
+      data: {
+        labels: ['Passed', 'Failed', 'Skipped'],
+        datasets: [
+          {
+            data: stats2.map(row => row.count),
+            backgroundColor: stats2.map(row => row.bg)
+          }
+        ]
+      },
+      options: {
+        plugins: {
+          responsive: true,
+          legend: {
+            display: false
+          }
+        }
+      }
+    }
+  );
+})();
+
+// chart: Scenarios or Methods
+(async function() {
+  const el = document.getElementById('stats3');
+  if (el) {
+    new Chart(
+      document.getElementById('stats3'),
+      {
+        type: 'doughnut',
+        data: {
+          labels: ['Passed', 'Failed', 'Skipped'],
+          datasets: [
+          {
+            data: stats3.map(row => row.count),
+            backgroundColor: stats3.map(row => row.bg)
+          }
+        ]},
+        options: {
+          plugins: {
+            responsive: true,
+            legend: {
+              display: false
+            }
+          }
+        }
+      }
+    );
+  }
+})();
+
 // init::statusFilters
 const statusFilters = [];
 document.querySelectorAll('#status-filter > button').forEach((e) => {
