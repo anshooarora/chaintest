@@ -32,6 +32,13 @@
         <div class="mt-3">
           <#list feature.children as scenario>
           <div class="mt-3">
+            <#if scenario.tags?has_content>
+            <div class="mb-1 mt-4 tag-list">
+              <#list scenario.tags as tag>
+                <span class="badge rounded-pill text-bg-secondary">${tag.name}</span>
+              </#list>
+            </div>
+            </#if>
             <div class="py-1 pe-2 scenario ${scenario.result?lower_case} d-flex justify-content-between">
               <div>
                 <#if scenario.result=='PASSED'>

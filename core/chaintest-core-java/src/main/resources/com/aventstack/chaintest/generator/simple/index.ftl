@@ -57,7 +57,7 @@
       <div id="dashboard" class="mt-4 mb-3">
         <div class="container">
           <div class="row">
-            <div class="col-3">
+            <div class="${build.isBDD()?then('col-4','col-3')}">
               <div class="card card-custom" style="height: 175px">
                 <div class="card-header">
                   ${build.isBDD()?then('Features', 'Classes')}
@@ -76,10 +76,10 @@
                 </div>
               </div>
             </div>
-            <div class="col-3">
+            <div class="${build.isBDD()?then('col-4','col-3')}">
               <div class="card card-custom" style="height: 175px">
                 <div class="card-header">
-                  ${build.isBDD()?then('Features', 'Methods')}
+                  ${build.isBDD()?then('Scenarios', 'Methods')}
                 </div>
                 <div class="card-body d-flex justify-content-center" style="height: 90px;">
                   <div class="chart-view center" style="margin-left: -1rem;">
@@ -95,6 +95,27 @@
                 </div>
               </div>
             </div>
+            <#if build.isBDD()>
+            <div class="col-4">
+              <div class="card card-custom" style="height: 175px">
+                <div class="card-header">
+                  Steps
+                </div>
+                <div class="card-body d-flex justify-content-center" style="height: 90px;">
+                  <div class="chart-view center" style="margin-left: -1rem;">
+                    <canvas id="stats3"></canvas>
+                  </div>
+                </div>
+                <div class="card-header small">
+                  <#if build.runStats?? && build.runStats?size == 3>
+                    ${build.runStats[2].passed} Passed,
+                    ${build.runStats[2].failed} Failed,
+                    ${build.runStats[2].skipped} Skipped
+                  </#if>
+                </div>
+              </div>
+            </div>
+            <#else>
             <div class="col-6">
               <div class="card card-custom" style="height: 175px">
                 <div class="card-header mb-2">
@@ -122,6 +143,7 @@
                 </div>
               </div>
             </div>
+            </#if>
           </div>
         </div>
       </div>
@@ -281,6 +303,47 @@
         }
       );
     })();
+    <#if build.isBDD()>
+    (async function() {
+      const data = [
+        { result: 'Passed', count: ${build.runStats[2].passed}, bg: 'rgb(140, 197, 83)' },
+        { result: 'Failed', count: ${build.runStats[2].failed}, bg: 'rgb(233,80,113)' },
+        { result: 'Skipped', count: ${build.runStats[2].skipped}, bg: 'rgb(221, 91, 96)' }
+      ];
+
+      const donut = {
+        labels: [
+          'Passed',
+          'Failed',
+          'Skipped'
+        ]
+      };
+
+      new Chart(
+        document.getElementById('stats3'),
+        {
+          type: 'doughnut',
+          data: {
+            labels: donut.labels,
+            datasets: [
+              {
+                data: data.map(row => row.count),
+                backgroundColor: data.map(row => row.bg)
+              }
+            ]
+          },
+          options: {
+            plugins: {
+              responsive: true,
+              legend: {
+                display: false
+              }
+            }
+          }
+        }
+      );
+    })();
+    </#if>
     <#if config['js']??>${config['js']}</#if>
   </script>
   </#if>

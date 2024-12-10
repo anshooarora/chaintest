@@ -243,23 +243,28 @@ pre {
 .bg-danger {
   background-color: rgb(221, 91, 96) !important;
 }
+.page.bdd .tag-list {
+  margin-left: -2px;
+}
+
+/* bdd */
+.page.bdd .scenario {
+  font-weight: 500;
+}
 .page.bdd .passed.bg {
   background-color: rgb(184, 217, 154) !important;
 }
 .page.bdd .failed.bg {
-  background-color: rgb(252, 169, 189) !important;
+  background-color: rgb(255, 184, 184) !important;
 }
 .page.bdd .skipped.bg {
   background-color: lightgrey;
 }
 .page.bdd pre {
-  background-color: transparent !important
+  background-color: transparent !important;
+  margin-top: 0;
 }
-.bg {
-  margin-bottom: .5px;
+.page.bdd .bg {
   padding-top: 3px;
   padding-bottom: 3px;
-}
-.page.bdd .tag-list {
-  margin-left: -2px;
 }
