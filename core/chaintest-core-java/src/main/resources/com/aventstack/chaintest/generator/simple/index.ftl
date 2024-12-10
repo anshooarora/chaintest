@@ -57,10 +57,10 @@
       <div id="dashboard" class="mt-4 mb-3">
         <div class="container">
           <div class="row">
-            <div class="col-${build.isBDD()?then('3', '6')}">
+            <div class="col-3">
               <div class="card card-custom" style="height: 175px">
                 <div class="card-header">
-                  ${build.isBDD()?then('Features', 'Tests')}
+                  ${build.isBDD()?then('Features', 'Classes')}
                 </div>
                 <div class="card-body d-flex justify-content-center" style="height: 90px;">
                   <div class="chart-view center" style="margin-left: -1rem;">
@@ -71,16 +71,15 @@
                   <#if build.runStats?? && build.runStats?size != 0>
                   ${build.runStats[0].passed} Passed,
                   ${build.runStats[0].failed} Failed,
-                  ${build.runStats[0].skipped} Skipped,
+                  ${build.runStats[0].skipped} Skipped
                   </#if>
                 </div>
               </div>
             </div>
-            <#if build.isBDD()>
             <div class="col-3">
               <div class="card card-custom" style="height: 175px">
                 <div class="card-header">
-                  Scenarios
+                  ${build.isBDD()?then('Features', 'Methods')}
                 </div>
                 <div class="card-body d-flex justify-content-center" style="height: 90px;">
                   <div class="chart-view center" style="margin-left: -1rem;">
@@ -91,12 +90,11 @@
                   <#if build.runStats?? && build.runStats?size != 0>
                   ${build.runStats[1].passed} Passed,
                   ${build.runStats[1].failed} Failed,
-                  ${build.runStats[1].skipped} Skipped,
+                  ${build.runStats[1].skipped} Skipped
                   </#if>
                 </div>
               </div>
             </div>
-            </#if>
             <div class="col-6">
               <div class="card card-custom" style="height: 175px">
                 <div class="card-header mb-2">
@@ -106,16 +104,16 @@
                   <div class="row pb-2">
                     <div class="col text-center">
                       <label class="fs-10">Started</label>
-                      <p class="fw-bold">${build.startedAt?number_to_datetime?string(config['datetimeFormat'])}</p>
+                      <p class="fw-semibold">${build.startedAt?number_to_datetime?string(config['datetimeFormat'])}</p>
                     </div>
                     <div class="col border-start text-center">
                       <label class="fs-10">Ended</label>
-                      <p class="fw-bold">${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</p>
+                      <p class="fw-semibold">${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</p>
                     </div>
                   </div>
                   <#if build.runStats?? && build.runStats?size != 0 && build.runStats[0].total != 0>
                   <#assign
-                    passRate=(build.runStats[0].passed/build.runStats[0].total)*100
+                    passRate=(build.runStats[1].passed/build.runStats[1].total)*100
                   >
                   <div class="progress mt-4" role="progressbar" aria-label="Success example" aria-valuenow="${passRate}" aria-valuemin="0" aria-valuemax="100">
                     <div class="progress-bar bg-success" style="width: ${passRate}%">${passRate}%</div>
@@ -207,9 +205,9 @@
   <script>
     (async function() {
       const data = [
-        { result: 'Passed', count: ${build.runStats[0].passed}, bg: 'rgb(43,189,86)' },
+        { result: 'Passed', count: ${build.runStats[0].passed}, bg: 'rgb(140, 197, 83)' },
         { result: 'Failed', count: ${build.runStats[0].failed}, bg: 'rgb(233,80,113)' },
-        { result: 'Skipped', count: ${build.runStats[0].skipped}, bg: 'rgb(227,203,94),' }
+        { result: 'Skipped', count: ${build.runStats[0].skipped}, bg: 'rgb(221, 91, 96)' }
       ];
 
       const donut = {
@@ -244,12 +242,11 @@
         }
       );
     })();
-    <#if build.isBDD()>
     (async function() {
       const data = [
-        { result: 'Passed', count: ${build.runStats[1].passed}, bg: 'rgb(43,189,86)' },
+        { result: 'Passed', count: ${build.runStats[1].passed}, bg: 'rgb(140, 197, 83)' },
         { result: 'Failed', count: ${build.runStats[1].failed}, bg: 'rgb(233,80,113)' },
-        { result: 'Skipped', count: ${build.runStats[1].skipped}, bg: 'rgb(227,203,94),' }
+        { result: 'Skipped', count: ${build.runStats[1].skipped}, bg: 'rgb(221, 91, 96)' }
       ];
 
       const donut = {
@@ -284,7 +281,6 @@
         }
       );
     })();
-    </#if>
     <#if config['js']??>${config['js']}</#if>
   </script>
   </#if>

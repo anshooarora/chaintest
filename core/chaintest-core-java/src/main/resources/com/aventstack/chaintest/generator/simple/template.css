@@ -20,9 +20,8 @@
 
 /* structure */
 body {
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, Ubuntu, 'Helvetica Neue', sans-serif;
-  background-color: #fff;
-  font-size: 14px;
+  font-family: Inter, Roboto, system-ui, -apple-system, BlinkMacSystemFont, Ubuntu, 'Helvetica Neue', sans-serif;
+  font-size: 13px;
 }
 
 table tbody tr:last-child {
@@ -44,15 +43,13 @@ a.secondary {
 }
 
 pre {
+  background-color: #f8f9fa;
   white-space: pre-wrap;
   margin-bottom: 0;
   max-height: 15rem;
   word-break: break-all;
-}
-
-/* background */
-.bg-success {
-  background-color: rgb(44, 197, 105) !important;
+  padding: 1rem;
+  margin-top: 1rem;
 }
 
 /* container */
@@ -66,11 +63,8 @@ pre {
 }
 
 /* text */
-.small, small {
-    font-size: 0.75rem;
-}
-.fs-10 {
-  font-size: .75rem;
+.small, small, .fs-10 {
+    font-size: 85%;
 }
 
 /* margins */
@@ -237,12 +231,17 @@ pre {
   max-width: 75%;
 }
 
-/* bdd */
-.page.bdd .passed.bg {
-  background-color: var(--success-border);
+.text-success, .text-passed {
+  color: rgb(140, 197, 83) !important;
 }
-.page.bdd .failed.bg {
-  background-color: var(--danger-border);;
+.text-danger, .text-failed {
+  color: rgb(221, 91, 96) !important;
+}
+.page.bdd .passed.bg, .bg-success {
+  background-color: rgb(140, 197, 83) !important;
+}
+.page.bdd .failed.bg, .bg-danger {
+  background-color: rgb(221, 91, 96) !important;
 }
 .page.bdd .skipped.bg {
   background-color: lightgrey;

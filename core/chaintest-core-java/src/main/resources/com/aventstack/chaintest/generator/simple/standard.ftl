@@ -28,13 +28,13 @@
         </div>
       </div>
       <#if test.error??>
-        <pre class="ms-4 py-2">${test.error}</pre>
+        <pre class="ms-4">${test.error}</pre>
       </#if>
       <div>
         <#if test.children?has_content>
         <div class="mt-3">
           <#list test.children as node>
-          <div class="card test-result ${node.result?lower_case} my-2">
+          <div class="card card-custom test-result ${node.result?lower_case} my-2">
             <div class="card-body">
               <div class="d-flex justify-content-between">
                 <div>
@@ -58,7 +58,7 @@
                 </div>
               </div>
               <#if node.error??>
-                <pre class="ms-4 py-2">${node.error}</pre>
+                <pre class="ms-2">${node.error}</pre>
               </#if>
             </div>
             <#list node.children as leaf>
