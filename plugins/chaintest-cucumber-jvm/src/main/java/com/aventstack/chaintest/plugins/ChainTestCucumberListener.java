@@ -44,7 +44,7 @@ public class ChainTestCucumberListener implements EventListener {
 
     public ChainTestCucumberListener(final String ignored) {
         _service = new ChainPluginService(CUCUMBER_JVM);
-        _service.getBuild().setBDD(true);
+        _service.getBuild().setIsBdd(true);
         _service.start();
     }
 
@@ -145,7 +145,7 @@ public class ChainTestCucumberListener implements EventListener {
     };
 
     private final EventHandler<EmbedEvent> embedEventhandler = event -> {
-        _scenarios.get(event.getTestCase().getId()).addEmbed(event.getData(), event.getMediaType());
+        _service.embed(_scenarios.get(event.getTestCase().getId()), event.getData(), event.getMediaType());
     };
 
     private final EventHandler<WriteEvent> writeEventhandler = event -> {

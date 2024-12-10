@@ -64,7 +64,7 @@
             <#if scenario.logs?has_content>
             <div class="mt-3 mx-2">
               <p class="h6">Logs</p>
-              <pre>
+              <pre class="p-0">
               <#list scenario.logs as log>
 ${log}
               </#list>

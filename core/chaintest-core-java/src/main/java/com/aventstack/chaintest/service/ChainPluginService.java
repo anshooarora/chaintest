@@ -143,11 +143,30 @@ public class ChainPluginService {
         embed(_tests, externalId, embed);
     }
 
+    public void embed(final Test test, final byte[] data, final String mimeType) {
+        embed(test, new Embed(data, mimeType));
+    }
+
+    public void embed(final Test test, final File file, final String mimeType) {
+        embed(test, new Embed(file, mimeType));
+    }
+
+    public void embed(final Test test, final String base64, final String mimeType) {
+        embed(test, new Embed(base64, mimeType));
+    }
+
+    public void embed(final Test test, final Embed embed) {
+        test.addEmbed(embed);
+        if (null != test.getExternalId()) {
+            _embeds.remove(test.getExternalId());
+        }
+    }
+
     private void embed(final List<Test> tests, final String externalId, final Embed embed) {
         final Predicate<Test> predicate = test -> null != test.getExternalId() && test.getExternalId().equals(externalId);
         final Optional<Test> any = tests.stream().filter(predicate).findAny();
         if (any.isPresent()) {
-            any.get().addEmbed(embed);
+            embed(any.get(), embed);
             _embeds.remove(externalId);
         } else {
             tests.forEach(test -> embed(test.getChildren(), externalId, embed));
