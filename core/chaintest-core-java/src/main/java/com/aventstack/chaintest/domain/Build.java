@@ -147,18 +147,13 @@ public class Build implements ChainTestEntity {
         complete(Result.valueOf(result));
     }
 
-    public void setEndedAt(final Long endedAt) {
+    public void setEndedAt(final long endedAt) {
         this.endedAt = endedAt;
         setDurationMs(endedAt - startedAt);
     }
 
     public String getDurationPretty() {
         return TimeUtil.getPrettyTime(getDurationMs());
-    }
-
-    public void setEndedAt(final long endedAt) {
-        this.endedAt = endedAt;
-        this.durationMs = endedAt - startedAt;
     }
 
     public void addTags(final List<String> tags) {
