@@ -58,12 +58,12 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IT
     @Override
     public void onStart(final ITestContext context) {
         System.out.println("Test context started: " + context.getName());
-        final Optional<Test> suite = _suites.stream().filter(x -> x.getName().equals(context.getSuite().getName())).findAny();
-        if (suite.isPresent()) {
-            final Test contextTest = new Test(context.getName());
-            _contexts.add(contextTest);
-            suite.get().addChild(contextTest);
-        }
+        _suites.stream().filter(x -> x.getName().equals(context.getSuite().getName())).findAny()
+                .ifPresent(suite -> {
+                    final Test contextTest = new Test(context.getName());
+                    _contexts.add(contextTest);
+                    suite.addChild(contextTest);
+                });
     }
 
     @Override
@@ -90,14 +90,14 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IT
     }
 
     private void onTestComplete(final ITestResult result) {
-        final Optional<Test> context = _contexts.stream()
-                .filter(x -> x.getName().equals(result.getTestContext().getName())).findAny();
-        if (context.isPresent()) {
-            final Optional<Test> method = context.get().getChildren().stream()
-                    .filter(x -> x.getName().equals(result.getMethod().getMethodName()))
-                    .findAny();
-            method.ifPresent(x -> x.complete(result.getThrowable()));
-        }
+        _contexts.stream()
+                .filter(x -> x.getName().equals(result.getTestContext().getName())).findAny()
+                .ifPresent(x -> {
+                    final Optional<Test> method = x.getChildren().stream()
+                            .filter(y -> y.getName().equals(result.getMethod().getMethodName()))
+                            .findAny();
+                    method.ifPresent(y -> y.complete(result.getThrowable()));
+                });
     }
 
     @Override

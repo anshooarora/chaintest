@@ -152,6 +152,7 @@
       <div class="container tags mt-4 mb-4">
 
         <!-- tag section -->
+        <#if build.tags?has_content>
         <div id="tags" class="row">
           <div class="col-12">
             <div class="card card-custom">
@@ -186,6 +187,7 @@
           </div>
         </div>
       </div>
+      </#if>
       <!-- /tag section -->
 
       <!-- test section -->

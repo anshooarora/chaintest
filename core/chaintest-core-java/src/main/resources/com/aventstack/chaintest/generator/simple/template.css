@@ -52,6 +52,10 @@ pre {
   margin-top: 1rem;
 }
 
+img {
+  border: 5px solid #f6f8fa;
+}
+
 /* container */
 .container-fluid {
     width: 85%;
@@ -219,9 +223,6 @@ pre {
   background-color: #eee !important;
   color: #000 !important;
   font-weight: normal !important;
-}
-.page:not(.bdd) .tag-list {
-  margin-left: 1.25rem;
 }
 #tag-summary th:not(:first-child) {
   width: 100px !important;
