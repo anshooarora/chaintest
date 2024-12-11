@@ -99,12 +99,12 @@ public class TagService {
                         .orElse(create(tag));
                 tag.setId(created.getId());
             }
-            if (taggable instanceof Test) {
-                final Collection<Test> nodes = ((Test) taggable).getChildren();
-                if (null != nodes) {
-                    for (final Test test : nodes) {
-                        createAssignTags(test);
-                    }
+        }
+        if (taggable instanceof Test) {
+            final Collection<Test> nodes = ((Test) taggable).getChildren();
+            if (null != nodes) {
+                for (final Test test : nodes) {
+                    createAssignTags(test);
                 }
             }
         }
