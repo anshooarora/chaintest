@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -144,9 +145,7 @@ public class Test implements ChainTestEntity {
     public Test(final long buildId, final String name, final Optional<String> testClass, final Collection<String> tags) {
         setBuildId(buildId);
         setName(name);
-        if (null != tags) {
-            addTags(tags);
-        }
+        addTags(tags);
         testClass.ifPresent(Test.this::setClassName);
     }
 
@@ -161,9 +160,7 @@ public class Test implements ChainTestEntity {
     public Test(final long buildId, final String name, final Optional<String> testClass, final Stream<String> tags) {
         setBuildId(buildId);
         setName(name);
-        if (null != tags) {
-            tags.forEach(this::addTag);
-        }
+        tags.forEach(this::addTag);
         testClass.ifPresent(Test.this::setClassName);
     }
 
@@ -359,17 +356,34 @@ public class Test implements ChainTestEntity {
     }
 
     public void addTags(final Collection<String> tags) {
-        tags.stream().map(Tag::new)
-                .forEach(this.tags::add);
+        if (null != tags) {
+            tags.forEach(this::addTag);
+        }
     }
 
     public void addTag(final String tag) {
-        this.tags.add(new Tag(tag));
+        if (null != tag && !tag.isBlank()) {
+            final Tag t = new Tag(tag);
+            this.tags.add(t);
+            if (null != parent) {
+                parent.addTag(t);
+            }
+        }
+    }
+
+    public void addTag(final Tag tag) {
+        if (null != tag) {
+            this.tags.add(tag);
+            if (null != parent) {
+                parent.addTag(tag);
+            }
+        }
     }
 
     public void addChild(final Test child) {
         child.setParent(this);
         child.setDepth(depth + 1);
+        child.getTags().forEach(this::addTag);
         children.add(child);
     }
 
