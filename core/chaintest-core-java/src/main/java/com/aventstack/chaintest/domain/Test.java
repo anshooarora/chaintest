@@ -4,7 +4,8 @@ import com.aventstack.chaintest.util.ExceptionsUtil;
 import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -25,7 +26,8 @@ import java.util.stream.Stream;
  * It also provides methods to complete the test and update its statistics.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Data
+@Getter
+@Setter
 public class Test implements ChainTestEntity {
 
     /**
