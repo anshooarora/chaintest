@@ -20,11 +20,9 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IT
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestListener.class);
     private static final String TESTNG = "testng";
-
-    private final List<Test> _suites = Collections.synchronizedList(new ArrayList<>(1));
-    private final List<Test> _contexts = Collections.synchronizedList(new ArrayList<>(1));
-    private final List<Test> _methods = Collections.synchronizedList(new ArrayList<>(1));
-    private final ChainPluginService _service = new ChainPluginService(TESTNG);
+    private static final List<Test> _suites = Collections.synchronizedList(new ArrayList<>(1));
+    private static final List<Test> _contexts = Collections.synchronizedList(new ArrayList<>(1));
+    private static final ChainPluginService _service = new ChainPluginService(TESTNG);
 
     @Override
     public void onExecutionStart() {
@@ -35,7 +33,6 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IT
     @Override
     public void onExecutionFinish() {
         System.out.println("onExecutionFinish");
-        _service.flush();
         _service.executionFinished();
     }
 
@@ -52,6 +49,7 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IT
                 .findAny().ifPresent(x -> {
                     x.complete();
                     _service.afterTest(x, Optional.empty());
+                    _service.flush();
                 });
     }
 
