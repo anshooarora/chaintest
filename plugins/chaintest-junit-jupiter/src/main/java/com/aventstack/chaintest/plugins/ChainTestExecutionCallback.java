@@ -31,7 +31,6 @@ public class ChainTestExecutionCallback
         if (CALLBACK_INVOKED.getAndSet(true)) {
             return;
         }
-        log.trace("Creating instance of {}", ChainTestApiClient.class);
         _service = new ChainPluginService(JUNIT_JUPITER);
         _service.start();
     }
