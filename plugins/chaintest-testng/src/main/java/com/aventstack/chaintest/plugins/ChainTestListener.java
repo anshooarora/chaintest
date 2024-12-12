@@ -4,9 +4,11 @@ import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.service.ChainPluginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.IClassListener;
 import org.testng.IExecutionListener;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
+import org.testng.ITestClass;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -16,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class ChainTestListener implements IExecutionListener, ISuiteListener, ITestListener {
+public class ChainTestListener implements IExecutionListener, ISuiteListener, IClassListener, ITestListener {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestListener.class);
     private static final String TESTNG = "testng";
@@ -54,27 +56,37 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IT
     }
 
     @Override
-    public void onStart(final ITestContext context) {
-        System.out.println("Test context started: " + context.getName());
-        _suites.stream().filter(x -> x.getName().equals(context.getSuite().getName())).findAny()
+    public void onBeforeClass(final ITestClass testClass) {
+        System.err.println("Commencing execution for the test class : " + testClass.getRealClass().getName());
+        _suites.stream().filter(x -> x.getName().equals(testClass.getXmlTest().getSuite().getName())).findAny()
                 .ifPresent(suite -> {
-                    final Test contextTest = new Test(context.getName());
+                    final Test contextTest = new Test(testClass.getName());
                     _contexts.add(contextTest);
                     suite.addChild(contextTest);
                 });
     }
 
     @Override
+    public void onAfterClass(final ITestClass testClass) {
+        System.err.println("Completed execution for the test class : " + testClass.getRealClass().getName());
+        _contexts.stream().filter(x -> x.getName().equals(testClass.getName()))
+                .findAny().ifPresent(Test::complete);
+    }
+
+    @Override
+    public void onStart(final ITestContext context) {
+        System.out.println("Test context started: " + context.getName());
+    }
+
+    @Override
     public void onFinish(final ITestContext context) {
         System.out.println("Test context finished: " + context.getName());
-        _contexts.stream().filter(x -> x.getName().equals(context.getName()))
-                .findAny().ifPresent(Test::complete);
     }
 
     @Override
     public void onTestStart(final ITestResult result) {
         System.out.println("Test started: " + result.getName());
-        _contexts.stream().filter(x -> x.getName().equals(result.getTestContext().getName()))
+        _contexts.stream().filter(x -> x.getName().equals(result.getTestClass().getName()))
                 .findAny().ifPresent(x ->
                     x.addChild(new Test(result.getMethod().getMethodName(),
                             Optional.of(result.getTestClass().getName()),
@@ -89,7 +101,7 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IT
 
     private void onTestComplete(final ITestResult result) {
         _contexts.stream()
-                .filter(x -> x.getName().equals(result.getTestContext().getName())).findAny()
+                .filter(x -> x.getName().equals(result.getTestClass().getName())).findAny()
                 .ifPresent(x -> {
                     final Optional<Test> method = x.getChildren().stream()
                             .filter(y -> y.getName().equals(result.getMethod().getMethodName()))
