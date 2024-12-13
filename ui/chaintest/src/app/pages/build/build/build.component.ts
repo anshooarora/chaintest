@@ -87,9 +87,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   };
 
   getOptions(depth: number): ChartOptions<any> {
-    const runStats = this.build.runStats.filter(x => x.depth == depth);
-    const label = Math.floor(runStats[0].passed / runStats[0].total * 100);
-    const options: ChartOptions<any> = {
+    const runStats = this.build.runStats.find(x => x.depth == depth);
+    const label = runStats ? Math.floor(runStats.passed / runStats.total * 100) : 0;
+    return {
       responsive: true,
       cutout: '70%',
       plugins: {
@@ -99,9 +99,7 @@ export class BuildComponent implements OnInit, OnDestroy {
             boxWidth: 15,
             filter: (item: LegendItem, chartData: ChartData<any>) => {
               const label = item.text.toUpperCase();
-              let index = 2;
-              label == 'PASSED' && (index = 0);
-              label == 'FAILED' && (index = 1);
+              const index = label === 'PASSED' ? 0 : label === 'FAILED' ? 1 : 2;
               return chartData.datasets[0].data[index] != 0;
             }
           }
@@ -119,7 +117,6 @@ export class BuildComponent implements OnInit, OnDestroy {
         }
       }
     };
-    return options;
   }
 
   findBuild(): void {
@@ -136,36 +133,23 @@ export class BuildComponent implements OnInit, OnDestroy {
       }
     });
   }
-
   private computeMetrics(build: Build) {
-    const depth0 = build.runStats.filter(x => x.depth == 0);
-    if (depth0.length) {
-      this.depth0.datasets[0].data.push(depth0[0].passed, depth0[0].failed, depth0[0].skipped);
-    }
-    const depth1 = build.runStats.filter(x => x.depth == 1);
-    if (depth1.length) {
-      this.depth1.datasets[0].data.push(depth1[0].passed, depth1[0].failed, depth1[0].skipped);
-    }
-    const depth2 = build.runStats.filter(x => x.depth == 2);
-    if (depth2.length) {
-      this.depth2.datasets[0].data.push(depth2[0].passed, depth2[0].failed, depth2[0].skipped);
-    }
+    [this.depth0, this.depth1, this.depth2].forEach((depthData, index) => {
+      const runStats = build.runStats.filter(x => x.depth == index);
+      if (runStats.length) {
+        depthData.datasets[0].data.push(runStats[0].passed, runStats[0].failed, runStats[0].skipped);
+      }
+    });
     this.chart?.update();
   }
-
+  
   findTests(pageNum: number = 0, append: boolean = false): void {
     this._testService.search(0, '', this.buildId, 0, this.result, '', '', pageNum)
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (page: Page<Test>) => {
-        if (!append) {
-          this.page = page;
-        } else {
-          this.page.content.push(...page.content);
-          this.page.first = page.first;
-          this.page.last = page.last;
-        }
-        console.log(this.page)
+        this.page = append ? { ...page, content: [...this.page.content, ...page.content] } : page;
+        console.log(this.page);
       },
       error: (err) => {
         this.error = this._errorService.getError(err);
