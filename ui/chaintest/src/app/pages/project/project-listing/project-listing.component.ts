@@ -69,20 +69,16 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
         }
     });
   }
-
+  
   search(): void {
-    this.projectPage.content.forEach(x => {
-      x.display = true;
-      let includesTag = false;
-      let matchesTestRunner = false;
-      if (x.builds.content.length) {
-        includesTag = x.builds.content.flatMap(ts => ts.tagStats).some(t => t.name.includes(this.q));
-        matchesTestRunner = x.builds.content[0].testRunner.includes(this.q);
-      }
-      if (!x.name.includes(this.q) && !includesTag && !matchesTestRunner) {
-        x.display = false;
-      }
-    })
+    const query = this.q.toLowerCase();
+    this.projectPage.content.forEach(project => {
+      project.display = project.name.toLowerCase().includes(query) ||
+        project.builds.content.some(build => 
+          build.testRunner.toLowerCase().includes(query) ||
+          build.tagStats.some(tag => tag.name.toLowerCase().includes(query))
+        );
+    });
   }
 
 }
