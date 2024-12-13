@@ -30,7 +30,8 @@
         <span
           class="badge badge-outline text-lg">${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
         <#if build.systemInfo?? && build.systemInfo?has_content>
-          <span id="sys-info" class="badge badge-outline text-lg"><i class="bi bi-pc-display-horizontal"></i></span>
+          <span role="button" id="sys-info" class="badge badge-outline text-lg" title="View System Info">
+            <i class="bi bi-pc-display-horizontal"></i></span>
         </#if>
       </div>
     </div>
