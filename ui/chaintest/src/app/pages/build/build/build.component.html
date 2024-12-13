@@ -24,13 +24,13 @@
           </div>
           <div class="card-body py-0">
             <div class="mx-auto" style="width: 150px;max-height: 150px;">
-              <canvas baseChart [type]="chartType" [data]="depth0Data" [options]="options"></canvas>
+              <canvas baseChart [type]="chartType" [data]="depth0" [options]="getOptions(0)"></canvas>
             </div>
           </div>
           <div class="card-footer smaller">
-            {{depth0Data.datasets[0].data[0]}} Passed,
-            {{depth0Data.datasets[0].data[1]}} Failed,
-            {{depth0Data.datasets[0].data[2]}} Skipped
+            {{depth0.datasets[0].data[0]}} Passed,
+            {{depth0.datasets[0].data[1]}} Failed,
+            {{depth0.datasets[0].data[2]}} Skipped
           </div>
         </div>
       </div>
@@ -41,13 +41,13 @@
           </div>
           <div class="card-body py-0">
             <div class="mx-auto" style="width: 150px;max-height: 150px;">
-              <canvas baseChart [type]="chartType" [data]="depth1Data" [options]="options"></canvas>
+              <canvas baseChart [type]="chartType" [data]="depth1" [options]="getOptions(1)"></canvas>
             </div>
           </div>
           <div class="card-footer smaller">
-            {{depth1Data.datasets[0].data[0]}} Passed,
-            {{depth1Data.datasets[0].data[1]}} Failed,
-            {{depth1Data.datasets[0].data[2]}} Skipped
+            {{depth1.datasets[0].data[0]}} Passed,
+            {{depth1.datasets[0].data[1]}} Failed,
+            {{depth1.datasets[0].data[2]}} Skipped
           </div>
         </div>
       </div>
@@ -58,13 +58,13 @@
           </div>
           <div class="card-body py-0">
             <div class="mx-auto" style="width: 150px;max-height: 150px;">
-              <canvas baseChart [type]="chartType" [data]="depth2Data" [options]="options"></canvas>
+              <canvas baseChart [type]="chartType" [data]="depth2" [options]="getOptions(2)"></canvas>
             </div>
           </div>
           <div class="card-footer smaller">
-            {{depth2Data.datasets[0].data[0]}} Passed,
-            {{depth2Data.datasets[0].data[1]}} Failed,
-            {{depth2Data.datasets[0].data[2]}} Skipped
+            {{depth2.datasets[0].data[0]}} Passed,
+            {{depth2.datasets[0].data[1]}} Failed,
+            {{depth2.datasets[0].data[2]}} Skipped
           </div>
         </div>
       </div>
@@ -80,13 +80,13 @@
           </div>
           <div class="card-body py-0">
             <div class="mx-auto" style="width: 150px;max-height: 150px;">
-              <canvas baseChart [type]="chartType" [data]="depth0Data" [options]="options"></canvas>
+              <canvas baseChart [type]="chartType" [data]="depth0" [options]="getOptions(0)"></canvas>
             </div>
           </div>
           <div class="card-footer smaller">
-            {{depth0Data.datasets[0].data[0]}} Passed,
-            {{depth0Data.datasets[0].data[1]}} Failed,
-            {{depth0Data.datasets[0].data[2]}} Skipped
+            {{depth0.datasets[0].data[0]}} Passed,
+            {{depth0.datasets[0].data[1]}} Failed,
+            {{depth0.datasets[0].data[2]}} Skipped
           </div>
         </div>
       </div>
