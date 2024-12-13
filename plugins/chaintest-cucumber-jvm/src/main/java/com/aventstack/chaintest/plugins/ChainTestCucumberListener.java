@@ -111,7 +111,7 @@ public class ChainTestCucumberListener implements EventListener {
         log.debug("Scenario end: {}", event.getTestCase().getName());
         final Test scenario = _scenarios.get(event.getTestCase().getId());
         scenario.setResult(event.getResult().getStatus().name());
-        scenario.complete(event.getResult().getError());
+        scenario.complete();
         _features.get(event.getTestCase().getUri()).complete();
     };
 

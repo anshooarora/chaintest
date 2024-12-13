@@ -329,6 +329,7 @@ public class Test implements ChainTestEntity {
         if (null != parent) {
             final Result result = Result.computePriority(Result.valueOf(getResult()), Result.valueOf(parent.getResult()));
             parent.setResult(result.getResult());
+            parent.complete();
         }
     }
 

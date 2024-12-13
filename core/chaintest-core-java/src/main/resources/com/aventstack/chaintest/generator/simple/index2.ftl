@@ -239,6 +239,28 @@
                     <#if child.error??>
                       <pre class="mt-2">${child.error}</pre>
                     </#if>
+                    <#if build.isBDD()>
+                      <#include "bdd2.ftl" />
+                    </#if>
+                    <#if child.logs?has_content>
+                      <div class="mt-3">
+                        <p class="h6">Logs</p>
+                          <pre class="pb-0">
+                            <#list child.logs as log>
+${log}
+                            </#list>
+                          </pre>
+                      </div>
+                    </#if>
+                    <#if child.embeds?has_content>
+                      <div class="row mt-3">
+                        <#list child.embeds as embed>
+                          <div class="embed col-3 mb-1">
+                            <img src="resources/${embed.name}" />
+                          </div>
+                        </#list>
+                      </div>
+                    </#if>
                   </div>
                 </div>
               </#list>

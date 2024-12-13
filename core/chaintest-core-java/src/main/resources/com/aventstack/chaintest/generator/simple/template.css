@@ -1,7 +1,6 @@
 @import url("bootstrap-icons.css");
 
 :root {
-  --bs-info-rgb: 203, 235, 248;
   --bs-warning-rgb: 254, 227, 221;
   --bs-secondary-rgb: 224, 224, 224;
   --bs-success-rgb: 140, 197, 83;
@@ -14,10 +13,10 @@
 /* structure */
 body {
   font-family: Inter, Roboto, system-ui, -apple-system, BlinkMacSystemFont, Ubuntu, 'Helvetica Neue', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
 }
 h6 {
-  font-size: 14px;
+  font-size: 15px;
 }
 pre {
   background-color: #f8f9fa;
@@ -124,15 +123,17 @@ body[data-bs-theme="dark"] .card,
 body[data-bs-theme="dark"] .border-bottom,
 body[data-bs-theme="dark"] .badge.badge-outline,
 body[data-bs-theme="dark"] .rounded-pill,
-body[data-bs-theme="dark"] tr {
-  border-color: #354565 !important
+body[data-bs-theme="dark"] tr,
+ body[data-bs-theme="dark"] img {
+  border-color: #253543 !important;
 }
-body[data-bs-theme="dark"] .card-header,
-body[data-bs-theme="dark"] .card-footer {
-
+body[data-bs-theme="dark"] #dashboard .card,
+body[data-bs-theme="dark"] #tags .card {
+  border-color: transparent !important
 }
 body[data-bs-theme="dark"] pre,
-body[data-bs-theme="dark"] .bg-light {
+body[data-bs-theme="dark"] .bg-light,
+body[data-bs-theme="dark"] .bg-body-tertiary {
   background-color: rgb(27, 37, 49) !important;
 }
 body[data-bs-theme="dark"] .bg-light {
