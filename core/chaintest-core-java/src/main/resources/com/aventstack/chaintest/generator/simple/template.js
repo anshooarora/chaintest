@@ -21,7 +21,8 @@ const options = {
         datasets: [
           {
             data: stats1.map(row => row.count),
-            backgroundColor: stats1.map(row => row.bg)
+            backgroundColor: stats1.map(row => row.bg),
+            borderColor: 'transparent'
           }
         ]
       },
@@ -41,7 +42,8 @@ const options = {
         datasets: [
           {
             data: stats2.map(row => row.count),
-            backgroundColor: stats2.map(row => row.bg)
+            backgroundColor: stats2.map(row => row.bg),
+            borderColor: 'transparent'
           }
         ]
       },
@@ -63,7 +65,8 @@ const options = {
           datasets: [
           {
             data: stats3.map(row => row.count),
-            backgroundColor: stats3.map(row => row.bg)
+            backgroundColor: stats3.map(row => row.bg),
+            borderColor: 'transparent'
           }
         ]},
         options: options
@@ -176,6 +179,7 @@ window.onkeydown = evt => {
   k === 'f' && filterTests('failed');
   k === 's' && filterTests('skipped');
   k === 'escape' && resetState();
+  k === 'l' && toggleLights();
 }
 
 // filter only failed tests on load
@@ -195,3 +199,9 @@ const toggleSysInfo = (show) => {
 document.querySelector("#sys-info").addEventListener('click', el => {
     toggleSysInfo(true);
 });
+
+// lights
+const toggleLights = () => {
+  const dark = document.querySelector('body').getAttribute('data-bs-theme') === 'dark';
+  document.querySelector('body').setAttribute('data-bs-theme', dark ? '' : 'dark');
+}

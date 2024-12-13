@@ -1,19 +1,6 @@
 @import url("bootstrap-icons.css");
 
 :root {
-  --success-border: rgb(168, 217, 167);
-  --bg-success: rgb(240, 250, 243);
-  --success-text: rgb(82, 166, 85);
-  --danger-border: rgb(254, 205, 204);
-  --danger-border-light: rgb(256, 225, 224);
-  --danger-bg: rgb(256, 242, 242);
-  --info-border: rgb(202, 222, 253);
-  --info-bg: rgb(235, 244, 255);
-  --info-text: rgb(39, 98, 242);
-  --highlight-bg: rgb(246, 250, 255);
-  --highlight-border: rgb(198, 221, 255);
-  --light-bg: rgb(235, 238, 242);
-
   --bs-info-rgb: 203, 235, 248;
   --bs-warning-rgb: 254, 227, 221;
   --bs-secondary-rgb: 224, 224, 224;
@@ -52,7 +39,7 @@ img {
 
 /* table */
 table tbody tr:last-child {
-  border-bottom-color: transparent;
+  border-bottom-color: transparent !important;
 }
 th {
   font-weight: 500;
@@ -109,6 +96,14 @@ th {
   border: 1px solid #bbb;
 }
 
+/* progress bar */
+.progress {
+  --bs-progress-height: 1.5rem;
+}
+.progress .progress-bar {
+  color: #000;
+}
+
 /* content */
 .testname.failed {
   color: var(--text-failed-rgb);
@@ -118,3 +113,34 @@ th {
 }
 
 /* bdd */
+
+/* dark theme 2a3c4e */
+body[data-bs-theme="dark"],
+body[data-bs-theme="dark"] .card,
+body[data-bs-theme="dark"] .table>:not(caption)>*>* {
+  background-color: rgb(19, 25, 34);
+}
+body[data-bs-theme="dark"] .card,
+body[data-bs-theme="dark"] .border-bottom,
+body[data-bs-theme="dark"] .badge.badge-outline,
+body[data-bs-theme="dark"] .rounded-pill,
+body[data-bs-theme="dark"] tr {
+  border-color: #354565 !important
+}
+body[data-bs-theme="dark"] .card-header,
+body[data-bs-theme="dark"] .card-footer {
+
+}
+body[data-bs-theme="dark"] pre,
+body[data-bs-theme="dark"] .bg-light {
+  background-color: rgb(27, 37, 49) !important;
+}
+body[data-bs-theme="dark"] .bg-light {
+  color: inherit !important;
+}
+body[data-bs-theme="dark"] .text-bg-info {
+  background-color: rgb(95, 186, 247) !important;
+}
+body[data-bs-theme="dark"] .text-bg-warning {
+  background-color: rgb(197, 104, 92) !important;
+}

@@ -21,7 +21,7 @@
   </#if>
 </head>
 
-<body>
+<body data-bs-theme="dark">
 
   <nav class="navbar border-bottom">
     <div class="container d-flex justify-content-between">
