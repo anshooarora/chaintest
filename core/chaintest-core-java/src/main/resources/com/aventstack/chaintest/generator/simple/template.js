@@ -130,23 +130,29 @@ document.querySelectorAll('#status-filter > button').forEach((e) => {
     // gets the toggle result: true if toggled
     const toggleResult = el.target.classList.toggle('active');
     const status = el.target.innerText.toLowerCase();
-    tests.forEach((card) => {
-      card.style.display = toggleResult && card.className.indexOf(status) == -1 ? 'none' : 'block';
-    })
+    if (status.indexOf('clear') > -1) {
+      filterTests('');
+      return;
+    }
+    filterTests(status);
   })
 });
 
 // filter tests on click a tag in tags table
 const onTagClick = (tag) => {
   tests.forEach((card) => {
-    let display = 'none';
     if ([...card.querySelectorAll('.tag-list > *')]
       .map(badge => badge.innerText)
       .filter(text => text === tag).length) {
-        display = 'block';
+        card.classList.remove('d-none');
+      } else {
+        card.classList.add('d-none');
       }
-      card.style.display = display;
   })
+  testContainers.forEach((container) => {
+    container.querySelectorAll('.result').length == container.querySelectorAll('.result.d-none').length
+      ? container.classList.add('d-none') : container.classList.remove('d-none');
+  });
 }
 tags.forEach((e) => {
   e.addEventListener('click', el => {

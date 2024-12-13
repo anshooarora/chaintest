@@ -203,7 +203,7 @@
                   ${test.endedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
               </div>
               <#if test.tags?has_content>
-                <div class="tag-list my-2">
+                <div class="my-2">
                   <#list test.tags as tag>
                     <span class="badge rounded-pill text-bg-secondary">${tag.name}</span>
                   </#list>
@@ -225,9 +225,11 @@
                       </div>
                       <div>
                         <#if child.tags?has_content>
-                          <#list child.tags as tag>
-                            <span class="badge rounded-pill text-bg-secondary">${tag.name}</span>
-                          </#list>
+                          <span class="tag-list">
+                            <#list child.tags as tag>
+                              <span class="badge rounded-pill text-bg-secondary">${tag.name}</span>
+                            </#list>
+                          </span>
                           <span class="mx-1">&middot;</span>
                         </#if>
                         <span class="badge text-dark bg-light">${child.durationPretty}</span>
