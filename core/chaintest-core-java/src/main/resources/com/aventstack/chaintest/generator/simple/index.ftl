@@ -1,3 +1,27 @@
+<#if build.isBDD()>
+  <#assign
+    title1 = 'Features', title2 = 'Scenarios', title3 = 'Steps'
+  >
+<#elseif build.testRunner == 'testng'>
+  <#if build.runStats?size == 3>
+    <#assign
+      title1 = 'Suites', title2 = 'Classes', title3 = 'Methods'
+    >
+    <#else>
+      <#assign
+        title1 = 'Classes', title2 = 'Methods'
+      >
+  </#if>
+<#elseif build.testRunner == 'junit' || build.testRunner == 'junit-jupiter'>
+  <#assign
+    title1 = 'Classes', title2 = 'Methods'
+  >
+<#else>
+    <#assign
+        title1 = 'Tests', title2 = 'Methods', title3 = 'Events'
+    >
+</#if>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,8 +51,8 @@
     <div class="container d-flex justify-content-between">
       <a class="navbar-brand" href="#">ChainTest</a>
       <div>
-        <span
-          class="badge badge-outline text-lg">${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
+        <span class="badge badge-outline text-lg">${config['projectName']}</span>
+        <span class="badge badge-outline text-lg">${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
         <#if build.systemInfo?? && build.systemInfo?has_content>
           <span role="button" id="sys-info" class="badge badge-outline text-lg" title="View System Info">
             <i class="bi bi-pc-display-horizontal"></i></span>
@@ -45,7 +69,7 @@
           <div class="col-4">
             <div class="card card-custom" style="height: 175px">
               <div class="card-header">
-                ${build.isBDD()?then('Features', 'Classes')}
+                ${title1}
               </div>
               <div class="card-body d-flex justify-content-center" style="height: 90px;">
                 <div class="chart-view center" style="margin-left: -1rem;">
@@ -64,7 +88,7 @@
           <div class="col-4">
             <div class="card card-custom" style="height: 175px">
               <div class="card-header">
-                ${build.isBDD()?then('Scenarios', 'Methods')}
+                ${title2}
               </div>
               <div class="card-body d-flex justify-content-center" style="height: 90px;">
                 <div class="chart-view center" style="margin-left: -1rem;">
@@ -84,7 +108,7 @@
             <div class="col-4">
               <div class="card card-custom" style="height: 175px">
                 <div class="card-header">
-                  Steps
+                  ${title3}
                 </div>
                 <div class="card-body d-flex justify-content-center" style="height: 90px;">
                   <div class="chart-view center" style="margin-left: -1rem;">
