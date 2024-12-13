@@ -29,7 +29,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String PROP_DARK_THEME = BASE_PROPERTY + ".dark-theme";
     private static final String PROP_JS = BASE_PROPERTY + ".js";
     private static final String PROP_CSS = BASE_PROPERTY + ".css";
-    private static final String BASE_TEMPLATE_NAME = "index2.ftl";
+    private static final String BASE_TEMPLATE_NAME = "index.ftl";
     private static final String DEFAULT_OUT_FILE_NAME = "Simple.html";
     private static final String DEFAULT_OUT_DIR = "target/chaintest/";
     private static final String RESOURCES_DIR = "/resources";
