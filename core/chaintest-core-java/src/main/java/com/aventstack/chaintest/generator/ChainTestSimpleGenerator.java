@@ -26,9 +26,10 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String PROP_SAVE_OFFLINE = BASE_PROPERTY + ".offline";
     private static final String PROP_DATETIME_FORMAT = BASE_PROPERTY + ".datetime-format";
     private static final String PROP_DOCUMENT_TITLE = BASE_PROPERTY + ".document-title";
+    private static final String PROP_DARK_THEME = BASE_PROPERTY + ".dark-theme";
     private static final String PROP_JS = BASE_PROPERTY + ".js";
     private static final String PROP_CSS = BASE_PROPERTY + ".css";
-    private static final String BASE_TEMPLATE_NAME = "index.ftl";
+    private static final String BASE_TEMPLATE_NAME = "index2.ftl";
     private static final String DEFAULT_OUT_FILE_NAME = "Simple.html";
     private static final String DEFAULT_OUT_DIR = "target/chaintest/";
     private static final String RESOURCES_DIR = "/resources";
@@ -42,6 +43,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private String _js;
     private String _css;
     private boolean _offline;
+    private boolean _darkTheme = false;
 
     @Override
     public void start(final Optional<Map<String, String>> config, final String testRunner, final Build build) {
@@ -75,6 +77,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
                 .orElse(DATETIME_FORMAT);
         _documentTitle = Optional.ofNullable(config.get().get(PROP_DOCUMENT_TITLE))
                 .orElse(ChainTestPropertyKeys.CHAINTEST);
+        _darkTheme = Boolean.parseBoolean(config.get().get(PROP_DARK_THEME));
         _js = config.get().get(PROP_JS);
         _css = config.get().get(PROP_CSS);
         _build = build;
@@ -123,6 +126,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
                         "projectName", _projectName,
                         "offline", _offline,
                         "datetimeFormat", _datetimeFormat,
+                        "darkTheme", _darkTheme,
                         "js", _js,
                         "css", _css)), _outFile);
     }

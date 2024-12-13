@@ -21,7 +21,7 @@
   </#if>
 </head>
 
-<body data-bs-theme="dark">
+<body data-bs-theme="${config['darkTheme']?then('dark', '')}">
 
   <nav class="navbar border-bottom">
     <div class="container d-flex justify-content-between">
