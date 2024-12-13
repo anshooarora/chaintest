@@ -1,3 +1,15 @@
+// charts
+const labels = ['Passed', 'Failed', 'Skipped'];
+const options = {
+  cutout: '65%',
+  plugins: {
+    responsive: true,
+    legend: {
+      display: false
+    }
+  }
+};
+
 // chart: Features or Classes
 (async function() {
   new Chart(
@@ -5,7 +17,7 @@
     {
       type: 'doughnut',
       data: {
-        labels: ['Passed', 'Failed', 'Skipped'],
+        labels: labels,
         datasets: [
           {
             data: stats1.map(row => row.count),
@@ -13,14 +25,7 @@
           }
         ]
       },
-      options: {
-        plugins: {
-          responsive: true,
-          legend: {
-            display: false
-          }
-        }
-      }
+      options: options
     }
   );
 })();
@@ -32,7 +37,7 @@
     {
       type: 'doughnut',
       data: {
-        labels: ['Passed', 'Failed', 'Skipped'],
+        labels: labels,
         datasets: [
           {
             data: stats2.map(row => row.count),
@@ -40,14 +45,7 @@
           }
         ]
       },
-      options: {
-        plugins: {
-          responsive: true,
-          legend: {
-            display: false
-          }
-        }
-      }
+      options: options
     }
   );
 })();
@@ -61,21 +59,14 @@
       {
         type: 'doughnut',
         data: {
-          labels: ['Passed', 'Failed', 'Skipped'],
+          labels: labels,
           datasets: [
           {
             data: stats3.map(row => row.count),
             backgroundColor: stats3.map(row => row.bg)
           }
         ]},
-        options: {
-          plugins: {
-            responsive: true,
-            legend: {
-              display: false
-            }
-          }
-        }
+        options: options
       }
     );
   }
