@@ -78,9 +78,15 @@ document.querySelectorAll('#status-filter > button').forEach((e) => {
   statusFilters.push(e);
 });
 
+// init::test-container
+const testContainers = [];
+document.querySelectorAll('.test-container').forEach((card) => {
+  testContainers.push(card);
+});
+
 // init::tests
 const tests = [];
-document.querySelectorAll('.test-result').forEach((card) => {
+document.querySelectorAll('.result').forEach((card) => {
   tests.push(card);
 });
 
@@ -108,7 +114,11 @@ const filterTests = (_status) => {
     document.querySelector(`#${status}`).classList.toggle('active');
   }
   tests.forEach((card) => {
-    card.style.display = card.className.indexOf(status) == -1 ? 'none' : 'block';
+    card.className.indexOf(status) == -1 ? card.classList.add('d-none') : card.classList.remove('d-none');
+  });
+  testContainers.forEach((container) => {
+    container.querySelectorAll('.result').length == container.querySelectorAll('.result.d-none').length
+      ? container.classList.add('d-none') : container.classList.remove('d-none');
   });
 }
 
