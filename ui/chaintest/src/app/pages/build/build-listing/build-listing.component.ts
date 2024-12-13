@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { ChartData, ChartOptions, LegendItem } from 'chart.js';
+import { Chart, ChartData, ChartOptions, LegendItem } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import AnnotationPlugin from "chartjs-plugin-annotation";
 import { BuildService } from '../../../services/build.service';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
 import { Page } from '../../../model/page.model';
 import { Build } from '../../../model/build.model';
 import { TagStats } from '../../../model/tag-stats.model';
-import { BaseChartDirective } from 'ng2-charts';
+
 
 @Component({
   selector: 'app-build-listing',
@@ -42,8 +44,10 @@ export class BuildListingComponent implements OnInit, OnDestroy {
       }
     ]
   };
+
   options: ChartOptions<any> = {
     responsive: true,
+    cutout: '65%',
     plugins: {
       legend: {
         position: 'right',
@@ -57,13 +61,26 @@ export class BuildListingComponent implements OnInit, OnDestroy {
             return chartData.datasets[0].data[index] != 0;
           }
         }
+      },
+      annotation: {
+        annotations: [{
+          borderWidth: 0,
+          label: {
+            content: '',
+            display: true,
+            backgroundColor: 'transparent',
+            color: 'inherit'
+          }
+        }]
       }
     }
   };
 
   constructor(private route: ActivatedRoute,
     private buildService: BuildService,
-    private errorService: ErrorHandlerService) { }
+    private errorService: ErrorHandlerService) { 
+      Chart.register(AnnotationPlugin); 
+    }
 
   ngOnInit(): void {
     const projectId = this.route.snapshot.paramMap.get('projectId') || '0';
@@ -109,22 +126,52 @@ export class BuildListingComponent implements OnInit, OnDestroy {
     this.showSelectedBuildMetrics(build);
   }
 
+  private getRunStats(build: Build) {
+    if (build.bdd) {
+      return {
+        runstats: build.runStats.filter(x => x.depth == 1),
+        tagstats: build.tagStats?.filter(x => x.depth == 1),
+        statsTitle: 'Scenarios'
+      };
+    } else {
+      if (build.runStats.length === 3) {
+        return {
+          runstats: build.runStats.filter(x => x.depth == 2),
+          tagstats: build.tagStats?.filter(x => x.depth == 2),
+          statsTitle: 'Methods'
+        };
+      }
+      if (build.runStats.length === 2) {
+        return {
+          runstats: build.runStats.filter(x => x.depth == 1),
+          tagstats: build.tagStats?.filter(x => x.depth == 1),
+          statsTitle: 'Methods'
+        };
+      }
+      return {
+        runstats: build.runStats.filter(x => x.depth == 0),
+        tagstats: build.tagStats?.filter(x => x.depth == 0),
+        statsTitle: 'Tests'
+      };
+    }
+  }
+
   showSelectedBuildMetrics(build: Build) {
     this.tagstats = [];
     this.stats.datasets[0].data = [];
     if (!build.runStats || !build.runStats.length) {
       return;
     }
-    let runstats: any;
-    if (build.bdd) {
-      runstats = build.runStats.filter(x => x.depth == 1);
-      this.tagstats = build.tagStats && build.tagStats.filter(x => x.depth == 1);
-      this.statsTitle = 'Scenarios';
-    } else {
-      runstats = build.runStats.filter(x => x.depth == 0);
-      this.tagstats = build.tagStats && build.tagStats.filter(x => x.depth == 0);
+
+    const { runstats, tagstats, statsTitle } = this.getRunStats(build);
+    this.options.plugins.annotation.annotations[0].label.content = `${Math.floor(runstats[0].passed / runstats[0].total * 100)}%`;
+    this.tagstats = tagstats;
+    this.statsTitle = statsTitle;
+
+    if (runstats.length > 0) {
+      this.stats.datasets[0].data.push(runstats[0].passed, runstats[0].failed, runstats[0].skipped);
     }
-    this.stats.datasets[0].data.push(runstats[0].passed, runstats[0].failed, runstats[0].skipped);
+
     this.chart?.update();
   }
 
