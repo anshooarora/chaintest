@@ -1,14 +1,27 @@
 // charts
 const labels = ['Passed', 'Failed', 'Skipped'];
-const options = {
-  cutout: '65%',
-  plugins: {
-    responsive: true,
-    legend: {
-      display: false
+const getOptions = (data) => {
+  const label = (Math.floor(data.passed / data.total * 100)) + '%';
+  const options = {
+    cutout: '65%',
+    plugins: {
+      responsive: true,
+      legend: {
+        display: false
+      },
+      annotation: {
+        annotations: {
+          dLabel: {
+            type: 'doughnutLabel',
+            content: () => [label],
+            color: ['#ddd']
+          }
+        }
+      }
     }
-  }
-};
+  };
+  return options;
+}
 
 // chart: Features or Classes
 (async function() {
@@ -26,7 +39,7 @@ const options = {
           }
         ]
       },
-      options: options
+      options: getOptions(stats1Annotation)
     }
   );
 })();
@@ -47,7 +60,7 @@ const options = {
           }
         ]
       },
-      options: options
+      options: getOptions(stats2Annotation)
     }
   );
 })();
@@ -69,7 +82,7 @@ const options = {
             borderColor: 'transparent'
           }
         ]},
-        options: options
+        options: getOptions(stats3Annotation)
       }
     );
   }

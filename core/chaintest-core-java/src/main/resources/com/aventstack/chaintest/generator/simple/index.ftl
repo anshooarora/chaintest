@@ -309,21 +309,24 @@ ${log}
   </#if>
   <script>
     <#if build.runStats?? && build.runStats ? size != 0 >
+    const stats1Annotation = {'total': ${ build.runStats[0].total }, 'passed': ${ build.runStats[0].passed }};
     const stats1 = [
       { result: 'Passed', count: ${ build.runStats[0].passed }, bg: 'rgb(140, 197, 83)' },
-    { result: 'Failed', count: ${ build.runStats[0].failed }, bg: 'rgb(233,80,113)' },
-    { result: 'Skipped', count: ${ build.runStats[0].skipped }, bg: 'rgb(221, 91, 96)' }
+      { result: 'Failed', count: ${ build.runStats[0].failed }, bg: 'rgb(233,80,113)' },
+      { result: 'Skipped', count: ${ build.runStats[0].skipped }, bg: 'rgb(221, 91, 96)' }
     ];
+    const stats2Annotation = {'total': ${ build.runStats[1].total }, 'passed': ${ build.runStats[1].passed }};
     const stats2 = [
       { result: 'Passed', count: ${ build.runStats[1].passed }, bg: 'rgb(140, 197, 83)' },
-    { result: 'Failed', count: ${ build.runStats[1].failed }, bg: 'rgb(233,80,113)' },
-    { result: 'Skipped', count: ${ build.runStats[1].skipped }, bg: 'rgb(221, 91, 96)' }
+      { result: 'Failed', count: ${ build.runStats[1].failed }, bg: 'rgb(233,80,113)' },
+      { result: 'Skipped', count: ${ build.runStats[1].skipped }, bg: 'rgb(221, 91, 96)' }
     ];
     <#if build.runStats?size == 3 >
+      const stats3Annotation = {'total': ${ build.runStats[2].total }, 'passed': ${ build.runStats[2].passed }};
       const stats3 = [
-      { result: 'Passed', count: ${ build.runStats[2].passed }, bg: 'rgb(140, 197, 83)' },
-    { result: 'Failed', count: ${ build.runStats[2].failed }, bg: 'rgb(233,80,113)' },
-    { result: 'Skipped', count: ${ build.runStats[2].skipped }, bg: 'rgb(221, 91, 96)' }
+        { result: 'Passed', count: ${ build.runStats[2].passed }, bg: 'rgb(140, 197, 83)' },
+        { result: 'Failed', count: ${ build.runStats[2].failed }, bg: 'rgb(233,80,113)' },
+        { result: 'Skipped', count: ${ build.runStats[2].skipped }, bg: 'rgb(221, 91, 96)' }
       ];
     </#if >
       <#if config['js'] ??> ${ config['js'] }</#if >
