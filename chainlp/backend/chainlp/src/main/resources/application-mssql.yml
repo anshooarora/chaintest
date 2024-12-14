@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://<host>:1433;encrypt=true;trustServerCertificate=true;databaseName=<db>
+    username: <>
+    password: <>
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.SQLServerDialect
+
