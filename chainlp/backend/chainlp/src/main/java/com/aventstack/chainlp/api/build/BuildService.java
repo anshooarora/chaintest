@@ -5,6 +5,9 @@ import com.aventstack.chainlp.api.project.ProjectNotSpecifiedException;
 import com.aventstack.chainlp.api.project.ProjectService;
 import com.aventstack.chainlp.api.buildstats.BuildStats;
 import com.aventstack.chainlp.api.buildstats.BuildStatsService;
+import com.aventstack.chainlp.api.tag.Tag;
+import com.aventstack.chainlp.api.tagstats.TagStats;
+import com.aventstack.chainlp.api.tagstats.TagStatsService;
 import com.aventstack.chainlp.api.test.TestStatView;
 import com.aventstack.chainlp.api.test.TestRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -38,6 +43,9 @@ public class BuildService {
 
     @Autowired
     private BuildStatsService runStatsService;
+
+    @Autowired
+    private TagStatsService tagStatsService;
 
     @Autowired
     private TestRepository testRepository;
@@ -104,17 +112,42 @@ public class BuildService {
                 final Set<BuildStats> stats = new HashSet<>();
                 for (final TestStatView test : projection) {
                     final BuildStats stat = stats.stream().filter(x -> Objects.equals(x.getDepth(), test.getDepth()))
-                            .findAny().orElseGet(() -> {
-                                final BuildStats rs = BuildStats.builder().build(build).depth(test.getDepth()).build();
-                                stats.add(rs);
-                                return rs;
-                            });
+                        .findAny().orElseGet(() -> {
+                            final BuildStats rs = BuildStats.builder().build(build).depth(test.getDepth()).build();
+                            stats.add(rs);
+                            return rs;
+                        });
                     stat.update(test.getResult());
                 }
                 build.setBuildstats(stats);
+                updateBuildForTagStats(build, projection);
             }
         }
         repository.save(build);
+    }
+
+    private void updateBuildForTagStats(final Build build, final List<TestStatView> view) {
+        if (null != build.getTagStats()) {
+            return;
+        }
+        tagStatsService.deleteForBuildId(build.getId());
+        final Map<String, TagStats> stats = new HashMap<>();
+        for (final TestStatView test : view) {
+            for (final Tag tag : test.getTags()) {
+                final String key = tag.getName() + "-" + test.getDepth();
+                TagStats tagStat = stats.get(key);
+                if (tagStat == null) {
+                    tagStat = TagStats.builder()
+                            .build(build)
+                            .depth(test.getDepth())
+                            .name(tag.getName())
+                            .build();
+                    stats.put(key, tagStat);
+                }
+                tagStat.update(test.getResult());
+            }
+        }
+        build.setTagStats(new HashSet<>(stats.values()));
     }
 
     @Caching(evict = {

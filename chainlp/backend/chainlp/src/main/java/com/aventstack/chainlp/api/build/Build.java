@@ -2,6 +2,7 @@ package com.aventstack.chainlp.api.build;
 
 import com.aventstack.chainlp.api.buildstats.BuildStats;
 import com.aventstack.chainlp.api.tag.Tag;
+import com.aventstack.chainlp.api.tagstats.TagStats;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,12 +47,10 @@ public class Build {
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
     private Set<BuildStats> buildstats;
 
-
-/*
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
     private Collection<TagStats> tagStats;
 
-    @OneToMany(mappedBy = "build", cascade = CascadeType.REMOVE)
+    /*@OneToMany(mappedBy = "build", cascade = CascadeType.REMOVE)
     private Collection<SystemInfo> systemInfo;*/
 
     @Column(name = "started", nullable = false)
