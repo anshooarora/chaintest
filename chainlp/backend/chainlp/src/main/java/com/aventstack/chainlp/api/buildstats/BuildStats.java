@@ -1,4 +1,4 @@
-package com.aventstack.chainlp.api.runstats;
+package com.aventstack.chainlp.api.buildstats;
 
 import com.aventstack.chainlp.api.build.Build;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,8 +23,8 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "run_stat")
-public class RunStats {
+@Table(name = "buildstats")
+public class BuildStats {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

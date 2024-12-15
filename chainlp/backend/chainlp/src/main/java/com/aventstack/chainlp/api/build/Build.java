@@ -1,6 +1,6 @@
 package com.aventstack.chainlp.api.build;
 
-import com.aventstack.chainlp.api.runstats.RunStats;
+import com.aventstack.chainlp.api.buildstats.BuildStats;
 import com.aventstack.chainlp.api.tag.Tag;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -44,7 +44,7 @@ public class Build {
     private String projectName;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
-    private Set<RunStats> runStats;
+    private Set<BuildStats> buildstats;
 
 
 /*

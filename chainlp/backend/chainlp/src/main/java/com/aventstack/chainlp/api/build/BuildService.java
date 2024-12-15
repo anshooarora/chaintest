@@ -3,8 +3,8 @@ package com.aventstack.chainlp.api.build;
 import com.aventstack.chainlp.api.project.Project;
 import com.aventstack.chainlp.api.project.ProjectNotSpecifiedException;
 import com.aventstack.chainlp.api.project.ProjectService;
-import com.aventstack.chainlp.api.runstats.RunStats;
-import com.aventstack.chainlp.api.runstats.RunStatsService;
+import com.aventstack.chainlp.api.buildstats.BuildStats;
+import com.aventstack.chainlp.api.buildstats.BuildStatsService;
 import com.aventstack.chainlp.api.test.TestStatView;
 import com.aventstack.chainlp.api.test.TestRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class BuildService {
     private ProjectService projectService;
 
     @Autowired
-    private RunStatsService runStatsService;
+    private BuildStatsService runStatsService;
 
     @Autowired
     private TestRepository testRepository;
@@ -97,21 +97,21 @@ public class BuildService {
     }
 
     private void updateBuild(final Build build) {
-        if (null == build.getRunStats()) {
+        if (null == build.getBuildstats()) {
             final List<TestStatView> projection = testRepository.findAllByBuildId(build.getId());
             if (!projection.isEmpty()) {
                 runStatsService.deleteForBuild(build.getId());
-                final Set<RunStats> stats = new HashSet<>();
+                final Set<BuildStats> stats = new HashSet<>();
                 for (final TestStatView test : projection) {
-                    final RunStats stat = stats.stream().filter(x -> Objects.equals(x.getDepth(), test.getDepth()))
+                    final BuildStats stat = stats.stream().filter(x -> Objects.equals(x.getDepth(), test.getDepth()))
                             .findAny().orElseGet(() -> {
-                                final RunStats rs = RunStats.builder().build(build).depth(test.getDepth()).build();
+                                final BuildStats rs = BuildStats.builder().build(build).depth(test.getDepth()).build();
                                 stats.add(rs);
                                 return rs;
                             });
                     stat.update(test.getResult());
                 }
-                build.setRunStats(stats);
+                build.setBuildstats(stats);
             }
         }
         repository.save(build);
