@@ -31,7 +31,7 @@
           <div class="card d-on-hover" *ngIf="project.builds">
             <div class="card-header d-flex">
               <h5 class="mb-0 pointer" [routerLink]="['projects', project.id, 'builds']">{{project.name}}</h5>
-              <div class="ms-auto fs-6">
+              <div class="ms-auto fs-6" *ngIf="project.builds.content.length">
                 <i class="bi bi-check-circle-fill text-success" *ngIf="project.builds.content[0].result == 'PASSED'"></i>
                 <i class="bi bi-x-circle-fill text-danger" *ngIf="project.builds.content[0].result != 'PASSED'"></i>
               </div>
@@ -40,11 +40,12 @@
               <div class="row">
                 <div class="col-4">
                   <small class="card-text-sm text-muted mb-1">Builds</small>
-                  <h6>{{project.builds.totalElements}}</h6>
+                  <p>{{project.builds.totalElements}}</p>
                 </div> 
                 <div class="col-8">
                   <small class="card-text-sm text-muted mb-1">Last Build</small>
-                  <h6>{{project.builds.content[0].startedAt | timeago}}</h6>
+                  <p *ngIf="project.builds.content.length">{{project.builds.content[0].startedAt | timeago}}</p>
+                  <p *ngIf="!project.builds.content.length">No runs</p>
                 </div> 
               </div>
             </div>

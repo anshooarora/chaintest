@@ -66,6 +66,7 @@
 				<div class="my-5 d-flex justify-content-center">
 					<button type="button" class="btn btn-outline-primary" 
 					(click)="loadNextPage()"
+					[ngClass]="{'d-none': builds.last}"
 					[disabled]="builds.last">Load more builds</button>
 				</div>
 			</div>
