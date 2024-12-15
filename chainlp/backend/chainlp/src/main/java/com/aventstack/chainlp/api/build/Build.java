@@ -1,5 +1,6 @@
 package com.aventstack.chainlp.api.build;
 
+import com.aventstack.chainlp.api.build.SystemInfo.SystemInfo;
 import com.aventstack.chainlp.api.buildstats.BuildStats;
 import com.aventstack.chainlp.api.tag.Tag;
 import com.aventstack.chainlp.api.tagstats.TagStats;
@@ -21,7 +22,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,10 +48,10 @@ public class Build {
     private Set<BuildStats> buildstats;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
-    private Collection<TagStats> tagStats;
+    private Set<TagStats> tagStats;
 
-    /*@OneToMany(mappedBy = "build", cascade = CascadeType.REMOVE)
-    private Collection<SystemInfo> systemInfo;*/
+    @OneToMany(mappedBy = "build", cascade = CascadeType.REMOVE)
+    private Set<SystemInfo> systemInfo;
 
     @Column(name = "started", nullable = false)
     private Long startedAt = System.currentTimeMillis();
@@ -80,7 +80,7 @@ public class Build {
             joinColumns = { @JoinColumn(name = "build") },
             inverseJoinColumns = { @JoinColumn(name = "tag") }
     )
-    private Collection<Tag> tags = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
 
     @Column
     private boolean bdd;
