@@ -102,9 +102,9 @@
             </button>
           </div>
           <div>
-            <span class="small">Showing {{page.content.length}} of {{build.runStats[0].total}} tests</span>
+            <span class="small">Showing {{page.content.length}} of {{build.buildstats[0].total}} tests</span>
             <button type="button" class="btn btn-outline-light btn-sm ms-2" 
-              *ngIf="page.totalElements < build.runStats[0].total"
+              *ngIf="page.totalElements < build.buildstats[0].total"
               (click)="findAllTests()">
               Show all
             </button>

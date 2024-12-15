@@ -87,8 +87,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   };
 
   getOptions(depth: number): ChartOptions<any> {
-    const runStats = this.build.runStats.find(x => x.depth == depth);
-    const label = runStats ? Math.floor(runStats.passed / runStats.total * 100) : 0;
+    const buildstats = this.build.buildstats.find(x => x.depth == depth);
+    const label = buildstats ? Math.floor(buildstats.passed / buildstats.total * 100) : 0;
     return {
       responsive: true,
       cutout: '70%',
@@ -135,9 +135,9 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
   private computeMetrics(build: Build) {
     [this.depth0, this.depth1, this.depth2].forEach((depthData, index) => {
-      const runStats = build.runStats.filter(x => x.depth == index);
-      if (runStats.length) {
-        depthData.datasets[0].data.push(runStats[0].passed, runStats[0].failed, runStats[0].skipped);
+      const buildstats = build.buildstats.filter(x => x.depth == index);
+      if (buildstats.length) {
+        depthData.datasets[0].data.push(buildstats[0].passed, buildstats[0].failed, buildstats[0].skipped);
       }
     });
     this.chart?.update();

@@ -1,5 +1,5 @@
-import { RunStats } from "./run-stats.model";
+import { BuildStats } from "./run-stats.model";
 
-export class TagStats extends RunStats {
+export class TagStats extends BuildStats {
   name: string;
 }

@@ -1,4 +1,4 @@
-export class RunStats {
+export class BuildStats {
   depth: number;
   failed: number;
   id: number;

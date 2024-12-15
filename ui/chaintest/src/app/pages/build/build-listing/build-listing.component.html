@@ -74,7 +74,7 @@
 			<!-- build stats -->
 			<div class="col-4">
 				<div class="sticky">
-					<ng-container *ngIf="selectedBuild.runStats && selectedBuild.runStats.length && selectedBuild.runStats[0].total">
+					<ng-container *ngIf="selectedBuild && selectedBuild.buildstats && selectedBuild.buildstats.length">
 						<div class="card">
 							<div class="card-header pb-0">
 								<h6 class="mb-0">#{{selectedBuild.id}} - {{statsTitle}}</h6>

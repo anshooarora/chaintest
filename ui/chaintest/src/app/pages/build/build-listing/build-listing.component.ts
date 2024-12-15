@@ -10,7 +10,6 @@ import { Page } from '../../../model/page.model';
 import { Build } from '../../../model/build.model';
 import { TagStats } from '../../../model/tag-stats.model';
 
-
 @Component({
   selector: 'app-build-listing',
   templateUrl: './build-listing.component.html',
@@ -126,30 +125,30 @@ export class BuildListingComponent implements OnInit, OnDestroy {
     this.showSelectedBuildMetrics(build);
   }
 
-  private getRunStats(build: Build) {
+  private getBuildStats(build: Build) {
     if (build.bdd) {
       return {
-        runstats: build.runStats.filter(x => x.depth == 1),
+        buildstats: build.buildstats.filter(x => x.depth == 1),
         tagstats: build.tagStats?.filter(x => x.depth == 1),
         statsTitle: 'Scenarios'
       };
     } else {
-      if (build.runStats.length === 3) {
+      if (build.buildstats.length === 3) {
         return {
-          runstats: build.runStats.filter(x => x.depth == 2),
+          buildstats: build.buildstats.filter(x => x.depth == 2),
           tagstats: build.tagStats?.filter(x => x.depth == 2),
           statsTitle: 'Methods'
         };
       }
-      if (build.runStats.length === 2) {
+      if (build.buildstats.length === 2) {
         return {
-          runstats: build.runStats.filter(x => x.depth == 1),
+          buildstats: build.buildstats.filter(x => x.depth == 1),
           tagstats: build.tagStats?.filter(x => x.depth == 1),
           statsTitle: 'Methods'
         };
       }
       return {
-        runstats: build.runStats.filter(x => x.depth == 0),
+        buildstats: build.buildstats.filter(x => x.depth == 0),
         tagstats: build.tagStats?.filter(x => x.depth == 0),
         statsTitle: 'Tests'
       };
@@ -159,17 +158,18 @@ export class BuildListingComponent implements OnInit, OnDestroy {
   showSelectedBuildMetrics(build: Build) {
     this.tagstats = [];
     this.stats.datasets[0].data = [];
-    if (!build.runStats || !build.runStats.length) {
+
+    if (!build || !build.buildstats || !build.buildstats.length) {
       return;
     }
 
-    const { runstats, tagstats, statsTitle } = this.getRunStats(build);
-    this.options.plugins.annotation.annotations[0].label.content = `${Math.floor(runstats[0].passed / runstats[0].total * 100)}%`;
+    const { buildstats: buildstats, tagstats, statsTitle } = this.getBuildStats(build);
+    this.options.plugins.annotation.annotations[0].label.content = `${Math.floor(buildstats[0].passed / buildstats[0].total * 100)}%`;
     this.tagstats = tagstats;
     this.statsTitle = statsTitle;
 
-    if (runstats.length > 0) {
-      this.stats.datasets[0].data.push(runstats[0].passed, runstats[0].failed, runstats[0].skipped);
+    if (buildstats.length > 0) {
+      this.stats.datasets[0].data.push(buildstats[0].passed, buildstats[0].failed, buildstats[0].skipped);
     }
 
     this.chart?.update();
