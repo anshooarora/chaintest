@@ -1,5 +1,6 @@
 package com.aventstack.chainlp.api.build;
 
+import com.aventstack.chainlp.api.build.SystemInfo.SystemInfoService;
 import com.aventstack.chainlp.api.project.Project;
 import com.aventstack.chainlp.api.project.ProjectNotSpecifiedException;
 import com.aventstack.chainlp.api.project.ProjectService;
@@ -12,7 +13,6 @@ import com.aventstack.chainlp.api.test.TestStatView;
 import com.aventstack.chainlp.api.test.TestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,20 +35,26 @@ import java.util.Set;
 @Service
 public class BuildService {
 
-    @Autowired
-    private BuildRepository repository;
+    private final BuildRepository repository;
+    private final ProjectService projectService;
+    private final BuildStatsService buildStatsService;
+    private final TagStatsService tagStatsService;
+    private final TestRepository testRepository;
+    private final SystemInfoService systemInfoService;
 
-    @Autowired
-    private ProjectService projectService;
-
-    @Autowired
-    private BuildStatsService runStatsService;
-
-    @Autowired
-    private TagStatsService tagStatsService;
-
-    @Autowired
-    private TestRepository testRepository;
+    public BuildService(final BuildRepository repository,
+                        final ProjectService projectService,
+                        final BuildStatsService buildStatsService,
+                        final TagStatsService tagStatsService,
+                        final TestRepository testRepository,
+                        final SystemInfoService systemInfoService) {
+        this.repository = repository;
+        this.projectService = projectService;
+        this.buildStatsService = buildStatsService;
+        this.tagStatsService = tagStatsService;
+        this.testRepository = testRepository;
+        this.systemInfoService = systemInfoService;
+    }
 
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @Cacheable(value = "builds", unless = "#result == null || #result.totalElements == 0")
@@ -68,7 +74,12 @@ public class BuildService {
     public Build create(final Build build) {
         log.info("Creating new build {}", build);
         findAndAssociateProject(build);
-        return repository.save(build);
+        final Build persisted = repository.save(build);
+        if (null != build.getSystemInfo()) {
+            build.getSystemInfo().forEach(x -> x.setBuild(persisted));
+            systemInfoService.saveAll(build.getSystemInfo());
+        }
+        return persisted;
     }
 
     private void findAndAssociateProject(final Build build) {
@@ -105,28 +116,40 @@ public class BuildService {
     }
 
     private void updateBuild(final Build build) {
-        if (null == build.getBuildstats()) {
+        if (null == build.getBuildstats() || null == build.getTagStats()) {
             final List<TestStatView> projection = testRepository.findAllByBuildId(build.getId());
             if (!projection.isEmpty()) {
-                runStatsService.deleteForBuild(build.getId());
-                final Set<BuildStats> stats = new HashSet<>();
-                for (final TestStatView test : projection) {
-                    final BuildStats stat = stats.stream().filter(x -> Objects.equals(x.getDepth(), test.getDepth()))
-                        .findAny().orElseGet(() -> {
-                            final BuildStats rs = BuildStats.builder().build(build).depth(test.getDepth()).build();
-                            stats.add(rs);
-                            return rs;
-                        });
-                    stat.update(test.getResult());
+                if (null == build.getBuildstats()) {
+                    updateRunStats(build, projection);
                 }
-                build.setBuildstats(stats);
-                updateBuildForTagStats(build, projection);
+                if (null == build.getTagStats()) {
+                    updateTagStats(build, projection);
+                }
             }
         }
+        updateSystemInfo(build);
         repository.save(build);
     }
 
-    private void updateBuildForTagStats(final Build build, final List<TestStatView> view) {
+    private void updateRunStats(final Build build, final List<TestStatView> view) {
+        if (null != build.getBuildstats()) {
+            return;
+        }
+        buildStatsService.deleteForBuild(build.getId());
+        final Set<BuildStats> stats = new HashSet<>();
+        for (final TestStatView test : view) {
+            final BuildStats stat = stats.stream().filter(x -> Objects.equals(x.getDepth(), test.getDepth()))
+                    .findAny().orElseGet(() -> {
+                        final BuildStats rs = BuildStats.builder().build(build).depth(test.getDepth()).build();
+                        stats.add(rs);
+                        return rs;
+                    });
+            stat.update(test.getResult());
+        }
+        build.setBuildstats(stats);
+    }
+
+    private void updateTagStats(final Build build, final List<TestStatView> view) {
         if (null != build.getTagStats()) {
             return;
         }
@@ -148,6 +171,15 @@ public class BuildService {
             }
         }
         build.setTagStats(new HashSet<>(stats.values()));
+    }
+
+    private void updateSystemInfo(final Build build) {
+        if (null == build.getSystemInfo()) {
+            return;
+        }
+        systemInfoService.deleteForBuildId(build.getId());
+        build.getSystemInfo().forEach(x -> x.setBuild(build));
+        systemInfoService.saveAll(build.getSystemInfo());
     }
 
     @Caching(evict = {
