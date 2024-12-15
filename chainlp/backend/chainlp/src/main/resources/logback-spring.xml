@@ -36,6 +36,11 @@
     </root>
 
     <!-- LOG "com.aventstack*" at DEBUG level -->
+    <logger name="logging.level.org.springframework.cache" level="trace" additivity="false">
+        <appender-ref ref="RollingFile" />
+    </logger>
+
+    <!-- LOG "com.aventstack*" at DEBUG level -->
     <logger name="com.aventstack" level="debug" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />

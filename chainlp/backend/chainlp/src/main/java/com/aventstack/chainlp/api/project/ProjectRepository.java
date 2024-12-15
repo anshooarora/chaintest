@@ -1,4 +1,4 @@
-package com.aventstack.chainserv.api.project;
+package com.aventstack.chainlp.api.project;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;

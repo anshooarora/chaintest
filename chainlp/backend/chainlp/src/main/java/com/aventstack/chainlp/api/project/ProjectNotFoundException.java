@@ -1,6 +1,6 @@
-package com.aventstack.chainserv.api.project;
+package com.aventstack.chainlp.api.project;
 
-import com.aventstack.chainserv.api.domain.NotFoundException;
+import com.aventstack.chainlp.api.domain.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

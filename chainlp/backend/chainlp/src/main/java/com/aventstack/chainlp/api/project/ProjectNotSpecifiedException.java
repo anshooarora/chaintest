@@ -1,4 +1,4 @@
-package com.aventstack.chainserv.api.project;
+package com.aventstack.chainlp.api.project;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,4 +1,4 @@
-package com.aventstack.chainserv.api.project;
+package com.aventstack.chainlp.api.project;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

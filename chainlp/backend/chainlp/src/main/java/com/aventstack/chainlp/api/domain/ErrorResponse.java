@@ -1,4 +1,4 @@
-package com.aventstack.chainserv.api.domain;
+package com.aventstack.chainlp.api.domain;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;
