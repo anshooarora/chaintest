@@ -27,7 +27,7 @@ public class TestController {
     private TestService service;
 
     @GetMapping
-    public ResponseEntity<Page<Test>> q(@RequestParam(required = false) final Long id,
+    public ResponseEntity<Page<Test>> q(@RequestParam(required = false, defaultValue = "0") final long id,
                                         @RequestParam(required = false) final String name,
                                         @RequestParam(required = false) final Integer projectId,
                                         @RequestParam(required = false) final Long buildId,

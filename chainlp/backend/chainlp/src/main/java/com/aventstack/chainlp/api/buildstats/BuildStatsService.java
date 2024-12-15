@@ -24,7 +24,7 @@ public class BuildStatsService {
     }
 
     @Cacheable(value = "stat", key = "#id", unless = "#result == null && #result.isEmpty()")
-    public Optional<BuildStats> findById(final Long id) {
+    public Optional<BuildStats> findById(final long id) {
         return repository.findById(id);
     }
 
@@ -50,7 +50,7 @@ public class BuildStatsService {
     }
 
     @CacheEvict(value = "stat", key = "#id")
-    public void delete(final Long id) {
+    public void delete(final long id) {
         log.info("Deleting BuildStats with ID {}", id);
         repository.deleteById(id);
         log.info("BuildStats with ID {} deleted", id);

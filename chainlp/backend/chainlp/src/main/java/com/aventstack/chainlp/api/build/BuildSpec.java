@@ -22,10 +22,16 @@ public class BuildSpec implements Specification<Build> {
     public Predicate toPredicate(final Root<Build> root, final CriteriaQuery<?> query, final CriteriaBuilder cb) {
         final List<Predicate> predicates = new ArrayList<>();
 
-        addPredicateIfNotNull(predicates, cb, root.get(Build_.id), _build.getId());
+        addPredicateIfNotZero(predicates, cb, root.get(Build_.id), _build.getId());
         addPredicateIfNotNull(predicates, cb, root.get(Build_.projectId), _build.getProjectId());
 
         return cb.and(predicates.toArray(new Predicate[0]));
+    }
+
+    private void addPredicateIfNotZero(final List<Predicate> predicates, final CriteriaBuilder cb, Path<?> path, final long value) {
+        if (value != 0) {
+            predicates.add(cb.equal(path, value));
+        }
     }
 
     private void addPredicateIfNotNull(final List<Predicate> predicates, final CriteriaBuilder cb, Path<?> path, final Object value) {

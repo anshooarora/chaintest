@@ -21,7 +21,7 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)

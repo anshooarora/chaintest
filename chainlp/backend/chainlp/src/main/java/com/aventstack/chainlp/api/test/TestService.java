@@ -80,7 +80,7 @@ public class TestService {
             @CacheEvict(value = "tests", allEntries = true, condition = "#id > 0"),
             @CacheEvict(value = "test", key = "#id")
     })
-    public void delete(final Long id) {
+    public void delete(final long id) {
         log.info("Deleting test with id {}", id);
         repository.deleteById(id);
         log.info("Test id: {} was deleted successfully", id);

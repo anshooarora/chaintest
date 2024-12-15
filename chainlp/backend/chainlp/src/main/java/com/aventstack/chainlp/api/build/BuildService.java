@@ -63,14 +63,14 @@ public class BuildService {
 
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @Cacheable(value = "builds", unless = "#result == null || #result.totalElements == 0")
-    public Page<Build> findAll(final Long id, final Integer projectId, final Pageable pageable) {
+    public Page<Build> findAll(final long id, final Integer projectId, final Pageable pageable) {
         final BuildSpec spec = new BuildSpec(
                 Build.builder().id(id).projectId(projectId).build());
         return repository.findAll(spec, pageable);
     }
 
     @Cacheable(value = "build", key = "#id", unless = "#result == null")
-    public Build findById(final Long id) {
+    public Build findById(final long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new BuildNotFoundException("Build with ID " + id + " was not found"));
     }

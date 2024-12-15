@@ -30,7 +30,7 @@ public class BuildStats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @EqualsAndHashCode.Exclude
-    private Long id;
+    private long id;
 
     @ManyToOne
     @EqualsAndHashCode.Exclude

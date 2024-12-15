@@ -39,6 +39,7 @@ public class TestSpec implements Specification<Test> {
     public Predicate toPredicate(final Root<Test> root, final CriteriaQuery<?> query, final CriteriaBuilder cb) {
         final List<Predicate> predicates = new ArrayList<>();
 
+        addPredicateIfNotZero(predicates, cb, root.get(Test_.id), _test.getId());
         addPredicateIfNotBlank(predicates, cb, root.get(Test_.name), _test.getName());
         addPredicateIfNotNull(predicates, cb, root.get(Test_.projectId), _test.getProjectId());
         addPredicateIfNotNull(predicates, cb, root.get(Test_.buildId), _test.getBuildId());
@@ -49,6 +50,12 @@ public class TestSpec implements Specification<Test> {
 
         return _op.equals(Predicate.BooleanOperator.AND)
                 ? cb.and(predicates.toArray(new Predicate[0])) : cb.or(predicates.toArray(new Predicate[0]));
+    }
+
+    private void addPredicateIfNotZero(final List<Predicate> predicates, final CriteriaBuilder cb, Path<?> path, final long value) {
+        if (value != 0) {
+            predicates.add(cb.equal(path, value));
+        }
     }
 
     private void addPredicateIfNotBlank(List<Predicate> predicates, CriteriaBuilder cb, Path<String> path, String value) {
