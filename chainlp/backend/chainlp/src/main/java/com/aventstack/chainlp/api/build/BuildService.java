@@ -9,6 +9,7 @@ import com.aventstack.chainlp.api.buildstats.BuildStatsService;
 import com.aventstack.chainlp.api.tag.Tag;
 import com.aventstack.chainlp.api.tagstats.TagStats;
 import com.aventstack.chainlp.api.tagstats.TagStatsService;
+import com.aventstack.chainlp.api.test.TestService;
 import com.aventstack.chainlp.api.test.TestStatView;
 import com.aventstack.chainlp.api.test.TestRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,19 +43,22 @@ public class BuildService {
     private final TagStatsService tagStatsService;
     private final TestRepository testRepository;
     private final SystemInfoService systemInfoService;
+    private final TestService testService;
 
     public BuildService(final BuildRepository repository,
                         final ProjectService projectService,
                         final BuildStatsService buildStatsService,
                         final TagStatsService tagStatsService,
                         final TestRepository testRepository,
-                        final SystemInfoService systemInfoService) {
+                        final SystemInfoService systemInfoService,
+                        @Lazy final TestService testService) {
         this.repository = repository;
         this.projectService = projectService;
         this.buildStatsService = buildStatsService;
         this.tagStatsService = tagStatsService;
         this.testRepository = testRepository;
         this.systemInfoService = systemInfoService;
+        this.testService = testService;
     }
 
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
@@ -182,12 +187,16 @@ public class BuildService {
         systemInfoService.saveAll(build.getSystemInfo());
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "builds", allEntries = true, condition = "#id > 0"),
             @CacheEvict(value = "build", key = "#id")
     })
     public void delete(final long id) {
-        log.info("Deleting build with id {}", id);
+        log.debug("Deleting all tests for build with id {}", id);
+        testService.deleteForBuild(id);
+        log.info("Tests for build with id {} were deleted", id);
+        log.debug("Deleting build with id {}", id);
         repository.deleteById(id);
         log.info("Build id: {} was deleted successfully", id);
     }

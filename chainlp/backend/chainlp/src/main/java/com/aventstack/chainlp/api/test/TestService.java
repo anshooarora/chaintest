@@ -11,6 +11,8 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -28,8 +30,8 @@ public class TestService {
     }
 
     @Cacheable(value = "tests", unless = "#result == null || #result.totalElements == 0")
-    public Page<Test> findAll(final Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Test> findAll(final Test test, final String op, final Pageable pageable) {
+        return repository.findAll(new TestSpec(test, op), pageable);
     }
 
     @Cacheable(value = "test", key = "#id", unless = "#result == null")
@@ -82,6 +84,17 @@ public class TestService {
         log.info("Deleting test with id {}", id);
         repository.deleteById(id);
         log.info("Test id: {} was deleted successfully", id);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    @Caching(evict = {
+            @CacheEvict(value = "tests", allEntries = true),
+            @CacheEvict(value = "test", allEntries = true)
+    })
+    public void deleteForBuild(final long buildId) {
+        log.info("Deleting all tests for build-id {}", buildId);
+        repository.deleteByBuildId(buildId);
+        log.info("Tests removed");
     }
 
 }

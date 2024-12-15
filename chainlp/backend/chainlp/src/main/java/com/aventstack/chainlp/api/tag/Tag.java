@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 @Data
 @ToString(exclude = {"builds", "tests"})
 @EqualsAndHashCode(of = {"name"})
+@NoArgsConstructor
 @Entity
 @Table(name = "tag")
 public class Tag {
@@ -39,5 +41,9 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     @JsonIgnore
     private List<Test> tests;
+
+    public Tag(final String name) {
+        this.name = name;
+    }
 
 }

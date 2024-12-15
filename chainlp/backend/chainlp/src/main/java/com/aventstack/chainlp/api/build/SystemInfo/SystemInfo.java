@@ -20,7 +20,7 @@ import jakarta.persistence.Table;
 @ToString(exclude = "build")
 @Entity
 @NoArgsConstructor
-@Table(name = "system_info")
+@Table(name = "systeminfo")
 public class SystemInfo {
 
     @Id
