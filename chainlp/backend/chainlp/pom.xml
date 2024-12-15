@@ -22,7 +22,7 @@
 		<version>3.4.0</version>
 		<relativePath/>
 	</parent>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

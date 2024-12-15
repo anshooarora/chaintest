@@ -29,6 +29,12 @@ public class TestSpec implements Specification<Test> {
         _op = op != null ? op : Predicate.BooleanOperator.AND;
     }
 
+    public TestSpec(final Test test, final String op) {
+        _test = test;
+        _op = StringUtils.isBlank(op) || op.equalsIgnoreCase("and")
+                ? Predicate.BooleanOperator.AND : Predicate.BooleanOperator.OR;
+    }
+
     @Override
     public Predicate toPredicate(final Root<Test> root, final CriteriaQuery<?> query, final CriteriaBuilder cb) {
         final List<Predicate> predicates = new ArrayList<>();

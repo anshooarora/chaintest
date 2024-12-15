@@ -13,4 +13,6 @@ public interface TestRepository extends
 
     List<TestStatView> findAllByBuildId(final Long buildId);
 
+    void deleteByBuildId(final long buildId);
+
 }

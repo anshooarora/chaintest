@@ -1,5 +1,6 @@
 package com.aventstack.chainlp.api.test;
 
+import com.aventstack.chainlp.api.tag.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tests")
@@ -29,13 +31,25 @@ public class TestController {
                                         @RequestParam(required = false) final String name,
                                         @RequestParam(required = false) final Integer projectId,
                                         @RequestParam(required = false) final Long buildId,
-                                        @RequestParam(required = false) final Integer depth,
+                                        @RequestParam(required = false) final Short depth,
                                         @RequestParam(required = false) final String result,
                                         @RequestParam(required = false) final Set<String> tags,
                                         @RequestParam(required = false) final String error,
                                         @RequestParam(required = false) final String op,
                                         final Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(pageable));
+        final Test test = Test.builder()
+                .id(id)
+                .name(name)
+                .projectId(projectId)
+                .buildId(buildId)
+                .depth(depth)
+                .result(result)
+                .error(error)
+                .build();
+        if (null != tags) {
+            test.setTags(tags.stream().map(Tag::new).collect(Collectors.toSet()));
+        }
+        return ResponseEntity.ok(service.findAll(test, op, pageable));
     }
 
     @GetMapping("/{id}")
