@@ -28,6 +28,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   build: Build;
   page: Page<Test>;
   displayCharts: boolean = true;
+  buildDepth: number = 0;
   error: string;
   result: string = 'FAILED';
   pageNum: number = 0;
@@ -126,6 +127,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (build: Build) => {
         this.build = build;
+        this.buildDepth = build.buildstats.length;
         this.computeMetrics(build);
         console.log(build)
       },
