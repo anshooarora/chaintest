@@ -85,7 +85,7 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
 
   del(project: Project): void {
     this.projectService.delete(project)
-    .pipe(takeUntil(this._destroy$))
+    .pipe(takeUntil(this._del$))
     .subscribe({
       next: () => {
         this.projectPage.content = this.projectPage.content.filter(x => x.id !== project.id);
