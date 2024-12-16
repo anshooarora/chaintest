@@ -15,4 +15,6 @@ export class Test extends Page<Test> {
     children: Test[];
     error: string;
     bdd: boolean;
+
+    history: Page<Test>;
 }

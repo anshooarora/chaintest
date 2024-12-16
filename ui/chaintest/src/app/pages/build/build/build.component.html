@@ -132,6 +132,16 @@
               <div class="mt-2" *ngIf="test.tags">
                 <span class="badge rounded-pill text-bg-secondary me-1" *ngFor="let tag of test.tags">{{tag.name}}</span>
               </div>
+              <div class="mt-2 ms-1 d-flex flex-row" *ngIf="test.history && test.history.content.length">
+                <span class="me-2">History <i class="bi bi-chevron-right"></i></span>
+                <a class="status-bar" 
+                  *ngFor="let history of test.history.content.reverse()"
+                  [ngClass]="{'status-success': history.result.toString() == 'PASSED', 'status-failure': history.result.toString() != 'PASSED'}"
+                  [routerLink]="['projects', build.projectId, 'builds', history.buildId]"
+                  ngbTooltip="{{history.result}}, {{history.startedAt | timeago}}"
+                  tooltipClass="text-sm">
+                </a>
+              </div>
             </div>
             <div class="col-8">
               <div class="card mb-1" *ngFor="let child of test.children">

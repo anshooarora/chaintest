@@ -22,6 +22,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
     
   private _destroy$: Subject<any> = new Subject<any>();
+  private _history$: Subject<any> = new Subject<any>();
 
   buildId: number;
   build: Build;
@@ -133,6 +134,7 @@ export class BuildComponent implements OnInit, OnDestroy {
       }
     });
   }
+  
   private computeMetrics(build: Build) {
     [this.depth0, this.depth1, this.depth2].forEach((depthData, index) => {
       const buildstats = build.buildstats.filter(x => x.depth == index);
@@ -150,9 +152,28 @@ export class BuildComponent implements OnInit, OnDestroy {
       next: (page: Page<Test>) => {
         this.page = append ? { ...page, content: [...this.page.content, ...page.content] } : page;
         console.log(this.page);
+        this.findTestsHistory();
       },
       error: (err) => {
         this.error = this._errorService.getError(err);
+      }
+    });
+  }
+
+  findTestsHistory(): void {
+    this.page.content.forEach(test => {
+      if (!test.history) {
+        this._testService.history(test.id)
+        .pipe(takeUntil(this._history$))
+        .subscribe({
+          next: (page: Page<Test>) => {
+            console.log(page);
+            test.history = page;
+          },
+          error: (err) => {
+            this.error = this._errorService.getError(err);
+          }
+        });
       }
     });
   }
