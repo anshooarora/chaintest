@@ -14,7 +14,7 @@
         <div class="input-group">
           <span class="input-group-text bg-body"
             title="Search all projects using: name, tags or the test-runner name"><i class="bi bi-search small"></i></span>
-          <input type="text" class="form-control" placeholder="Search projects.." 
+          <input type="text" class="form-control" placeholder="Search projects.." style="height:50px;"
             aria-label="Search projects.." aria-describedby="basic-addon2" 
             [(ngModel)]="q" (ngModelChange)="search()" 
             title="Search all projects using: name, tags or the test-runner name" />
@@ -27,7 +27,7 @@
 
     <div class="row" *ngIf="projectPage && projectPage.content.length && projectPage.content[0].builds">
       <ng-container *ngFor="let project of projectPage.content">
-        <div class="col-4" *ngIf="project.display">
+        <div class="col-3" *ngIf="project.display">
           <div class="card d-on-hover" *ngIf="project.builds">
             <div class="card-header d-flex">
               <h5 class="mb-0 pointer" [routerLink]="['projects', project.id, 'builds']">{{project.name}}</h5>
@@ -61,7 +61,7 @@
                 <div class="ms-auto pointer d-on-hover-target" ngbDropdown>
                   <span ngbDropdownToggle><i class="bi bi-three-dots"></i></span>
                   <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                    <button ngbDropdownItem>Delete project</button>
+                    <button ngbDropdownItem (click)="del(project)">Delete project</button>
                   </div>
                 </div>
               </div>

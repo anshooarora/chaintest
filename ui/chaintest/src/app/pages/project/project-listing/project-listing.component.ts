@@ -17,6 +17,7 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
 
   private readonly _destroy$: Subject<any> = new Subject<any>();
   private readonly _build$: Subject<any> = new Subject<any>();
+  private readonly _del$: Subject<any> = new Subject<any>();
 
   moment: any = moment;
 
@@ -44,6 +45,7 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: (response: Page<Project>) => {
+          response.content.sort((a,b) => a.name > b.name ? 1 : -1)
           this.projectPage = response;
           response.content.forEach(project => {
             project.display = true;
@@ -59,15 +61,15 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
   findBuilds(project: Project): void {
     this.buildService.findByProjectId(project.id, 0, 15, 'id,desc')
     .pipe(takeUntil(this._build$))
-      .subscribe({
-        next: (response: Page<Build>) => {
-          console.log(response)
-          project.builds = response;
-        },
-        error: (err) => {
-          this.error = this.errorService.getError(err);
-        }
-    });
+    .subscribe({
+      next: (response: Page<Build>) => {
+        console.log(response)
+        project.builds = response;
+      },
+      error: (err) => {
+        this.error = this.errorService.getError(err);
+      }
+  });
   }
   
   search(): void {
@@ -78,6 +80,19 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
           build.testRunner.toLowerCase().includes(query) ||
           build.tagStats.some(tag => tag.name.toLowerCase().includes(query))
         );
+    });
+  }
+
+  del(project: Project): void {
+    this.projectService.delete(project)
+    .pipe(takeUntil(this._destroy$))
+    .subscribe({
+      next: () => {
+        this.projectPage.content = this.projectPage.content.filter(x => x.id !== project.id);
+      },
+      error: (err) => {
+        this.error = this.errorService.getError(err);
+      }
     });
   }
 
