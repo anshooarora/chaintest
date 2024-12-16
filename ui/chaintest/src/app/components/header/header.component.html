@@ -11,6 +11,9 @@
         <li class="header-link" [ngClass]="{'active': uri == 'builds'}" *ngIf="project">
           <a [routerLink]="['projects', projectId, 'builds']" class="nav-link">Builds</a>
         </li>
+        <li class="header-link" [ngClass]="{'active': buildId}" *ngIf="buildId">
+          <a [routerLink]="" class="nav-link">#{{buildId}}</a>
+        </li>
         <li class="header-link" [ngClass]="{'active': uri == 'tags'}" *ngIf="project">
           <a [routerLink]="['projects', projectId, 'tags']" class="nav-link">Tags</a>
         </li>
