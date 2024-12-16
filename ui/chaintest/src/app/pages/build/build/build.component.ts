@@ -58,7 +58,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   dataset: ChartDataset<any> = {
-    backgroundColor: ['rgb(89, 199, 125)', 'rgb(240, 105, 132)', 'rgb(233, 210, 113)'],
+    backgroundColor: ['rgb(140, 197, 83)', 'rgb(233,80,113)', 'rgb(221, 91, 96)'],
     borderColor: 'transparent'
   };
 
@@ -111,7 +111,7 @@ export class BuildComponent implements OnInit, OnDestroy {
               content: label + '%',
               display: true,
               backgroundColor: 'transparent',
-              color: 'inherit'
+              color: '#aaa'
             }
           }]
         }
