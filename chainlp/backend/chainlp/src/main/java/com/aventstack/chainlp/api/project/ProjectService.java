@@ -30,7 +30,7 @@ public class ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException("Project with ID " + id + " was not found"));
     }
 
-    @Cacheable(value = "project", key = "#id", unless = "#result.isEmpty()")
+    @Cacheable(value = "project", key = "#name", unless = "#result == null")
     public Optional<Project> findByName(final String name) {
         return repository.findByName(name);
     }

@@ -1,6 +1,5 @@
 package com.aventstack.chainlp.api.test;
 
-import com.aventstack.chainlp.api.tag.Tag;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Path;
@@ -11,8 +10,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TestSpec implements Specification<Test> {
 
@@ -44,7 +41,6 @@ public class TestSpec implements Specification<Test> {
         addPredicateIfNotNull(predicates, cb, root.get(Test_.projectId), _test.getProjectId());
         addPredicateIfNotNull(predicates, cb, root.get(Test_.buildId), _test.getBuildId());
         addPredicateIfNotNull(predicates, cb, root.get(Test_.depth), _test.getDepth());
-        addTagsPredicate(predicates, root, _test.getTags());
         addPredicateIfNotBlank(predicates, cb, root.get(Test_.error), _test.getError());
         addPredicateIfNotBlank(predicates, cb, root.get(Test_.result), _test.getResult());
 
@@ -67,13 +63,6 @@ public class TestSpec implements Specification<Test> {
     private void addPredicateIfNotNull(List<Predicate> predicates, CriteriaBuilder cb, Path<?> path, Object value) {
         if (value != null) {
             predicates.add(cb.equal(path, value));
-        }
-    }
-
-    private void addTagsPredicate(List<Predicate> predicates, Root<Test> root, Set<Tag> tags) {
-        if (tags != null && !tags.isEmpty()) {
-            Set<String> tagNames = tags.stream().map(Tag::getName).collect(Collectors.toSet());
-            predicates.add(root.get(Test_.tags.getName()).in(tagNames));
         }
     }
 

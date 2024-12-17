@@ -2,6 +2,7 @@ package com.aventstack.chainlp.api.test;
 
 import com.aventstack.chainlp.api.build.BuildService;
 import com.aventstack.chainlp.api.project.ProjectService;
+import com.aventstack.chainlp.api.tag.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,8 +32,12 @@ public class TestService {
         this.buildService = buildService;
     }
 
-    @Cacheable(value = "tests", unless = "#result == null || #result.totalElements == 0")
+    @Cacheable(value = "tests", unless = "#result == null")
     public Page<Test> findAll(final Test test, final String op, final Pageable pageable) {
+        if (null != test.getTags()) {
+            return repository.findAllByBuildIdAndDepthAndTags_NameIn(test.getBuildId(), test.getDepth(), test.getTags().stream()
+                    .map(Tag::getName).collect(Collectors.toSet()), pageable);
+        }
         return repository.findAll(new TestSpec(test, op), pageable);
     }
 
