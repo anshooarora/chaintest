@@ -1,0 +1,10 @@
+.build-name {
+  &.FAILED {
+    color: rgb(230, 51, 78) !important;
+  }
+}
+
+.sticky {
+  position: sticky;
+  top: 2rem;
+}
