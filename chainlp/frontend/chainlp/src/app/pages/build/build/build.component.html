@@ -75,7 +75,7 @@
     <!-- tags -->
       <div class="row">
         <div class="col">
-          <div class="card">
+          <div id="tags" class="card">
             <div class="card-header pt-3">
               <h6 class="mb-0">Tags</h6>
             </div>
@@ -93,7 +93,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let stat of build.tagStats">
-                    <td>{{stat.name}}</td>
+                    <td><span role="button" (click)="filterTag(stat.name)">{{stat.name}}</span></td>
                     <td>{{stat.depth}}</td>
                     <td>{{stat.total}}</td>
                     <td>{{stat.passed}}</td>

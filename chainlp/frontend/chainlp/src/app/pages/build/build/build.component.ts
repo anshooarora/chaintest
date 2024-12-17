@@ -190,4 +190,19 @@ export class BuildComponent implements OnInit, OnDestroy {
     this.pageNum++;
     this.findTests(this.pageNum, true);
   }
+
+  filterTag(tag: string): void {
+    this.page = new Page<Test>();
+    this._testService.search(0, '', this.buildId, 0, this.result, tag, '', 0, 'AND')
+    .pipe(takeUntil(this._destroy$))
+    .subscribe({
+      next: (page: Page<Test>) => {
+        this.page = page;
+        console.log(this.page);
+      },
+      error: (err) => {
+        this.error = this._errorService.getError(err);
+      }
+    });
+  }
 }

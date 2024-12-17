@@ -25,3 +25,8 @@
     padding-bottom: 0.25rem;
   }
 }
+
+#tags {
+  max-height: 20rem;
+  overflow-y: scroll;
+}
