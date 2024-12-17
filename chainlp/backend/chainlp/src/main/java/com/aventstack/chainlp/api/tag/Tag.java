@@ -3,7 +3,6 @@ package com.aventstack.chainlp.api.tag;
 import com.aventstack.chainlp.api.build.Build;
 import com.aventstack.chainlp.api.test.Test;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +27,6 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private long id;
 
     @Column

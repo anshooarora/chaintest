@@ -1,5 +1,7 @@
 package com.aventstack.chainlp.api.test;
 
+import com.aventstack.chainlp.api.tag.Tag;
+import com.aventstack.chainlp.api.tag.Tag_;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Path;
@@ -10,6 +12,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TestSpec implements Specification<Test> {
 
@@ -35,6 +39,15 @@ public class TestSpec implements Specification<Test> {
     @Override
     public Predicate toPredicate(final Root<Test> root, final CriteriaQuery<?> query, final CriteriaBuilder cb) {
         final List<Predicate> predicates = new ArrayList<>();
+
+        if (null != _test.getTags() && !_test.getTags().isEmpty()) {
+            final Set<String> tagNames = _test.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
+            predicates.add(
+                cb.and(
+                    root.join(Test_.tags).get(Tag_.name).in(tagNames)
+                )
+            );
+        }
 
         addPredicateIfNotZero(predicates, cb, root.get(Test_.id), _test.getId());
         addPredicateIfNotBlank(predicates, cb, root.get(Test_.name), _test.getName());
