@@ -14,9 +14,6 @@
         <li class="header-link" [ngClass]="{'active': buildId}" *ngIf="buildId">
           <a [routerLink]="" class="nav-link">#{{buildId}}</a>
         </li>
-        <li class="header-link" [ngClass]="{'active': uri == 'tags'}" *ngIf="project">
-          <a [routerLink]="['projects', projectId, 'tags']" class="nav-link">Tags</a>
-        </li>
       </ul>
 
       <form class="w-25 me-3" role="search">
