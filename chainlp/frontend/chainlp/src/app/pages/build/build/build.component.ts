@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { Chart, ChartData, ChartDataset, ChartOptions, LegendItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -41,10 +41,25 @@ export class BuildComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit(): void {
-    let id = this.route.snapshot.paramMap.get('buildId') || '0';
-    this.buildId = parseInt(id);
-    this.findBuild();
-    this.findTests();
+    this.route.paramMap.subscribe(val => {
+      let id = this.route.snapshot.paramMap.get('buildId') || '0';
+      if (this.buildId == parseInt(id)) {
+        return;
+      }
+      this.resetAll();
+      this.buildId = parseInt(id);
+      this.findBuild();
+      this.findTests();
+    });
+  }
+
+  private resetAll(): void {
+    this.page = new Page<Test>();
+    this.pageNum = 0;
+    this.build = new Build();
+    [this.depth0, this.depth1, this.depth2].forEach(depthData => {
+      depthData.datasets[0].data = [];
+    });
   }
 
   ngOnDestroy(): void {
