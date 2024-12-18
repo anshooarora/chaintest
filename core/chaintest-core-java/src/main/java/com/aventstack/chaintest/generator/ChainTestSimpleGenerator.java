@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -100,27 +98,14 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     }
 
     private void saveResources() {
-        final URL url = ChainTestSimpleGenerator.class.getResource(GENERATOR_NAME);
-        if (null == url) {
-            log.error("URL Resolved to an unknown path for class {} and resource {}",
-                    ChainTestSimpleGenerator.class.getName(), GENERATOR_NAME);
-            return;
-        }
-
         final File parentDir = _outFile.getParentFile();
         new File(parentDir.getPath() + RESOURCES_DIR).mkdirs();
 
-        try {
-            final File dir = new File(url.toURI());
-            for (final String resource : OFFLINE_RESOURCE_LIST) {
-
-                log.trace("Copying classpath resource {}", resource);
-                IOUtil.copyClassPathResource(ChainTestSimpleGenerator.class,
-                        GENERATOR_NAME + "/" + resource,
-                        parentDir.getPath() + RESOURCES_DIR + "/" + resource);
-            }
-        } catch (final URISyntaxException e) {
-            log.error("Failed to construct URI from url {}", url);
+        for (final String resource : OFFLINE_RESOURCE_LIST) {
+            log.trace("Copying classpath resource {}", resource);
+            IOUtil.copyClassPathResource(ChainTestSimpleGenerator.class,
+                    GENERATOR_NAME + "/" + resource,
+                    parentDir.getPath() + RESOURCES_DIR + "/" + resource);
         }
     }
 
