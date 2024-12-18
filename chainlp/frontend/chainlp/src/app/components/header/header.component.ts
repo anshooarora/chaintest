@@ -87,7 +87,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.pageNum = num;
     
-    this.testService.search(0, this.searchTerm, this.buildId, -1, '', '', this.searchTerm, this.pageNum, 'OR')
+    this.testService.search(0, this.searchTerm, -1, -1, '', '', this.searchTerm, this.pageNum, 'OR')
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (tests: Page<Test>) => {

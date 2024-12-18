@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Test } from '../../model/test.model';
+import { PrettyTimePipe } from "../../pipes/pretty-time.pipe";
 
 @Component({
   selector: 'app-test',

@@ -49,7 +49,7 @@
         </ng-container>
       </ng-container>
     </div>
-    <div class="text-center py-5">
+    <div class="text-center py-5" *ngIf="page.number < page.totalPages-1">
       <button type="button" class="btn btn-outline-primary" (click)="search(content, false, pageNum + 1)">Load more results</button>
     </div>
   </div>

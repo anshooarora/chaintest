@@ -1,52 +1,52 @@
-<div class="card test-card test" [ngClass]="test.result" *ngIf="!bdd">
-  <div class="card-body">
-    <h5 class="card-title">{{test.name}}</h5>
-    <div class="d-flex justify-content-between">
-      <div class="small">
-        <span class="me-2">
-          <i class="bi bi-clock me-1"></i> {{test.startedAt | date:'yyyy-MM-dd h:m:s a'}} - {{test.endedAt | date:'yyyy-MM-dd h:m:s a'}}
-        </span>
-        <span>
-          <i class="bi bi-hourglass me-1"></i> {{test.durationMs | prettyTime}}
-        </span>
+<ng-container>
+  <div class="row my-5">
+    <div class="col-4">
+      <h5 class="mb-3 testname" [ngClass]="test.result.toLowerCase()">{{test.name}}</h5>
+      <div class="">
+        <span class="badge bg-outline-light"><i class="bi bi-hourglass me-1"></i>{{test.durationMs | prettyTime}}</span>
+        <span class="badge bg-outline-light text-bg-info-light ms-1"><i class="bi bi-clock me-1"></i>{{test.startedAt | date:'yyyy-MM-dd h:m:s a'}}</span>
+        <span class="badge bg-outline-light text-bg-danger-light ms-1"><i class="bi bi-clock me-1"></i>{{test.endedAt | date:'yyyy-MM-dd h:m:s a'}}</span>
       </div>
-      <div>
-        <span class="ms-2 badge badge-success badge-md" *ngIf="test.result.toString() == 'PASSED'"><i class="bi bi-flag me-1"></i> {{test.result}}</span>
-        <span class="ms-2 badge badge-danger badge-md" *ngIf="test.result.toString() != 'PASSED'"><i class="bi bi-exclamation-triangle-fill me-1"></i> {{test.result}}</span>
+      <div class="mt-2" *ngIf="test.tags">
+        <span class="badge rounded-pill text-bg-secondary me-1" *ngFor="let tag of test.tags">{{tag.name}}</span>
       </div>
-    </div>
-    <pre class="mt-3" *ngIf="test.error">{{test.error}}</pre>
-  </div>
-</div>
-
-<div class="card test-card" [ngClass]="{'bdd': test.bdd}" *ngIf="bdd">
-  <div class="card-body">
-    <div class="d-flex justify-content-between">
-      <h5 class="card-title feature" [ngClass]="test.result">{{test.name}}</h5>
-      <div *ngIf="showMeta">
-        <a [routerLink]="['builds', test.buildId]"><span class="badge bg-outline-light me-1">Go to build {{test.buildId}} <i class="ms-1 bi bi-arrow-up-right-square"></i></span></a>
+      <div class="mt-3" *ngIf="showMeta">
+        <a [routerLink]="['builds', test.buildId]">
+          <span class="btn btn-outline-primary">Go to build {{test.buildId}} <i class="ms-1 bi bi-arrow-up-right-square"></i></span></a>
       </div>
     </div>
-    <div class="small">
-      <span class="me-2">
-        <i class="bi bi-clock me-1"></i> {{test.startedAt | date:'yyyy-MM-dd h:m:s a'}} - {{test.endedAt | date:'yyyy-MM-dd h:m:s a'}}
-      </span>
-      <span class="">
-        <i class="bi bi-hourglass me-1"></i> {{test.durationMs | prettyTime}}
-      </span>
-    </div>
-    <div *ngIf="test.children">
-      <div *ngFor="let scenario of test.children">
-        <div class="scenario" [ngClass]="scenario.result">{{scenario.name}}
-          <div *ngIf="scenario.children">
-            <div *ngFor="let step of scenario.children">
-              <div class="step d-flex justify-content-between" [ngClass]="step.result">
+    <div class="col-8">
+      <div class="card mb-1" *ngFor="let child of test.children">
+        <div class="card-body p-3">
+          <div class="d-flex justify-content-between">
+            <div>
+              <i class="bi bi-check-circle-fill text-success" *ngIf="child.result.toString() == 'PASSED'"></i>
+              <i class="bi bi-exclamation-octagon-fill text-danger" *ngIf="child.result.toString() != 'PASSED'"></i>
+              <span class="ms-2">{{child.name}}</span>
+            </div>
+            <div>
+              <span class="tags" *ngIf="child.tags && child.tags.length">
+                <span class="badge rounded-pill text-bg-secondary me-1" *ngFor="let tag of child.tags">{{tag.name}}</span> &middot;
+              </span>
+              <span class="badge bg-light">{{child.durationMs | prettyTime}}</span>
+            </div>
+          </div>
+          <div class="mt-2" *ngIf="child.error">
+            <pre>{{child.error}}</pre>
+          </div>
+          <div class="pt-1 mt-3 border-top" *ngIf="child.children && child.children.length">
+            <div [ngClass]="{'mt-1': bdd, 'mt-3': !bdd}" *ngFor="let leaf of child.children">
+              <div class="d-flex justify-content-between">
                 <div>
-                  {{step.name}}
-                  <pre *ngIf="step.error">{{step.error}}</pre>
+                  <i class="bi bi-check-circle-fill text-success" *ngIf="leaf.result.toString() == 'PASSED'"></i>
+                  <i class="bi bi-exclamation-octagon-fill text-danger" *ngIf="leaf.result.toString() != 'PASSED'"></i>
+                  <span class="ms-2">{{leaf.name}}</span>
                 </div>
                 <div>
-                  <span class="me-3 badge bg-light-subtle text-secondary fw-semibold">{{step.durationMs | prettyTime}}</span>
+                  <span class="tags" *ngIf="leaf.tags && leaf.tags.length">
+                    <span class="badge rounded-pill text-bg-secondary me-1" *ngFor="let tag of leaf.tags">{{tag.name}}</span> &middot;
+                  </span>
+                  <span class="badge bg-light">{{leaf.durationMs | prettyTime}}</span>
                 </div>
               </div>
             </div>
@@ -55,4 +55,4 @@
       </div>
     </div>
   </div>
-</div>
+</ng-container>
