@@ -1,7 +1,6 @@
 package com.aventstack.chaintest.plugins;
 
 import com.aventstack.chaintest.domain.Test;
-import com.aventstack.chaintest.http.ChainTestApiClient;
 import com.aventstack.chaintest.service.ChainPluginService;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
