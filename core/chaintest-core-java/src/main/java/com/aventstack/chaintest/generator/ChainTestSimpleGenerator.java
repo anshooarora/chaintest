@@ -34,6 +34,15 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String DEFAULT_OUT_DIR = "target/chaintest/";
     private static final String RESOURCES_DIR = "/resources";
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss a";
+    private static final List<String> OFFLINE_RESOURCE_LIST = List.of(
+            "bootstrap.min.css",
+            "bootstrap-icons.css",
+            "bootstrap-icons.woff",
+            "bootstrap-icons.woff2",
+            "chart.umd.js",
+            "template.css",
+            "template.js"
+    );
 
     private Build _build;
     private String _projectName;
@@ -103,13 +112,12 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
 
         try {
             final File dir = new File(url.toURI());
-            for (final File f : dir.listFiles()) {
-                if (!f.getName().endsWith("ftl")) {
-                    log.trace("Copying classpath resource {}", f.getPath());
-                    IOUtil.copyClassPathResource(ChainTestSimpleGenerator.class,
-                            GENERATOR_NAME + "/" + f.getName(),
-                            parentDir.getPath() + RESOURCES_DIR + "/" + f.getName());
-                }
+            for (final String resource : OFFLINE_RESOURCE_LIST) {
+
+                log.trace("Copying classpath resource {}", resource);
+                IOUtil.copyClassPathResource(ChainTestSimpleGenerator.class,
+                        GENERATOR_NAME + "/" + resource,
+                        parentDir.getPath() + RESOURCES_DIR + "/" + resource);
             }
         } catch (final URISyntaxException e) {
             log.error("Failed to construct URI from url {}", url);
