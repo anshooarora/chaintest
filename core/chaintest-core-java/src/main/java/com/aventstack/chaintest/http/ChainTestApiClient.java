@@ -21,12 +21,12 @@ public class ChainTestApiClient {
 
     private static final Duration DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(30);
     private static final HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.POST;
-    public static final String PROPERTY_SERVER_URL = "chaintest.generator.http.host.url";
-    public static final String CLIENT_REQUEST_TIMEOUT = "chaintest.generator.http.client.request-timeout-s";
-    public static final String CLIENT_EXPECT_CONTINUE = "chaintest.generator.http.client.expect-continue";
-    public static final String CLIENT_MAX_RETRIES = "chaintest.generator.http.client.max-retries";
-    public static final String CLIENT_RETRY_INTERVAL = "chaintest.generator.http.client.retry-interval-ms";
-    public static final String CLIENT_THROW_AFTER_RETRY_ATTEMPTS_EXCEEDED = "chaintest.generator.http.client.throw-after-retry-attempts-exceeded";
+    public static final String PROPERTY_SERVER_URL = "chaintest.generator.chainlp.host.url";
+    public static final String CLIENT_REQUEST_TIMEOUT = "chaintest.generator.chainlp.client.request-timeout-s";
+    public static final String CLIENT_EXPECT_CONTINUE = "chaintest.generator.chainlp.client.expect-continue";
+    public static final String CLIENT_MAX_RETRIES = "chaintest.generator.chainlp.client.max-retries";
+    public static final String CLIENT_RETRY_INTERVAL = "chaintest.generator.chainlp.client.retry-interval-ms";
+    public static final String CLIENT_THROW_AFTER_RETRY_ATTEMPTS_EXCEEDED = "chaintest.generator.chainlp.client.throw-after-retry-attempts-exceeded";
 
     private static final String API_VERSION = "/api/v1/";
 
@@ -177,10 +177,10 @@ public class ChainTestApiClient {
     }
 
     private <T extends ChainTestEntity> HttpRequest createRequest(final T entity, final HttpMethod method) throws IOException {
-        log.trace("Creating request for entity " + entity.getClass().getName() + " with HTTPMethod." + method.getMethod());
+        log.trace("Creating request for entity {} with HTTPMethod.{}", entity.getClass().getName(), method.getMethod());
         final URI uri = getURI(entity);
         final String requestBody = _mapper.writeValueAsString(entity);
-        log.debug("Created request for entity " + entity.getClass().getSimpleName() + " with body: " + requestBody);
+        log.debug("Created request for entity {} with body: {}", entity.getClass().getSimpleName(), requestBody);
         return HttpRequest.newBuilder()
                 .uri(uri)
                 .expectContinue(_expectContinue)
@@ -194,6 +194,10 @@ public class ChainTestApiClient {
     private <T extends ChainTestEntity> URI getURI(final T entity) {
         final String clz = entity.getClass().getSimpleName().toLowerCase();
         return _baseURI.resolve(clz + "s");
+    }
+
+    private <T extends ChainTestEntity> URI getURI(final String forPath) {
+        return _baseURI.resolve(forPath);
     }
 
     public static final class Builder {

@@ -18,27 +18,27 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ChainTestServiceClient implements Generator {
+public class ChainLPGenerator implements Generator {
 
-    private static final Logger log = LoggerFactory.getLogger(ChainTestServiceClient.class);
-    private static final String NAME = "http";
-    private static final String HTTP_CLIENT_ENABLED = "chaintest.generator.http.enabled";
+    private static final Logger log = LoggerFactory.getLogger(ChainLPGenerator.class);
+    private static final String NAME = "chainlp";
+    private static final String HTTP_CLIENT_ENABLED = "chaintest.generator.chainlp.enabled";
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _wrappedResponses = new ConcurrentHashMap<>();
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
 
-    public static ChainTestServiceClient INSTANCE;
+    public static ChainLPGenerator INSTANCE;
 
     private String _testRunner;
     private ChainTestApiClient _client;
     private Build _build;
     private List<Test> _tests;
 
-    public ChainTestServiceClient(final String testRunner) {
+    public ChainLPGenerator(final String testRunner) {
         _testRunner = testRunner;
         INSTANCE = this;
     }
 
-    public ChainTestServiceClient() {
+    public ChainLPGenerator() {
         this("");
     }
 
@@ -67,7 +67,7 @@ public class ChainTestServiceClient implements Generator {
 
         if (config.isEmpty()) {
             log.debug("Unable to load {} configuration, generator will now shutdown and no output will be produced",
-                    ChainTestServiceClient.class.getSimpleName());
+                    ChainLPGenerator.class.getSimpleName());
             return;
         }
 
