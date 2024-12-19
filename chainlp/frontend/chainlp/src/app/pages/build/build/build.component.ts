@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { Chart, ChartData, ChartDataset, ChartOptions, LegendItem } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -23,6 +23,12 @@ export class BuildComponent implements OnInit, OnDestroy {
     
   private _destroy$: Subject<any> = new Subject<any>();
   private _history$: Subject<any> = new Subject<any>();
+  private _titles: any = {
+    'cucumber-jvm': ['Feature', 'Scenario', 'Step'],
+    'junit': ['Class', 'Method'],
+    'junit-jupiter': ['Class', 'Method'],
+    'testng': ['Suite', 'Class', 'Method']
+  };
 
   buildId: number;
   build: Build;
@@ -219,5 +225,12 @@ export class BuildComponent implements OnInit, OnDestroy {
         this.error = this._errorService.getError(err);
       }
     });
+  }
+
+  getTitles(): string[] {
+    if (this.build.testRunner == 'testng' && this.build.buildstats.length == 2) {
+      return this._titles['testng'].slice(1);
+    }
+    return this._titles[this.build.testRunner];
   }
 }

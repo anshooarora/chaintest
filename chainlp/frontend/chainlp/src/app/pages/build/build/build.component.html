@@ -21,7 +21,7 @@
         <div class="col-4" *ngIf="buildDepth >= 1">
           <div class="card" style="height: 200px;">
             <div class="card-header pt-3 pb-3">
-              <h6 class="mb-0">Features</h6>
+              <h6 class="mb-0">{{getTitles()[0]}}</h6>
             </div>
             <div class="card-body py-0">
               <div class="d-flex justify-content-center" style="height: 80px;">
@@ -38,7 +38,7 @@
         <div class="col-4" *ngIf="buildDepth >= 2">
           <div class="card" style="height: 200px;">
             <div class="card-header pt-3 pb-3">
-              <h6 class="mb-0">Scenarios</h6>
+              <h6 class="mb-0">{{getTitles()[1]}}</h6>
             </div>
             <div class="card-body py-0">
               <div class="d-flex justify-content-center" style="height: 80px;">
@@ -55,7 +55,7 @@
         <div class="col-4" *ngIf="buildDepth >= 3">
           <div class="card" style="height: 200px;">
             <div class="card-header pt-3 pb-3">
-              <h6 class="mb-0">Features</h6>
+              <h6 class="mb-0">{{getTitles()[2]}}</h6>
             </div>
             <div class="card-body py-0">
               <div class="d-flex justify-content-center" style="height: 80px;">
