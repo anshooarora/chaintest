@@ -21,6 +21,7 @@ import { TestComponent } from './components/test/test.component';
 import { BuildsTrendComponent } from './components/builds-trend/builds-trend.component';
 import { BuildsDurationComponent } from './components/builds-duration/builds-duration.component';
 import { TagListingComponent } from './pages/tag/tag-listing/tag-listing.component';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { TagListingComponent } from './pages/tag/tag-listing/tag-listing.compone
     TestComponent,
     BuildsTrendComponent,
     BuildsDurationComponent,
-    TagListingComponent
+    TagListingComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

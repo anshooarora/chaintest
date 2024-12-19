@@ -27,7 +27,7 @@
 
     <div class="row" *ngIf="projectPage && projectPage.content.length && projectPage.content[0].builds">
       <ng-container *ngFor="let project of projectPage.content">
-        <div class="col-3" *ngIf="project.display">
+        <div class="col-4" *ngIf="project.display">
           <div class="card d-on-hover" *ngIf="project.builds">
             <div class="card-header d-flex">
               <h5 class="mb-0 pointer" [routerLink]="['projects', project.id, 'builds']">{{project.name}}</h5>

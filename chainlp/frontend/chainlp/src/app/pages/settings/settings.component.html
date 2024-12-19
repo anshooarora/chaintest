@@ -1,0 +1,26 @@
+<!-- main-content -->
+<div class="main-content app-content">
+  <div class="page-header">
+      <div class="container">
+          <div class="d-flex">
+              <h4>Settings</h4>
+          </div>
+      </div>
+  </div>
+
+  <div class="container pt-5">
+    <div class="row">
+      <div class="col-4">
+        Theme
+      </div>
+      <div class="col-4">
+        <select class="form-select" aria-label="Select theme" (change)="changeTheme($event)">
+          <option value="{{theme.val}}"
+            [selected]="theme.val === activeTheme"
+            *ngFor="let theme of themes">{{theme.name}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /main-content -->
