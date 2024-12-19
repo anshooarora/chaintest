@@ -28,25 +28,21 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
 
     @Override
     public void onExecutionStart() {
-        System.out.println("onExecutionStart");
         _service.start();
     }
 
     @Override
     public void onExecutionFinish() {
-        System.out.println("onExecutionFinish");
         _service.executionFinished();
     }
 
     @Override
     public void onStart(final ISuite suite) {
-        System.out.println("Suite started: " + suite.getName());
         _suites.add(new Test(suite.getName()));
     }
 
     @Override
     public void onFinish(final ISuite suite) {
-        System.out.println("Suite finished: " + suite.getName());
         _suites.stream().filter(x -> x.getName().equals(suite.getName()))
                 .findAny().ifPresent(x -> {
                     x.complete();
@@ -57,7 +53,6 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
 
     @Override
     public void onBeforeClass(final ITestClass testClass) {
-        System.err.println("Commencing execution for the test class : " + testClass.getRealClass().getName());
         _suites.stream().filter(x -> x.getName().equals(testClass.getXmlTest().getSuite().getName())).findAny()
                 .ifPresent(suite -> {
                     final Test contextTest = new Test(testClass.getName());
@@ -68,24 +63,20 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
 
     @Override
     public void onAfterClass(final ITestClass testClass) {
-        System.err.println("Completed execution for the test class : " + testClass.getRealClass().getName());
         _contexts.stream().filter(x -> x.getName().equals(testClass.getName()))
                 .findAny().ifPresent(Test::complete);
     }
 
     @Override
     public void onStart(final ITestContext context) {
-        System.out.println("Test context started: " + context.getName());
     }
 
     @Override
     public void onFinish(final ITestContext context) {
-        System.out.println("Test context finished: " + context.getName());
     }
 
     @Override
     public void onTestStart(final ITestResult result) {
-        System.out.println("Test started: " + result.getName());
         _contexts.stream().filter(x -> x.getName().equals(result.getTestClass().getName()))
                 .findAny().ifPresent(x ->
                     x.addChild(new Test(result.getMethod().getMethodName(),
@@ -95,7 +86,6 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
 
     @Override
     public void onTestSuccess(final ITestResult result) {
-        System.out.println("Test passed: " + result.getName());
         onTestComplete(result);
     }
 
@@ -112,19 +102,16 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
 
     @Override
     public void onTestFailure(final ITestResult result) {
-        System.out.println("Test failed: " + result.getName());
         onTestComplete(result);
     }
 
     @Override
     public void onTestSkipped(final ITestResult result) {
-        System.out.println("Test skipped: " + result.getName());
         onTestComplete(result);
     }
 
     @Override
     public void onTestFailedButWithinSuccessPercentage(final ITestResult result) {
-        System.out.println("Test failed but within success percentage: " + result.getName());
     }
 
     @Override
