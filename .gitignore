@@ -38,3 +38,7 @@ target/
 
 ui/*html
 ui/assets
+core/chaintest-core-js/
+
+/core/chaintest-core-py/.idea/
+/core/chaintest-core-py/out/
