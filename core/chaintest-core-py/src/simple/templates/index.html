@@ -134,7 +134,7 @@
     <!-- /dashboard section -->
 
     <!-- tag section -->
-  {% if build.tag_stats %}
+  {% if build.tagstats %}
       <div id="tags" class="container my-5">
         <div class="card card-custom">
           <div class="card-header">
@@ -152,7 +152,7 @@
                 </tr>
               </thead>
               <tbody>
-                {% for stat in build.tag_stats %}
+                {% for stat in build.tagstats %}
                   <tr>
                     <td class="tag"><a href="#" class="secondary">{{stat.name}}</a></td>
                     <td>{{stat.total}}</td>

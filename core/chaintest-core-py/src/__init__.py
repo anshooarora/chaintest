@@ -42,8 +42,8 @@ class Test:
             self.parent.complete()
 
     def add_tags(self, tags: List[Tag]):
-        if tags:
-            self.tags.update(tags)
+        [self.add_tag(tag)
+            for tag in tags if tags]
 
     def add_tag(self, tag: Tag):
         if tag:
@@ -55,8 +55,8 @@ class Test:
         child.parent = self
         child.depth = self.depth + 1
         self.children.append(child)
-        for tag in child.tags:
-            self.add_tag(tag)
+        [self.add_tag(tag)
+            for tag in child.tags]
 
     def add_log(self, log: str):
         self.logs.append(log)
@@ -118,8 +118,8 @@ class Build:
         self.name = None
         self.result = Result.PASSED
         self.buildstats: List[BuildStats] = []
-        self.tag_stats = set()
-        self.tag_stats_monitor = {}
+        self.tagstats = set()
+        self.tagstats_idx = {}
         self.tags = set()
         self.bdd = False
         self.system_info = []
@@ -134,26 +134,22 @@ class Build:
     def update_buildstats(self, test):
         stat = next((x for x in self.buildstats if x.depth == test.depth), None)
         if not stat:
-            stat = self.add_buildstats_depth(test.depth)
+            stat = BuildStats(test.depth)
+            self.buildstats.append(stat)
         stat.update(test)
         for t in test.children:
             self.update_buildstats(t)
-
-    def add_buildstats_depth(self, depth):
-        stat = BuildStats(depth)
-        self.buildstats.append(stat)
-        return stat
 
     def update_tagstats(self, test):
         if test.tags:
             self.add_tags(test.tags)
             for tag in test.tags:
-                if tag.name not in self.tag_stats_monitor:
-                    ts = TagStats(test.depth)
-                    ts.name = tag.name
-                    self.tag_stats.add(ts)
-                    self.tag_stats_monitor[tag.name] = ts
-                self.tag_stats_monitor[tag.name].update(test)
+                name_depth = f"{tag.name}_{test.depth}"
+                if name_depth not in self.tagstats_idx:
+                    ts = TagStats(name=tag.name, depth=test.depth)
+                    self.tagstats.add(ts)
+                    self.tagstats_idx[name_depth] = ts
+                self.tagstats_idx[name_depth].update(test)
 
     def complete(self, result=None):
         self.ended_at = time.time()
@@ -303,6 +299,6 @@ service = ChainTestPluginService(testrunner="pytest")
 service.register(ChainTestSimpleGenerator())
 service.start()
 service.after_test(Test(build.id, "One", None, [Tag("tag1"), Tag("tag2")]))
-service.after_test(Test(build.id, "Two"))
+service.after_test(Test(build.id, "Two", None, [Tag("tag1")]))
 service.after_test(Test(build.id, "Three", "py.test"))
 service.flush()
