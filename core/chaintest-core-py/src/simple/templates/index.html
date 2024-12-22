@@ -45,7 +45,7 @@
           <div class="col-4">
             <div class="card card-custom" style="height: 175px">
               <div class="card-header">
-                ${title1}
+                Tests
               </div>
               <div class="card-body d-flex justify-content-center" style="height: 90px;">
                 <div class="chart-view center" style="margin-left: -1rem;">
@@ -59,25 +59,25 @@
               </div>
             </div>
           </div>
-          <div class="col-4">
-            <div class="card card-custom" style="height: 175px">
-              <div class="card-header">
-                ${title2}
-              </div>
-              <div class="card-body d-flex justify-content-center" style="height: 90px;">
-                <div class="chart-view center" style="margin-left: -1rem;">
-                  <canvas id="stats2"></canvas>
+          {% if build.bdd or build.buildstats|length > 1 %}
+            <div class="col-4">
+              <div class="card card-custom" style="height: 175px">
+                <div class="card-header">
+                  ${title2}
+                </div>
+                <div class="card-body d-flex justify-content-center" style="height: 90px;">
+                  <div class="chart-view center" style="margin-left: -1rem;">
+                    <canvas id="stats2"></canvas>
+                  </div>
+                </div>
+                <div class="card-footer small">
+                  {{build.buildstats[1].passed}} Passed,
+                  {{build.buildstats[1].failed}} Failed,
+                  {{build.buildstats[1].skipped}} Skipped
                 </div>
               </div>
-              <div class="card-footer small">
-                <#if build.runStats?? && build.runStats?size !=0>
-                  ${build.runStats[1].passed} Passed,
-                  ${build.runStats[1].failed} Failed,
-                  ${build.runStats[1].skipped} Skipped
-                </#if>
-              </div>
             </div>
-          </div>
+          {% endif %}
           {% if build.bdd or build.buildstats|length > 2 %}
             <div class="col-4">
               <div class="card card-custom" style="height: 175px">
@@ -90,11 +90,9 @@
                   </div>
                 </div>
                 <div class="card-footer small">
-                  <#if build.runStats?? && build.runStats?size==3>
-                    ${build.runStats[2].passed} Passed,
-                    ${build.runStats[2].failed} Failed,
-                    ${build.runStats[2].skipped} Skipped
-                  </#if>
+                  {{build.buildstats[2].passed}} Passed,
+                  {{build.buildstats[2].failed}} Failed,
+                  {{build.buildstats[2].skipped}} Skipped
                 </div>
               </div>
             </div>
@@ -106,13 +104,13 @@
                   </div>
                   <div class="card-body">
                     <div class="row">
-                      <div class="col text-center">
+                      <div class="col-6 text-center">
                         <label class="fs-10">Started</label>
                         <p class="fw-semibold mb-0">
                           {{build.started_at}}
                         </p>
                       </div>
-                      <div class="col border-start text-center">
+                      <div class="col-6 border-start text-center">
                         <label class="fs-10">Ended</label>
                         <p class="fw-semibold mb-0">
                           {{build.ended_at}}
@@ -121,10 +119,10 @@
                     </div>
                   </div>
                   <div class="card-footer">
-                    {% set pass_rate = build.buildstats[0].passed / build.buildstats[0].total * 100 %}
-                    <div class="progress" role="progressbar" aria-label="Success example"
-                      aria-valuenow="${passRate}" aria-valuemin="0" aria-valuemax="100">
-                      <div class="progress-bar bg-success" style="width: {{pass_rate}}">{{pass_rate}}%</div>
+                    {% set pass_rate = (build.buildstats[0].passed / build.buildstats[0].total * 100)|int %}
+                    <div class="progress" role="progressbar"
+                      aria-valuenow="{{pass_rate}}" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar bg-success" style="width:{{pass_rate}}%">{{pass_rate}}%</div>
                     </div>
                   </div>
                 </div>
@@ -192,7 +190,7 @@
             <div class="col-4">
               <h6 class="mb-3 testname {{test.result|lower}}">{{test.name}}</h6>
               <div class="small">
-                <span class="badge badge-outline"><i class="bi bi-hourglass me-1"></i> {{test.duration_pretty}}</span>
+                <span class="badge badge-outline"><i class="bi bi-hourglass me-1"></i> {{test.duration_pretty()}}</span>
                 <span class="badge text-bg-info"><i class="bi bi-clock me-1"></i>
                   {{test.started_at}}</span>
                 <span class="badge text-bg-warning"><i class="bi bi-clock me-1"></i>
@@ -265,9 +263,9 @@
           </div>
         </div>
         {% if loop.last %}
-          <div class="border-bottom py-5"></div>
+          <div class="py-5"></div>
         {% else %}
-            <div class="border-bottom my-5"></div>
+          <div class="border-bottom my-5"></div>
         {% endif %}
       </div>
     {% endfor %}
@@ -293,6 +291,8 @@
         { result: 'Failed', count: {{build.buildstats[1].failed}}, bg: 'rgb(233,80,113)' },
         { result: 'Skipped', count: {{build.buildstats[1].skipped}}, bg: 'rgb(221, 91, 96)' }
       ];
+      {% else %}
+        const stats2 = null;
       {% endif %}
       {% if build.buildstats|length > 2 %}
         const stats3Annotation = {'total': {{build.buildstats[2].total}}, 'passed': {{build.buildstats[2].passed}}};
@@ -301,6 +301,8 @@
           { result: 'Failed', count: {{build.buildstats[2].failed}}, bg: 'rgb(233,80,113)' },
           { result: 'Skipped', count: {{build.buildstats[2].skipped}}, bg: 'rgb(221, 91, 96)' }
         ];
+      {% else %}
+        const stats3 = null;
       {% endif %}
     {% endif %}
     {% if config.js %} {{config.js}} {% endif %}

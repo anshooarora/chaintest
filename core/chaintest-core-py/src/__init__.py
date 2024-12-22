@@ -66,15 +66,15 @@ class Test:
         for child in self.children:
             child.set_is_bdd(is_bdd)
 
+    def duration_pretty(self):
+        return TimeUtil.get_pretty_time(self.duration_ms)
+
 class Stats:
+    depth: int = 0
     total: int = 0
     passed: int = 0
     failed: int = 0
     skipped: int = 0
-
-class BuildStats(Stats):
-    def __init__(self, depth):
-        self.depth = depth
 
     def update(self, test):
         self.total += 1
@@ -85,13 +85,25 @@ class BuildStats(Stats):
         elif test.result == "SKIPPED":
             self.skipped += 1
 
-class TagStats:
+class BuildStats(Stats):
     def __init__(self, depth):
         self.depth = depth
-        self.name = None
 
     def update(self, test):
-        pass
+        super(BuildStats, self).update(test)
+
+class TagStats(Stats):
+    def __init__(self, name, depth = 0):
+        self.depth = depth
+        self.name = name
+        self.duration_ms = 0
+
+    def update(self, test):
+        super(TagStats, self).update(test)
+        self.duration_ms += test.duration_ms
+
+    def duration_pretty(self):
+        return TimeUtil.get_pretty_time(self.duration_ms)
 
 class Build:
     def __init__(self, project_name="default", testrunner=None):
@@ -237,6 +249,7 @@ class ChainTestPluginService:
             generator.start(self.build)
 
     def after_test(self, test: Test):
+        test.complete()
         self.tests.append(test)
         self.build.update_stats(test)
         for generator in self.generators:
@@ -248,7 +261,7 @@ class ChainTestPluginService:
 
 
 class ChainTestSimpleGenerator(ChainTestGenerator):
-    def __init__(self):
+    def __init__(self, config=None):
         super().__init__()
         self.build: Build = None
         self.env = Environment(
@@ -256,12 +269,16 @@ class ChainTestSimpleGenerator(ChainTestGenerator):
             autoescape=select_autoescape()
         )
         self.template = self.env.get_template("index.html")
-        self.config = {
-            "project_name": "default",
-            "theme": "",
-            "offline" : True,
-            "document_title": "chaintest"
-        }
+        self.config = config
+        if not config:
+            self.config = {
+                "project_name": "default",
+                "theme": "dark",
+                "offline" : True,
+                "document_title": "default",
+                "css": "",
+                "js": ""
+            }
 
     def start(self, build: Build):
         self.build = build
@@ -271,17 +288,21 @@ class ChainTestSimpleGenerator(ChainTestGenerator):
         with open("out/index.html", "w") as f:
             f.write(text)
 
+class ChainTestEmailGenerator(ChainTestGenerator):
+    def __init__(self, config=None):
+        super().__init__()
+
+class ChainLPGenerator(ChainTestGenerator):
+    def __init__(self, config=None):
+        super().__init__()
 
 
 build = Build("Python", "pytest")
-test1 = Test(build.id, "One", None, [Tag("tag1"), Tag("tag2")])
-test2 = Test(build.id, "Two")
-test3 = Test(build.id, "Three", "py.test")
 
 service = ChainTestPluginService(testrunner="pytest")
 service.register(ChainTestSimpleGenerator())
 service.start()
-service.after_test(test1)
-service.after_test(test2)
-service.after_test(test3)
+service.after_test(Test(build.id, "One", None, [Tag("tag1"), Tag("tag2")]))
+service.after_test(Test(build.id, "Two"))
+service.after_test(Test(build.id, "Three", "py.test"))
 service.flush()

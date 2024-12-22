@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>{{config.document_title}}</title>
+  {% if config.offline %}
+    <link id="style" href="resources/bootstrap.min.css" rel="stylesheet">
+    <link id="icons" href="resources/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="resources/template.css">
+  {% else %}
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet">
+  {% endif %}
+  {% if config.css %}
+    <style>
+      {{config.css}}
+    </style>
+  {% endif %}
+</head>
+
+<body data-bs-theme="{{config.theme}}">
+
+  <nav class="navbar border-bottom">
+    <div class="container d-flex justify-content-between">
+      <a class="navbar-brand" href="#">ChainTest</a>
+      <div>
+        <span class="badge badge-outline text-lg">{{config.project_name}}</span>
+        <span class="badge badge-outline text-lg">{{build.ended_at}}</span>
+        {% if build.system_info %}
+          <span role="button" id="sys-info" class="badge badge-outline text-lg" title="View System Info">
+            <i class="bi bi-pc-display-horizontal"></i></span>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid bg-body-tertiary">
+    <!-- dashboard section -->
+    <div id="dashboard" class="pt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-4">
+            <div class="card card-custom" style="height: 175px">
+              <div class="card-header">
+                Tests
+              </div>
+              <div class="card-body d-flex justify-content-center" style="height: 90px;">
+                <div class="chart-view center" style="margin-left: -1rem;">
+                  <canvas id="stats1"></canvas>
+                </div>
+              </div>
+              <div class="card-footer small">
+                {{build.buildstats[0].passed}} Passed,
+                {{build.buildstats[0].failed}} Failed,
+                {{build.buildstats[0].skipped}} Skipped
+              </div>
+            </div>
+          </div>
+          {% if build.bdd or build.buildstats|length > 1 %}
+            <div class="col-4">
+              <div class="card card-custom" style="height: 175px">
+                <div class="card-header">
+                  ${title2}
+                </div>
+                <div class="card-body d-flex justify-content-center" style="height: 90px;">
+                  <div class="chart-view center" style="margin-left: -1rem;">
+                    <canvas id="stats2"></canvas>
+                  </div>
+                </div>
+                <div class="card-footer small">
+                  {{build.buildstats[1].passed}} Passed,
+                  {{build.buildstats[1].failed}} Failed,
+                  {{build.buildstats[1].skipped}} Skipped
+                </div>
+              </div>
+            </div>
+          {% endif %}
+          {% if build.bdd or build.buildstats|length > 2 %}
+            <div class="col-4">
+              <div class="card card-custom" style="height: 175px">
+                <div class="card-header">
+                  ${title3}
+                </div>
+                <div class="card-body d-flex justify-content-center" style="height: 90px;">
+                  <div class="chart-view center" style="margin-left: -1rem;">
+                    <canvas id="stats3"></canvas>
+                  </div>
+                </div>
+                <div class="card-footer small">
+                  {{build.buildstats[2].passed}} Passed,
+                  {{build.buildstats[2].failed}} Failed,
+                  {{build.buildstats[2].skipped}} Skipped
+                </div>
+              </div>
+            </div>
+            {% else %}
+              <div class="col-4">
+                <div class="card card-custom" style="height: 175px">
+                  <div class="card-header mb-2">
+                    Summary
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col text-center">
+                        <label class="fs-10">Started</label>
+                        <p class="fw-semibold mb-0">
+                          {{build.started_at}}
+                        </p>
+                      </div>
+                      <div class="col border-start text-center">
+                        <label class="fs-10">Ended</label>
+                        <p class="fw-semibold mb-0">
+                          {{build.ended_at}}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer">
+                    {% set pass_rate = build.buildstats[0].passed / build.buildstats[0].total * 100 %}
+                    <div class="progress" role="progressbar" aria-label="Success example"
+                      aria-valuenow="${passRate}" aria-valuemin="0" aria-valuemax="100">
+                      <div class="progress-bar bg-success" style="width: {{pass_rate}}">{{pass_rate}}%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+    <!-- /dashboard section -->
+
+    <!-- tag section -->
+  {% if build.tag_stats %}
+      <div id="tags" class="container my-5">
+        <div class="card card-custom">
+          <div class="card-header">
+            Tags
+          </div>
+          <div class="card-body">
+            <table id="tag-summary" class="table">
+              <thead>
+                <tr>
+                  <th scope="col" style="width:65%"></th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Passed</th>
+                  <th scope="col">Failed</th>
+                  <th scope="col">Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for stat in build.tag_stats %}
+                  <tr>
+                    <td class="tag"><a href="#" class="secondary">{{stat.name}}</a></td>
+                    <td>{{stat.total}}</td>
+                    <td>{{stat.passed}}</td>
+                    <td>{{stat.failed}}</td>
+                    <td></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="border-bottom"></div>
+    {% endif %}
+    <!-- /tag section -->
+  </div>
+
+  <div class="container-fluid">
+    <div class="border-bottom py-3 mb-5">
+      <div class="container">
+        <div id="status-filter" aria-label="Filter tests with status">
+          <button type="button" id="passed" class="btn btn-outline-success btn-sm">Passed</button>
+          <button type="button" id="skipped" class="btn btn-outline-warning btn-sm">Skipped</button>
+          <button type="button" id="failed" class="btn btn-outline-danger btn-sm">Failed</button>
+          <button id="clear-filters" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-x-lg me-1"></i>Clear all filters</button>
+        </div>
+      </div>
+    </div>
+    {% for test in tests %}
+      <div class="test-container">
+        <div class="container">
+          <div class="row">
+            <div class="col-4">
+              <h6 class="mb-3 testname {{test.result|lower}}">{{test.name}}</h6>
+              <div class="small">
+                <span class="badge badge-outline"><i class="bi bi-hourglass me-1"></i> {{test.duration_pretty}}</span>
+                <span class="badge text-bg-info"><i class="bi bi-clock me-1"></i>
+                  {{test.started_at}}</span>
+                <span class="badge text-bg-warning"><i class="bi bi-clock me-1"></i>
+                  {{test.ended_at}}</span>
+              </div>
+              {% if test.tags %}
+                <div class="my-2">
+                  {% for tag in test.tags %}
+                    <span class="badge rounded-pill text-bg-secondary">{{tag.name}}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="col-8">
+              {% for child in test.children %}
+                <div class="card mb-1 result {{child.result|lower}}">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        {% if child.result == "PASSED" %}
+                          <i class="bi bi-check-circle-fill text-success"></i>
+                        {% else %}
+                          <i class="bi bi-exclamation-octagon-fill text-danger"></i>
+                        {% endif %}
+                        <span class="ms-2">{{child.name}}</span>
+                      </div>
+                      <div>
+                        {% if child.tags|length > 0 %}
+                          <span class="tag-list">
+                            {% for tag in child.tags %}
+                              <span class="badge rounded-pill text-bg-secondary">{{tag.name}}</span>
+                            {% endfor %}
+                          </span>
+                          <span class="mx-1">&middot;</span>
+                        {% endif %}
+                        <span class="badge text-dark bg-light">${child.durationPretty}</span>
+                      </div>
+                    </div>
+                    {% if child.error %}
+                      <pre class="mt-2">{{child.error}}</pre>
+                    {% endif %}
+                    <#if build.isBDD()>
+                      <#include "bdd.ftl" />
+                    <#else>
+                      <#include "standard.ftl" />
+                    </#if>
+                    {% if child.logs|length > 0 %}
+                      <div class="mt-3">
+                        <p class="h6">Logs</p>
+                          <pre class="pb-0">
+                            {% for log in child.logs %}
+{{log}}
+                            {% endfor %}
+                          </pre>
+                      </div>
+                    {% endif %}
+                    <#if child.embeds?has_content>
+                      <div class="row mt-3">
+                        <#list child.embeds as embed>
+                          <div class="embed col-3 mb-1">
+                            <img src="resources/${embed.name}" />
+                          </div>
+                        </#list>
+                      </div>
+                    </#if>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% if loop.last %}
+          <div class="py-5"></div>
+        {% else %}
+          <div class="border-bottom my-5"></div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if config.offline %}
+    <script src="resources/chart.umd.js"></script>
+  {% else %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  {% endif %}
+  <script>
+    {% if build.buildstats|length > 0 %}
+      const stats1Annotation = {'total': {{build.buildstats[0].total}}, 'passed': {{build.buildstats[0].passed}}};
+      const stats1 = [
+        { result: 'Passed', count: {{build.buildstats[0].passed}}, bg: 'rgb(140, 197, 83)' },
+        { result: 'Failed', count: {{build.buildstats[0].failed}}, bg: 'rgb(233,80,113)' },
+        { result: 'Skipped', count: {{build.buildstats[0].skipped}}, bg: 'rgb(221, 91, 96)' }
+      ];
+      {% if build.buildstats|length > 1 %}
+      const stats2Annotation = {'total': {{build.buildstats[1].total}}, 'passed': {{build.buildstats[1].passed}}};
+      const stats2 = [
+        { result: 'Passed', count: {{build.buildstats[1].passed}}, bg: 'rgb(140, 197, 83)' },
+        { result: 'Failed', count: {{build.buildstats[1].failed}}, bg: 'rgb(233,80,113)' },
+        { result: 'Skipped', count: {{build.buildstats[1].skipped}}, bg: 'rgb(221, 91, 96)' }
+      ];
+      {% else %}
+        const stats2 = null;
+      {% endif %}
+      {% if build.buildstats|length > 2 %}
+        const stats3Annotation = {'total': {{build.buildstats[2].total}}, 'passed': {{build.buildstats[2].passed}}};
+        const stats3 = [
+          { result: 'Passed', count: {{build.buildstats[2].passed}}, bg: 'rgb(140, 197, 83)' },
+          { result: 'Failed', count: {{build.buildstats[2].failed}}, bg: 'rgb(233,80,113)' },
+          { result: 'Skipped', count: {{build.buildstats[2].skipped}}, bg: 'rgb(221, 91, 96)' }
+        ];
+      {% else %}
+        const stats3 = null;
+      {% endif %}
+    {% endif %}
+    {% if config.js %} {{config.js}} {% endif %}
+  </script>
+  <script src="resources/template.js"></script>
+
+  {% if build.system_info %}
+    <div id="sys-info-modal" class="modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">SystemInfo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+              onclick="toggleSysInfo(false)"></button>
+          </div>
+          <div class="modal-body">class
+            <table class="table">
+              <tbody>
+                {% for s in build.system_info %}
+                  <tr>
+                    <td>{{s.name}}</td>
+                    <td>{{s.value}}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+              onclick="toggleSysInfo(false)">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</body>
+
+</html>
