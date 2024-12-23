@@ -1,8 +1,19 @@
+import os.path
 import time
 from enum import Enum
 from typing import List, Set
 import uuid
 from jinja2 import Environment, PackageLoader, select_autoescape
+import configparser
+
+
+CONF = [
+    "app.ini",
+    "application.ini",
+    "config.ini",
+    "test.ini",
+    "chaintest.ini"
+]
 
 
 class Tag:
@@ -236,6 +247,26 @@ class ChainTestPluginService:
         self.build: Build = Build(project_name="python", testrunner=testrunner)
         self.tests: List[Test] = []
         self.generators: List[ChainTestGenerator] = []
+        self.conf = self.__load_config()
+
+    def __load_config(self):
+        conf = {}
+        cache = {}
+        for c in CONF:
+            if c in cache:
+                parser = cache[c]
+            else:
+                parser = configparser.ConfigParser()
+                if os.path.exists(c):
+                    parser.read(c)
+                    cache[c] = parser
+            for section in parser.sections():
+                if section.startswith("chaintest"):
+                    if section not in conf:
+                        conf[section] = {}
+                    for key in parser[section]:
+                        conf[section][key] = parser[section][key]
+        return conf
 
     def register(self, generator: ChainTestGenerator = None):
         self.generators.append(generator)
@@ -293,12 +324,10 @@ class ChainLPGenerator(ChainTestGenerator):
         super().__init__()
 
 
-build = Build("Python", "pytest")
-
 service = ChainTestPluginService(testrunner="pytest")
 service.register(ChainTestSimpleGenerator())
 service.start()
-service.after_test(Test(build.id, "One", None, [Tag("tag1"), Tag("tag2")]))
-service.after_test(Test(build.id, "Two", None, [Tag("tag1")]))
-service.after_test(Test(build.id, "Three", "py.test"))
+service.after_test(Test(service.build.id, "One", None, [Tag("tag1"), Tag("tag2")]))
+service.after_test(Test(service.build.id, "Two", None, [Tag("tag1")]))
+service.after_test(Test(service.build.id, "Three", "py.test"))
 service.flush()
