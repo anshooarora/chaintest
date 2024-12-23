@@ -58,7 +58,7 @@ public class HttpRetryHandler {
                 log.debug("Create API returned responseCode: {}", response.statusCode());
                 if (200 == response.statusCode()) {
                     return response;
-                } else if (400 <= response.statusCode() && 499 >= response.statusCode()) {
+                } else if (400 <= response.statusCode() && 499 >= response.statusCode() && 409 != response.statusCode()) {
                     log.error("Failed to save entity {} due to a client-side error, received response code : {}",
                             clazz.getSimpleName(), response.statusCode());
                     return response;
@@ -143,10 +143,9 @@ public class HttpRetryHandler {
                 } catch (final InterruptedException ignored) { }
             }
             if (null != response) {
-                if (200 == response.statusCode()) {
+                if (200 == response.statusCode() || 409 == response.statusCode()) {
                     collection.entrySet().removeIf(x -> x.getKey().equals(entry.getKey()));
-                    continue;
-                } if (400 <= response.statusCode() && 499 >= response.statusCode()) {
+                } else if (400 <= response.statusCode() && 499 >= response.statusCode() && 409 != response.statusCode()) {
                     log.error("Failed to persist entity {} due to a client-side error, received response code : {}",
                             Test.class.getSimpleName(), response.statusCode());
                     return;

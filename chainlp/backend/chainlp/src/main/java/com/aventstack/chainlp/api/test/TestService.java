@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,11 @@ public class TestService {
         test.getChildren().forEach(x -> x.setProjectId(test.getProjectId()));
 
         log.debug("Saving test {} for buildId: {}", test, test.getBuildId());
-        return repository.save(test);
+        try {
+            return repository.save(test);
+        } catch (final DataIntegrityViolationException e) {
+            throw new DuplicateTestException("Test with ID " + test.getClientId() + " already exists");
+        }
     }
 
     @CacheEvict(value = "tests", allEntries = true)

@@ -39,7 +39,7 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "client_id")
+    @Column(name = "client_id", unique = true)
     private String clientId;
 
     @Column(name = "build_id")
