@@ -45,6 +45,7 @@ const getOptions = (data) => {
 })();
 
 // chart: Scenarios or Methods
+if (stats2) {
 (async function() {
   new Chart(
     document.getElementById('stats2'),
@@ -64,8 +65,10 @@ const getOptions = (data) => {
     }
   );
 })();
+}
 
 // chart: Scenarios or Methods
+if (stats3) {
 (async function() {
   const el = document.getElementById('stats3');
   if (el) {
@@ -87,6 +90,7 @@ const getOptions = (data) => {
     );
   }
 })();
+}
 
 // init::statusFilters
 const statusFilters = [];

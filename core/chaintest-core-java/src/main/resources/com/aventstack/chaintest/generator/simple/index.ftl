@@ -209,8 +209,7 @@
           <button type="button" id="skipped" class="btn btn-outline-warning btn-sm">Skipped</button>
           <button type="button" id="failed" class="btn btn-outline-danger btn-sm">Failed</button>
           <button id="clear-filters" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-x-lg me-1"></i>Clear all filters
-            </span>
+            <i class="bi bi-x-lg me-1"></i>Clear all filters</button>
         </div>
       </div>
     </div>
@@ -304,11 +303,11 @@ ${log}
 
   <#if config['offline']>
     <script src="resources/chart.umd.js"></script>
-    <#else>
+  <#else>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   </#if>
   <script>
-    <#if build.runStats?? && build.runStats ? size != 0 >
+    <#if build.runStats?? && build.runStats ? size != 0>
     const stats1Annotation = {'total': ${ build.runStats[0].total }, 'passed': ${ build.runStats[0].passed }};
     const stats1 = [
       { result: 'Passed', count: ${ build.runStats[0].passed }, bg: 'rgb(140, 197, 83)' },
