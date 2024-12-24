@@ -17,7 +17,8 @@ public interface StorageClient {
     void upload(final String key, final byte[] data);
     void upload(final String key, final String base64);
     void upload(final String key, final File file);
-
     void upload(final Embed embed);
+
+    void close();
 
 }

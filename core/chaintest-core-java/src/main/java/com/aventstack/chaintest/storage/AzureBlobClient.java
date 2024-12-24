@@ -123,4 +123,9 @@ public class AzureBlobClient implements StorageClient {
         }
     }
 
+    @Override
+    public void close() {
+
+    }
+
 }
