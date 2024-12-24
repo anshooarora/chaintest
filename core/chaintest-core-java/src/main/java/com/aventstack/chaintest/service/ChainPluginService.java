@@ -6,6 +6,8 @@ import com.aventstack.chaintest.domain.Embed;
 import com.aventstack.chaintest.domain.SystemInfo;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.generator.Generator;
+import com.aventstack.chaintest.storage.StorageService;
+import com.aventstack.chaintest.storage.StorageServiceFactory;
 import com.aventstack.chaintest.util.RegexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,8 @@ public class ChainPluginService {
     
     private static final Logger log = LoggerFactory.getLogger(ChainPluginService.class);
     private static final String GEN_PATTERN = "chaintest.generator.[a-zA-Z]+.enabled";
+    private static final String STORAGE_SERVICE = "chaintest.storage.service";
+    private static final String STORAGE_SERVICE_ENABLED = STORAGE_SERVICE + ".enabled";
     private static final List<Test> _tests = Collections.synchronizedList(new ArrayList<>());
     private static final Map<String, Embed> _embeds = new ConcurrentHashMap<>();
     private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
@@ -47,6 +51,7 @@ public class ChainPluginService {
     private final Build _build;
     private final String _testRunner;
     private final List<Generator> _generators = new ArrayList<>(3);
+    private StorageService _storageService;
 
     public ChainPluginService(final String testRunner) {
         INSTANCE = this;
@@ -81,8 +86,13 @@ public class ChainPluginService {
             return;
         }
         final Optional<Map<String, String>> config = Optional.ofNullable(ConfigurationManager.getConfig());
-        config.ifPresent(this::register);
+        config.ifPresent(this::init);
         _generators.forEach(x -> x.start(config, _testRunner, _build));
+    }
+
+    private void init(final Map<String, String> config) {
+        register(config);
+        startStorageService(config);
     }
 
     private void register(final Map<String, String> config) {
@@ -107,6 +117,17 @@ public class ChainPluginService {
                 }
             }
         }
+    }
+
+    private void startStorageService(final Map<String, String> config) {
+        if (config.containsKey(STORAGE_SERVICE_ENABLED) && Boolean.parseBoolean(config.get(STORAGE_SERVICE_ENABLED))) {
+            final String name = config.get(STORAGE_SERVICE);
+            final StorageService storageService = StorageServiceFactory.getStorageService(name);
+            if (storageService.create(config)) {
+                _storageService = storageService;
+            }
+        }
+
     }
 
     public void afterTest(final Test test, final Optional<Throwable> throwable) {
@@ -166,6 +187,7 @@ public class ChainPluginService {
         final Predicate<Test> predicate = test -> null != test.getExternalId() && test.getExternalId().equals(externalId);
         final Optional<Test> any = tests.stream().filter(predicate).findAny();
         if (any.isPresent()) {
+            _storageService.upload(embed);
             embed(any.get(), embed);
             _embeds.remove(externalId);
         } else {

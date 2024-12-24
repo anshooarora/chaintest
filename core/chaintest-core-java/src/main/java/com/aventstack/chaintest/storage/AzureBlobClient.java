@@ -32,7 +32,7 @@ import java.util.Map;
  *  </li>
  * </ul>
  */
-public class AzureBlobClient implements StorageClient {
+public class AzureBlobClient implements StorageService {
 
     private static final Logger log = LoggerFactory.getLogger(AzureBlobClient.class);
     private static final String AZURE_STORAGE_CONNECTION_STRING = "AZURE_STORAGE_CONNECTION_STRING";

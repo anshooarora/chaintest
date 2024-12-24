@@ -17,7 +17,7 @@ import java.util.Base64;
 import java.util.Map;
 
 /**
- * StorageClient provides the ability to upload files to a storage service
+ * StorageService provides the ability to upload files to a storage service
  *
  * <p>Further reading:</p>
  * <ul>
@@ -31,7 +31,7 @@ import java.util.Map;
  *   </li>
  * </ul>
  */
-public class AWSS3Client implements StorageClient {
+public class AWSS3Client implements StorageService {
 
     private static final Logger log = LoggerFactory.getLogger(AWSS3Client.class);
     private static final String AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID";

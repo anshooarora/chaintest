@@ -5,7 +5,7 @@ import com.aventstack.chaintest.domain.Embed;
 import java.io.File;
 import java.util.Map;
 
-public interface StorageClient {
+public interface StorageService {
 
     String DEFAULT_CONTAINER_NAME = "chaintest";
     String STORAGE_SERVICE = "chaintest.storage.service";
