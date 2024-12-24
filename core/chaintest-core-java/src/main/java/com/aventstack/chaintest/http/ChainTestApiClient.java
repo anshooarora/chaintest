@@ -176,6 +176,38 @@ public class ChainTestApiClient {
         return sendAsync(entity, clazz, DEFAULT_HTTP_METHOD);
     }
 
+    public HttpResponse<String> send(final byte[] data, final HttpMethod method) throws IOException, InterruptedException {
+        final HttpRequest request = createRequest(data, method);
+        return _httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public HttpResponse<String> send(final byte[] data) throws IOException, InterruptedException {
+        return send(data, DEFAULT_HTTP_METHOD);
+    }
+
+    public CompletableFuture<HttpResponse<String>> sendAsync(final byte[] data, final HttpMethod method) throws IOException {
+        final HttpRequest request = createRequest(data, method);
+        return _httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public CompletableFuture<HttpResponse<String>> sendAsync(final byte[] data) throws IOException {
+        return sendAsync(data, DEFAULT_HTTP_METHOD);
+    }
+
+    private HttpRequest createRequest(final byte[] data, final HttpMethod method) {
+        log.trace("Creating request with HTTPMethod.{}", method.getMethod());
+        final URI uri = getURI("embeds");
+        log.debug("Created request with byte array of length: {}", data.length);
+        return HttpRequest.newBuilder()
+                .uri(uri)
+                .expectContinue(_expectContinue)
+                .timeout(_requestTimeout)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+                .method(method.getMethod(), HttpRequest.BodyPublishers.ofByteArray(data))
+                .build();
+    }
+
     private <T extends ChainTestEntity> HttpRequest createRequest(final T entity, final HttpMethod method) throws IOException {
         log.trace("Creating request for entity {} with HTTPMethod.{}", entity.getClass().getName(), method.getMethod());
         final URI uri = getURI(entity);
