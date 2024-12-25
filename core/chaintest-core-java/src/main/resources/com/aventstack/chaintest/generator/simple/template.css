@@ -16,7 +16,7 @@ body {
   font-size: 14px;
 }
 h6 {
-  font-size: 15px;
+  font-size: 16px;
 }
 pre {
   background-color: #f8f9fa;
@@ -96,7 +96,7 @@ th {
   font-weight: normal;
 }
 .badge.text-lg {
-  font-size: 11px;
+  font-size: 12px;
 }
 .badge.badge-outline {
     border: 1px solid #bbb;
