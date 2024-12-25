@@ -26,9 +26,6 @@ pre {
   word-break: break-all;
   padding: 1rem;
 }
-img {
-  border: 5px solid #f6f8fa;
-}
 
 /* container */
 .container-fluid {
@@ -68,6 +65,22 @@ th {
 }
 .card.failed {
   border-color: var(--failed-border-color);
+}
+.card .card-header, .modal-header {
+  border-bottom: none;
+}
+.card .card-footer, .modal-footer {
+  border-top: none;
+}
+
+/* modal */
+.modal-lg {
+  max-height: 95%;
+  max-width: 95%;
+  width: 95%;
+}
+.modal img {
+  max-width: 100%;
 }
 
 /* button */
@@ -110,10 +123,11 @@ th {
 .testname.passed {
   color: var(--text-passed-rgb);
 }
+.embed img {
+  max-width: 100%;
+}
 
-/* bdd */
-
-/* dark theme 2a3c4e */
+/* dark theme */
 body[data-bs-theme="dark"],
 body[data-bs-theme="dark"] .card,
 body[data-bs-theme="dark"] .table>:not(caption)>*>* {

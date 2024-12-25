@@ -14,7 +14,7 @@ const getOptions = (data) => {
           dLabel: {
             type: 'doughnutLabel',
             content: () => [label],
-            color: ['#ddd']
+            color: ['#999']
           }
         }
       }
@@ -184,6 +184,7 @@ tags.forEach((e) => {
 const resetState = () => {
   filterTests('');
   toggleSysInfo(false);
+  toggleAttachmentModal(false);
 }
 
 // on key down events (shortcuts)
@@ -222,3 +223,29 @@ const toggleLights = () => {
   const dark = document.querySelector('body').getAttribute('data-bs-theme') === 'dark';
   document.querySelector('body').setAttribute('data-bs-theme', dark ? '' : 'dark');
 }
+
+// attachments
+const toggleAttachmentModal = (show) => {
+  let display = 'none';
+  if (show) {
+    display = 'block';
+  }
+  document.querySelector("#attachment-modal").style.display = display;
+}
+document.querySelectorAll('.embed img').forEach((e) => {
+  e.addEventListener('click', el => {
+    const src = el.target.getAttribute('src');
+    const modal = document.querySelector('#attachment-modal');
+    modal.querySelector('img').setAttribute('src', src);
+    toggleAttachmentModal(true);
+  });
+})
+
+// handle modal close
+const modalClose = () => {
+  toggleSysInfo(false);
+  toggleAttachmentModal(false);
+}
+document.querySelector('body').addEventListener('click', el => {
+    el.target.className == 'modal' && modalClose();
+})

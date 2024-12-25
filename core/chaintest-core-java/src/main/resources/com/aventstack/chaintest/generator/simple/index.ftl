@@ -280,7 +280,7 @@ ${log}
                     <#if child.embeds?has_content>
                       <div class="row mt-3">
                         <#list child.embeds as embed>
-                          <div class="embed col-3 mb-1">
+                          <div class="embed col-2 mb-1">
                             <img src="resources/${embed.name}" />
                           </div>
                         </#list>
@@ -338,11 +338,11 @@ ${log}
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">SystemInfo</h5>
+            <h6 class="modal-title">System</h6>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
               onclick="toggleSysInfo(false)"></button>
           </div>
-          <div class="modal-body">class
+          <div class="modal-body">
             <table class="table">
               <tbody>
                 <#list build.systemInfo as s>
@@ -362,6 +362,26 @@ ${log}
       </div>
     </div>
   </#if>
+
+  <div id="attachment-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title">Attachment</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            onclick="toggleAttachmentModal(false)"></button>
+        </div>
+        <div class="modal-body">
+          <img src="" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+            onclick="toggleAttachmentModal(false)">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>
