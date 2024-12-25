@@ -62,7 +62,7 @@
     </div>
   </nav>
 
-  <div class="container-fluid bg-body-tertiary">
+  <div id="summary" class="container-fluid bg-body-tertiary">
     <!-- dashboard section -->
     <div id="dashboard" class="py-5">
       <div class="container">
@@ -204,13 +204,16 @@
 
   <div class="container-fluid">
     <div class="border-bottom py-3 mb-5">
-      <div class="container">
+      <div class="container d-flex justify-content-between">
         <div id="status-filter" aria-label="Filter tests with status">
           <button type="button" id="passed" class="btn btn-outline-success btn-sm">Passed</button>
           <button type="button" id="skipped" class="btn btn-outline-warning btn-sm">Skipped</button>
           <button type="button" id="failed" class="btn btn-outline-danger btn-sm">Failed</button>
           <button id="clear-filters" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-x-lg me-1"></i>Clear all filters</button>
+        </div>
+        <div>
+          <button type="button" id="summary-toggle" class="btn btn-outline-primary btn-sm">Toggle Summary Section</button>
         </div>
       </div>
     </div>

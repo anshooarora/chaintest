@@ -249,3 +249,9 @@ const modalClose = () => {
 document.querySelector('body').addEventListener('click', el => {
     el.target.className == 'modal' && modalClose();
 })
+
+// toggle summary section
+document.querySelector('#summary-toggle').addEventListener('click', el => {
+  const summary = document.querySelector('#summary');
+  summary.classList.toggle('d-none');
+})

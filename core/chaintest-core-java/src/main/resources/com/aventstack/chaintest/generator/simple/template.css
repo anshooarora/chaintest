@@ -82,6 +82,10 @@ th {
 .modal img {
   max-width: 100%;
 }
+#attachment-modal .modal-body {
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* button */
 .btn-sm {
