@@ -80,15 +80,15 @@ public class AzureBlobClient implements StorageService {
         if (containerName == null && config.containsKey(STORAGE_CONTAINER_NAME)) {
             containerName = config.get(STORAGE_CONTAINER_NAME);
         }
-        return containerName != null
-                ? serviceClient.getBlobContainerClient(containerName)
-                : serviceClient.getBlobContainerClient(DEFAULT_CONTAINER_NAME);
+        containerName = containerName != null && !containerName.isBlank() ? containerName : DEFAULT_CONTAINER_NAME;
+        serviceClient.createBlobContainerIfNotExists(containerName);
+        return serviceClient.getBlobContainerClient(containerName);
     }
 
     @Override
     public void upload(final String key, final byte[] data) {
         try (final ByteArrayInputStream inputStream = new ByteArrayInputStream(data)) {
-            _containerClient.getBlobClient(key).upload(inputStream, data.length);
+            _containerClient.getBlobClient(key + ".png").upload(inputStream, data.length);
         } catch (Exception e) {
             log.error("Failed to upload key {} to Azure Blob Storage", key, e);
         }
@@ -113,11 +113,11 @@ public class AzureBlobClient implements StorageService {
     @Override
     public void upload(final Embed embed) {
         if (null != embed.getBytes()) {
-            upload(embed.id(), embed.getBytes());
+            upload(embed.getName(), embed.getBytes());
         } else if (null != embed.getBase64() && !embed.getBase64().isBlank()) {
-            upload(embed.id(), embed.getBase64());
+            upload(embed.getName(), embed.getBase64());
         } else if (null != embed.getFile()) {
-            upload(embed.id(), embed.getFile());
+            upload(embed.getName(), embed.getFile());
         } else {
             log.error("Unable to upload Embed to Azure Blob Storage. Source missing");
         }

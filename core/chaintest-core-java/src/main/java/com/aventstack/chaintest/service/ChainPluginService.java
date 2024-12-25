@@ -177,9 +177,16 @@ public class ChainPluginService {
     }
 
     public void embed(final Test test, final Embed embed) {
+        putBlob(embed);
         test.addEmbed(embed);
         if (null != test.getExternalId()) {
             _embeds.remove(test.getExternalId());
+        }
+    }
+
+    private void putBlob(final Embed embed) {
+        if (null != _storageService) {
+            _storageService.upload(embed);
         }
     }
 
@@ -187,7 +194,7 @@ public class ChainPluginService {
         final Predicate<Test> predicate = test -> null != test.getExternalId() && test.getExternalId().equals(externalId);
         final Optional<Test> any = tests.stream().filter(predicate).findAny();
         if (any.isPresent()) {
-            _storageService.upload(embed);
+            putBlob(embed);
             embed(any.get(), embed);
             _embeds.remove(externalId);
         } else {
