@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -128,6 +127,8 @@ public class Test implements ChainTestEntity {
 
     @JsonIgnore
     private Test parent;
+
+    private final List<String> screenshotURL = new ArrayList<>();
 
     /**
      * Default constructor.
@@ -444,6 +445,10 @@ public class Test implements ChainTestEntity {
      */
     public void addEmbed(final Embed embed) {
         embeds.add(embed);
+    }
+
+    public void addScreenshotURL(final String url) {
+        screenshotURL.add(url);
     }
 
 }

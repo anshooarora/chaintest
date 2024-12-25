@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.storage;
 
 import com.aventstack.chaintest.domain.Embed;
+import com.aventstack.chaintest.domain.Test;
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
@@ -86,38 +87,41 @@ public class AzureBlobClient implements StorageService {
     }
 
     @Override
-    public void upload(final String key, final byte[] data) {
+    public void upload(final Test test, final String key, final byte[] data) {
         try (final ByteArrayInputStream inputStream = new ByteArrayInputStream(data)) {
             _containerClient.getBlobClient(key + ".png").upload(inputStream, data.length);
+            test.addScreenshotURL(_containerClient.getBlobClient(key + ".png").getBlobUrl());
         } catch (Exception e) {
             log.error("Failed to upload key {} to Azure Blob Storage", key, e);
         }
     }
 
     @Override
-    public void upload(final String key, final String base64) {
+    public void upload(final Test test, final String key, final String base64) {
         final byte[] data = Base64.getDecoder().decode(base64.getBytes());
-        upload(key, data);
+        upload(test, key, data);
     }
 
     @Override
-    public void upload(final String key, final File file) {
+    public void upload(final Test test, final String key, final File file) {
         try {
             _containerClient.getBlobClient(key)
                     .uploadFromFile(file.getAbsolutePath());
+            test.addScreenshotURL(_containerClient
+                    .getBlobClient(key + ".png").getBlobUrl());
         } catch (final Exception e) {
             log.error("Failed to upload key {} to Azure Blob Storage", key, e);
         }
     }
 
     @Override
-    public void upload(final Embed embed) {
+    public void upload(final Test test, final Embed embed) {
         if (null != embed.getBytes()) {
-            upload(embed.getName(), embed.getBytes());
+            upload(test, embed.getName(), embed.getBytes());
         } else if (null != embed.getBase64() && !embed.getBase64().isBlank()) {
-            upload(embed.getName(), embed.getBase64());
+            upload(test, embed.getName(), embed.getBase64());
         } else if (null != embed.getFile()) {
-            upload(embed.getName(), embed.getFile());
+            upload(test, embed.getName(), embed.getFile());
         } else {
             log.error("Unable to upload Embed to Azure Blob Storage. Source missing");
         }

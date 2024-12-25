@@ -1,6 +1,7 @@
 package com.aventstack.chaintest.storage;
 
 import com.aventstack.chaintest.domain.Embed;
+import com.aventstack.chaintest.domain.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -79,33 +80,33 @@ public class AWSS3Client implements StorageService {
     }
 
     @Override
-    public void upload(final String key, final byte[] data) {
+    public void upload(final Test test, final String key, final byte[] data) {
         _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(key)
                         .build(),
                 RequestBody.fromBytes(data));
     }
 
     @Override
-    public void upload(String key, String base64) {
+    public void upload(final Test test, String key, String base64) {
         final byte[] data = Base64.getDecoder().decode(base64.getBytes());
-        upload(key, data);
+        upload(test, key, data);
     }
 
     @Override
-    public void upload(final String key, final File file) {
+    public void upload(final Test test, final String key, final File file) {
         _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(key)
                         .build(),
                 RequestBody.fromFile(file));
     }
 
     @Override
-    public void upload(Embed embed) {
+    public void upload(final Test test, Embed embed) {
         if (null != embed.getBytes()) {
-            upload(embed.id(), embed.getBytes());
+            upload(test, embed.id(), embed.getBytes());
         } else if (null != embed.getBase64() && !embed.getBase64().isBlank()) {
-            upload(embed.id(), embed.getBase64());
+            upload(test, embed.id(), embed.getBase64());
         } else if (null != embed.getFile()) {
-            upload(embed.id(), embed.getFile());
+            upload(test, embed.id(), embed.getFile());
         } else {
             log.error("Unable to upload Embed to Azure Blob Storage. Source missing");
         }
