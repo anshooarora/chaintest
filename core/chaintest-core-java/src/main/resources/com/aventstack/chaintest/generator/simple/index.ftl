@@ -55,9 +55,11 @@
         <span class="badge badge-outline text-lg"><i class="bi bi-clock me-1"></i> Started ${build.startedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
         <span class="badge badge-outline text-lg"><i class="bi bi-clock me-1"></i> Ended ${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
         <#if build.systemInfo?? && build.systemInfo?has_content>
-          <span role="button" id="sys-info" class="badge badge-outline text-lg" title="View System Info">
-            <i class="bi bi-pc-display-horizontal"></i></span>
+          <button role="button" id="sys-info" class="btn btn-outline-primary smaller" title="View System Info">
+            <i class="bi bi-pc-display-horizontal"></i></button>
         </#if>
+        <button role="button" id="shortcuts" class="btn btn-outline-primary smaller" title="Shortcuts">
+            <i class="bi bi-info-circle"></i></button>
       </div>
     </div>
   </nav>
@@ -145,7 +147,6 @@
                         </p>
                       </div>
                     </div>
-
                   </div>
                   <div class="card-footer">
                     <#if build.runStats?? && build.runStats?size !=0 && build.runStats[0].total !=0>
@@ -185,7 +186,7 @@
               <tbody>
                 <#list build.tagStats as tag>
                   <tr>
-                    <td class="tag"><a href="#" class="secondary">${tag.name}</a></td>
+                    <td><a href="#" class="secondary tag">${tag.name}</a></td>
                     <td>${tag.total}</td>
                     <td>${tag.passed}</td>
                     <td>${tag.failed}</td>
@@ -331,6 +332,8 @@ ${log}
         { result: 'Failed', count: ${ build.runStats[2].failed }, bg: 'rgb(233,80,113)' },
         { result: 'Skipped', count: ${ build.runStats[2].skipped }, bg: 'rgb(221, 91, 96)' }
       ];
+    <#else>
+      const stats3 = null;
     </#if >
       <#if config['js'] ??> ${ config['js'] }</#if >
   </script>
@@ -366,6 +369,34 @@ ${log}
       </div>
     </div>
   </#if>
+
+  <div id="info-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title">ChainTest Simple Generator - Shortcuts</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            onclick="toggleInfoModal(false)"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <tbody>
+              <#list shortcuts?keys as k>
+                <tr>
+                  <td>${k}</td>
+                  <td>${shortcuts[k]}</td>
+                </tr>
+              </#list>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+            onclick="toggleInfoModal(false)">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div id="attachment-modal" class="modal" tabindex="-1">
     <div class="modal-dialog modal-lg">

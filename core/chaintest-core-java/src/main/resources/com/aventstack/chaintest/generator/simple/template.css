@@ -47,6 +47,12 @@ th {
 .text-bg-secondary {
   color: inherit !important;
 }
+.small {
+  font-size: 12px;
+}
+.smaller {
+  font-size: 10px;
+}
 
 /* navbar */
 .navbar-brand {
@@ -103,8 +109,12 @@ th {
   font-size: 12px;
 }
 .badge.badge-outline {
-    border: 1px solid #bbb;
-    color: inherit;
+  border: 1px solid #bbb;
+  color: inherit;
+}
+.badge.badge-outline-primary {
+  border-color: var(--text-primary-rgb) !important;
+  color: var(--text-primary-rgb) !important;
 }
 .rounded-pill {
   background-color: transparent !important;
@@ -139,7 +149,7 @@ body[data-bs-theme="dark"] .table>:not(caption)>*>* {
 }
 body[data-bs-theme="dark"] .card,
 body[data-bs-theme="dark"] .border-bottom,
-body[data-bs-theme="dark"] .badge.badge-outline,
+body[data-bs-theme="dark"] .badge.badge-outline:not(.badge-outline-primary),
 body[data-bs-theme="dark"] .rounded-pill,
 body[data-bs-theme="dark"] tr,
  body[data-bs-theme="dark"] img {

@@ -241,10 +241,23 @@ document.querySelectorAll('.embed img').forEach((e) => {
   });
 })
 
+// info modal
+const toggleInfoModal = (show) => {
+  let display = 'none';
+  if (show) {
+    display = 'block';
+  }
+  document.querySelector("#info-modal").style.display = display;
+}
+document.querySelector("#shortcuts").addEventListener('click', el => {
+    toggleInfoModal(true);
+});
+
 // handle modal close
 const modalClose = () => {
   toggleSysInfo(false);
   toggleAttachmentModal(false);
+  toggleInfoModal(false);
 }
 document.querySelector('body').addEventListener('click', el => {
     el.target.className == 'modal' && modalClose();

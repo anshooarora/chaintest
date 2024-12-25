@@ -41,6 +41,13 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
             "template.css",
             "template.js"
     );
+    private static final Map<String, String> SHORTCUTS = Map.of(
+            "L", "Toggle theme (light/dark)",
+            "f", "Toggle failed tests",
+            "p", "Toggle passed tests",
+            "s", "Toggle skipped tests",
+            "esc", "Reset all filters"
+    );
 
     private Build _build;
     private String _projectName;
@@ -114,6 +121,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
         saveEmbeds(tests, resourceDir);
         processTemplate(Map.of("build", _build,
                 "tests", tests,
+                "shortcuts", SHORTCUTS,
                 "config", Map.of(
                         "documentTitle", _documentTitle,
                         "projectName", _projectName,
