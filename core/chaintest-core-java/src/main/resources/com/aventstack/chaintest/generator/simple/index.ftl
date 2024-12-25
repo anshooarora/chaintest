@@ -63,7 +63,7 @@
 
   <div class="container-fluid bg-body-tertiary">
     <!-- dashboard section -->
-    <div id="dashboard" class="pt-5">
+    <div id="dashboard" class="py-5">
       <div class="container">
         <div class="row">
           <div class="col-4">
@@ -165,7 +165,7 @@
 
     <!-- tag section -->
     <#if build.tags?has_content>
-      <div id="tags" class="container my-5">
+      <div id="tags" class="container pb-5">
         <div class="card card-custom">
           <div class="card-header">
             Tags
