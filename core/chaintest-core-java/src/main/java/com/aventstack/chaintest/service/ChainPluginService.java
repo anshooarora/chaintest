@@ -143,6 +143,7 @@ public class ChainPluginService {
     }
 
     public void executionFinished() {
+        _storageService.close();
         flush();
         _generators.forEach(Generator::executionFinished);
     }
