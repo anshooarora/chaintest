@@ -84,6 +84,12 @@ public class AWSS3Client implements StorageService {
         _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(key)
                         .build(),
                 RequestBody.fromBytes(data));
+        assignURL(test, key);
+    }
+
+    private void assignURL(final Test test, final String key) {
+        test.addScreenshotURL(
+                _client.utilities().getUrl(builder -> builder.bucket(_bucket).key(key)).toExternalForm());
     }
 
     @Override
@@ -97,6 +103,7 @@ public class AWSS3Client implements StorageService {
         _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(key)
                         .build(),
                 RequestBody.fromFile(file));
+        assignURL(test, key);
     }
 
     @Override
