@@ -169,10 +169,11 @@ public class BuildService {
                             .build(build)
                             .depth(test.getDepth())
                             .name(tag.getName())
+                            .durationMs(test.getDurationMs())
                             .build();
                     stats.put(key, tagStat);
                 }
-                tagStat.update(test.getResult());
+                tagStat.update(test);
             }
         }
         build.setTagStats(new HashSet<>(stats.values()));

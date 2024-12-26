@@ -41,7 +41,6 @@ public class Build {
     @Column(name = "project_id")
     private Integer projectId;
 
-    @Transient
     private String projectName;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)

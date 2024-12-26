@@ -1,6 +1,7 @@
 package com.aventstack.chainlp.api.tagstats;
 
 import com.aventstack.chainlp.api.build.Build;
+import com.aventstack.chainlp.api.test.TestStatView;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
@@ -43,12 +44,25 @@ public class TagStats {
     private int passed;
     private int failed;
     private int skipped;
+    private long durationMs;
 
     public void update(final String result) {
         ++total;
         if ("PASSED".equalsIgnoreCase(result)) {
             ++passed;
         } else if ("SKIPPED".equalsIgnoreCase(result)) {
+            ++skipped;
+        } else {
+            ++failed;
+        }
+    }
+
+    public void update(final TestStatView view) {
+        durationMs += view.getDurationMs();
+        ++total;
+        if ("PASSED".equalsIgnoreCase(view.getResult())) {
+            ++passed;
+        } else if ("SKIPPED".equalsIgnoreCase(view.getResult())) {
             ++skipped;
         } else {
             ++failed;

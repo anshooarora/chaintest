@@ -9,5 +9,6 @@ public interface TestStatView {
     Integer getDepth();
     String getResult();
     Set<Tag> getTags();
+    Long getDurationMs();
 
 }
