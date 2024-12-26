@@ -14,13 +14,16 @@ export class TestService extends BaseService<Test> {
     super('/tests', http);
   }
 
-  search(id: number = 0, name: string = '', buildId: number = 0, depth: number = -1, result: string = '', tags: string = '', error: string = '', pageNum: number = 0, op: string = 'AND') {
+  search(id: number = 0, name: string = '', projectId: number = 0, buildId: number = 0, depth: number = -1, result: string = '', tags: string = '', error: string = '', pageNum: number = 0, op: string = 'AND') {
     let params = new HttpParams();
     if (id > 0) {
       params = params.set('id', id);
     }
     if (name) {
       params = params.set('name', name);
+    }
+    if (projectId > 0) {
+      params = params.set('projectId', projectId);
     }
     if (buildId > 0) {
       params = params.set('buildId', buildId);

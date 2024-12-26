@@ -23,6 +23,8 @@ import { BuildsDurationComponent } from './components/builds-duration/builds-dur
 import { TagListingComponent } from './pages/tag/tag-listing/tag-listing.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { ExecutionsTrendComponent } from './components/executions-trend/executions-trend.component';
+import { ProjectMetricsComponent } from './pages/project/project-metrics/project-metrics.component';
+import { BuildTestGrowthComponent } from './components/build-test-growth/build-test-growth.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { ExecutionsTrendComponent } from './components/executions-trend/executio
     BuildsDurationComponent,
     TagListingComponent,
     SettingsComponent,
-    ExecutionsTrendComponent
+    ExecutionsTrendComponent,
+    ProjectMetricsComponent,
+    BuildTestGrowthComponent
   ],
   imports: [
     BrowserModule,

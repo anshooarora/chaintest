@@ -11,11 +11,13 @@ import { Build } from '../../../model/build.model';
 import { TestService } from '../../../services/test.service';
 import { Page } from '../../../model/page.model';
 import { Test } from '../../../model/test.model';
+import { PrettyTimePipe } from '../../../pipes/pretty-time.pipe';
 
 @Component({
   selector: 'app-build',
   templateUrl: './build.component.html',
-  styleUrl: './build.component.scss'
+  styleUrl: './build.component.scss',
+  providers: [PrettyTimePipe]
 })
 export class BuildComponent implements OnInit, OnDestroy {
 
@@ -177,7 +179,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
   
   findTests(pageNum: number = 0, append: boolean = false): void {
-    this._testService.search(0, '', this.buildId, 0, this.result, '', '', pageNum)
+    this._testService.search(0, '', this.build.projectId, this.buildId, 0, this.result, '', '', pageNum)
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (page: Page<Test>) => {
@@ -221,7 +223,7 @@ export class BuildComponent implements OnInit, OnDestroy {
 
   filterTag(tag: string): void {
     this.page = new Page<Test>();
-    this._testService.search(0, '', this.buildId, 0, this.result, tag, '', 0, 'AND')
+    this._testService.search(0, '', this.buildId, -1, -1, this.result, tag, '', 0, 'AND')
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (page: Page<Test>) => {
