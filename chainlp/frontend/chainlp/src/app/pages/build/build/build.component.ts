@@ -33,11 +33,12 @@ export class BuildComponent implements OnInit, OnDestroy {
   buildId: number;
   build: Build;
   page: Page<Test>;
-  displayCharts: boolean = true;
+  displaySummary: boolean = true;
   buildDepth: number = 0;
   error: string;
   result: string = 'FAILED';
   pageNum: number = 0;
+  tagDepth: number = 0;
 
   constructor(private route: ActivatedRoute,
     private _buildService: BuildService,
@@ -76,8 +77,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   /* charts */
   chartType: any = 'doughnut';
 
-  toggleDisplayCharts(): void {
-    this.displayCharts = !this.displayCharts;
+  toggleDisplaySummary(): void {
+    this.displaySummary = !this.displaySummary;
   }
 
   dataset: ChartDataset<any> = {
@@ -148,6 +149,12 @@ export class BuildComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (build: Build) => {
+        if (build.testRunner.indexOf('cucumber') > -1) {
+          this.tagDepth = 1;
+        } else {
+          this.tagDepth = build.buildstats.length - 1;
+        }
+
         this.build = build;
         this.buildDepth = build.buildstats.length;
         this.computeMetrics(build);

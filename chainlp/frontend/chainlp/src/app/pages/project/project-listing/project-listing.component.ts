@@ -65,6 +65,10 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
       next: (response: Page<Build>) => {
         console.log(response)
         project.builds = response;
+        // enable for build executions trend:
+        // const archive = this.builds;
+        // this.builds = [];
+        // this.builds.push(...response.content, ...archive);
       },
       error: (err) => {
         this.error = this.errorService.getError(err);
