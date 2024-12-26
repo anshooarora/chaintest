@@ -63,9 +63,15 @@ public class BuildService {
 
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @Cacheable(value = "builds", unless = "#result == null || #result.totalElements == 0")
-    public Page<Build> findAll(final long id, final Integer projectId, final Pageable pageable) {
+    public Page<Build> findAll(final long id, final Integer projectId, final String result,
+                               final Long startedAfter, final Long endedBefore, final Pageable pageable) {
         final BuildSpec spec = new BuildSpec(
-                Build.builder().id(id).projectId(projectId).build());
+                Build.builder().id(id)
+                        .projectId(projectId)
+                        .result(result)
+                        .startedAt(startedAfter)
+                        .endedAt(endedBefore)
+                        .build());
         return repository.findAll(spec, pageable);
     }
 

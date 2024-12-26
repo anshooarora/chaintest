@@ -9,26 +9,74 @@
 	</div>
 
 	<div class="container mt-4">
-		<div class="row" *ngIf="builds && builds.content">
+		<div class="row" *ngIf="builds && builds.content && builds.content.length">
 			<!-- build list -->
 			<div class="col-8">
 				<app-builds-duration [builds]="builds" />
 				
-				<div class="mt-4 mb-4 d-flex justify-content-between">
-					<div>
-						<button type="button" class="btn btn-outline-success btn-sm me-1">
-							<i class="bi bi-funnel"></i> Passed
-						</button>
-						<button type="button" class="btn btn-outline-danger btn-sm me-1">
-							<i class="bi bi-funnel"></i> Failed
-						</button>
-						<button type="button" class="btn btn-outline-light btn-sm">
-							<i class="bi bi-funnel"></i> Clear filters
-						</button>
+				<div class="mt-4 mb-3">
+					<div ngbAccordion>
+						<div ngbAccordionItem>
+							<h2 ngbAccordionHeader>
+								<button ngbAccordionButton class="btn"><i class="bi bi-search me-3"></i>Search</button>
+							</h2>
+							<div ngbAccordionCollapse>
+								<div ngbAccordionBody>
+									<ng-template >
+										<div class="row mb-3">
+											<div class="col-4">
+												Project
+											</div>
+											<div class="col-8">
+												{{builds.content[0].projectName}}
+											</div>
+										</div>
+										<div class="row mb-3">
+											<div class="col-4">
+												Status
+											</div>
+											<div class="col-8">
+												<div class="form-check form-check-inline">
+													<input class="form-check-input" type="radio" name="statusOption" id="passRadio" value="passed" [(ngModel)]="q.result">
+													<label class="form-check-label" for="passed">Passed</label>
+												</div>
+												<div class="form-check form-check-inline">
+													<input class="form-check-input" type="radio" name="statusOption" id="failRadio" value="failed" [(ngModel)]="q.result">
+													<label class="form-check-label" for="failed">Failed</label>
+												</div>
+											</div>
+										</div>
+										<div class="row mb-3">
+											<div class="col-4">
+												Date range
+											</div>
+											<div class="col-4">
+												<div class="input-group">
+													<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+													<input type="text" class="form-control ps-2" placeholder="From" aria-label="From" 
+														ngbDatepicker #from="ngbDatepicker" (click)="from.toggle()" style="width: 125px" [(ngModel)]="q.dateFrom">
+												</div>
+											</div>
+											<div class="col-4">
+												<div class="input-group">
+													<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+													<input type="text" class="form-control ps-2" placeholder="To" aria-label="To" 
+														ngbDatepicker #to="ngbDatepicker" (click)="to.toggle()" style="width: 125px" [(ngModel)]="q.dateTo">
+												</div>
+											</div>
+										</div>
+
+										<button class="btn btn-primary" (click)="search()">Search</button>
+										<button class="btn btn-secondary ms-1" (click)="reset()">Reset</button>
+									</ng-template>
+								</div>
+							</div>
+						</div>
 					</div>
-					<button type="button" class="btn btn-outline-light btn-sm" *ngIf="builds">
+					
+					<!--<button type="button" class="btn btn-outline-light btn-sm" *ngIf="builds">
 						Showing {{builds.size}} per page
-					</button>
+					</button>-->
 				</div>
 
 				<div class="card" 
@@ -40,7 +88,7 @@
 							<div class="build-name pointer" routerLink="{{build.id}}">
 								<i class="bi bi-check-circle-fill text-success" *ngIf="build.result.toString() == 'PASSED'"></i>
 								<i class="bi bi-x-circle-fill text-danger" *ngIf="build.result.toString() != 'PASSED'"></i>
-								<span class="ms-2 text-md fw-semibold">#{{build.id}} - {{build.testRunner}}</span>
+								<span class="ms-2 fw-semibold">#{{build.id}} - {{build.testRunner}}</span>
 							</div>
 							<div class="d-flex">
 								<div class="pointer me-2" ngbDropdown>

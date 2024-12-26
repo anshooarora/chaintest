@@ -30,6 +30,11 @@ export class BuildListingComponent implements OnInit, OnDestroy {
   selectedBuild: Build;
   tagstats: TagStats[];
   pageNum: number = 0;
+  readonly q: any = {
+    result: '',
+    dateFrom: '',
+    dateTo: ''
+  }
 
   /* build tests chart */
   chartType: any = 'doughnut';
@@ -191,6 +196,49 @@ export class BuildListingComponent implements OnInit, OnDestroy {
 
   paginate($event: any) {
     this.findBuilds($event);
+  }
+
+  reset(): void {
+    this.q.status = '';
+    this.q.dateFrom = '';
+    this.q.dateTo = '';
+
+    this.builds = new Page<Build>();
+    this.findBuilds();
+  }
+
+  search(): void {
+    this.builds = new Page<Build>();
+    let dateFrom = -1;
+    if (this.q.dateFrom) {
+      const date = new Date(this.q.dateFrom.year, this.q.dateFrom.month - 1, this.q.dateFrom.day, 0, 0, 0, 0);
+      dateFrom = date.getTime();
+    }
+    let dateTo = -1;
+    if (this.q.dateTo) {
+      const date = new Date(this.q.dateTo.year, this.q.dateTo.month - 1, this.q.dateTo.day, 0, 0, 0, 0);
+      dateTo = date.getTime();
+    }
+    console.log(this.q)
+    
+    this.buildService.q(this.projectId, this.q.result, dateFrom, dateTo, 0, 20, 'id,desc')
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (builds: Page<Build>) => {
+          if (!this.builds) {
+            this.builds = builds;
+            this.selectBuild(builds.content[0]);
+          } else {
+            this.builds.content.push(...builds.content);
+            this.builds.first = builds.first;
+            this.builds.last = builds.last;
+          }
+          console.log(this.builds)
+        },
+        error: (err) => {
+          this.error = this.errorService.getError(err);
+        }
+      });
   }
 
 }

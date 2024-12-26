@@ -128,7 +128,7 @@ background-color: rgb(223, 203, 250);
 
 /* button */
 .btn {
-  font-size: .8rem;
+  font-size: 13px;
 }
 
 .btn.btn-sm {
@@ -137,7 +137,7 @@ background-color: rgb(223, 203, 250);
 
 .btn.btn-xs {
   padding: .22rem .75rem !important;
-  font-size: .7rem !important;
+  font-size: 11px !important;
 }
 
 .btn-primary {
@@ -162,7 +162,7 @@ background-color: rgb(223, 203, 250);
 /* badge */
 .badge {
   color: var(--default-text-color) !important;
-  font-size: 10.5px;
+  font-size: 11px;
   padding: .35rem .5rem;
   font-weight: normal;
 
@@ -309,8 +309,10 @@ background-color: rgb(223, 203, 250);
   font-size: .85rem;
   padding: .5rem 1rem;
 }
-.dropdown-toggle::after {
-  display: none;
+
+/* accordion */
+.accordion-button::after {
+  background-size: 1rem;
 }
 
 /* status */

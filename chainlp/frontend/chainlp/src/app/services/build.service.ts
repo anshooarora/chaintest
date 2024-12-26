@@ -23,4 +23,17 @@ export class BuildService extends BaseService<Build> {
       return this.query(params);
   }
 
+  q(projectId: number, result: string = '', startedAfter: number = -1, endedBefore: number = -1, page: number = 0, pageSize: number = 20, sort: string = ''): Observable<Page<Build>> {
+    const params = new HttpParams()
+      .set('projectId', projectId)
+      .set('result', result)
+      .set('startedAfter', startedAfter)
+      .set('endedBefore', endedBefore)
+      .set('page', page)
+      .set('sort', sort)
+      .set('size', pageSize);
+
+    return this.query(params);
+  }
+
 }
