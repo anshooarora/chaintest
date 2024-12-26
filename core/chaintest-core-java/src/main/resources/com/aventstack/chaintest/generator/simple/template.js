@@ -265,6 +265,7 @@ document.querySelector('body').addEventListener('click', el => {
 
 // toggle summary section
 document.querySelector('#summary-toggle').addEventListener('click', el => {
+  el.target.classList.toggle('active');
   const summary = document.querySelector('#summary');
   summary.classList.toggle('d-none');
 })

@@ -48,12 +48,16 @@
 <body data-bs-theme="${config['darkTheme']?then('dark', '')}">
   <nav class="navbar border-bottom">
     <div class="container d-flex justify-content-between">
-      <a class="navbar-brand" href="#">ChainTest</a>
       <div>
-        <span class="badge badge-outline text-lg">${config['projectName']}</span>
+        <a class="navbar-brand" href="#">ChainTest</a>
+        <span class="ms-3 fs-6">${config['projectName']}</span>
+      </div>
+      <div>
         <span class="badge badge-outline text-lg"><i class="bi bi-hourglass me-1"></i> ${build.durationPretty}</span>
         <span class="badge badge-outline text-lg"><i class="bi bi-clock me-1"></i> Started ${build.startedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
         <span class="badge badge-outline text-lg"><i class="bi bi-clock me-1"></i> Ended ${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
+      </div>
+      <div>
         <#if build.systemInfo?? && build.systemInfo?has_content>
           <button role="button" id="sys-info" class="btn btn-outline-primary smaller" title="View System Info">
             <i class="bi bi-pc-display-horizontal"></i></button>
