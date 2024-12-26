@@ -3,6 +3,7 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { Page } from '../../model/page.model';
 import { Build } from '../../model/build.model';
 import { DateTimeService } from '../../services/date-time.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-builds-duration',
@@ -13,6 +14,9 @@ export class BuildsDurationComponent {
 
   @Input()
   builds: Page<Build>;
+
+  @Input()
+  maxHeight: number = 125;
 
   /* build trend chart */
   chartType: any = 'line';
@@ -52,10 +56,18 @@ export class BuildsDurationComponent {
       legend: {
         display: false
       }
+    },
+    onClick: (e: any, elements: any) => {
+      if (elements && elements.length > 0) {
+        const idx = elements[0].index;
+        const buildId = e.chart.data.labels[idx].replace('#', '');
+        this.router.navigate(['/builds', buildId]);
+      }
     }
   };
 
-  constructor(private datetimeService: DateTimeService) { }
+  constructor(private router: Router, private datetimeService: DateTimeService) { }
+  
 
   ngOnInit() {
     this.showTrends();

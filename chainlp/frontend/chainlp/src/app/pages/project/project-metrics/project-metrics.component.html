@@ -11,10 +11,10 @@
 	<div class="container mt-4">
     <div class="row">
       <div class="col">
-        <app-builds-duration [builds]="buildPage" *ngIf="buildPage"></app-builds-duration>
+        <app-builds-duration [builds]="buildPage" [maxHeight]="150" *ngIf="buildPage"></app-builds-duration>
       </div>
       <div class="col">
-        <app-build-test-growth [builds]="buildPage" *ngIf="buildPage"></app-build-test-growth>
+        <app-build-test-growth [builds]="buildPage" [maxHeight]="150" *ngIf="buildPage"></app-build-test-growth>
       </div>
     </div>
     
@@ -22,7 +22,7 @@
 			<div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h5>Failing tests</h5>
+            <h6>Failing tests</h6>
           </div>
           <div class="card-body">
             <table class="table table-hover">
