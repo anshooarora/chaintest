@@ -30,6 +30,15 @@ public class Project {
     @Column
     private String name;
 
+    @Column(name = "repository_name")
+    private String repositoryName;
+
+    @Column(name = "repository_url")
+    private String repositoryUrl;
+
+    @Column
+    private String url;
+
     @PrePersist
     protected void onCreate() {
         createdAt = System.currentTimeMillis();

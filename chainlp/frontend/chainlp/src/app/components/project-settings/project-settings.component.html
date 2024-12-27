@@ -1,0 +1,43 @@
+<button type="button" class="btn btn-outline-primary btn-sm ms-1" (click)="open(content)" *ngIf="project">
+  <i class="bi bi-gear-fill me-1"></i> Project Settings
+</button>
+
+<ng-template #content let-offcanvas>
+	<div class="offcanvas-header">
+		<h4 class="offcanvas-title" id="offcanvas-basic-title">Project Settings: {{project.name}}</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+	</div>
+	<div class="offcanvas-body">
+		<div class="row mb-2">
+      <div class="col-4">
+        Project URL
+      </div>
+      <div class="col-8">
+        <input type="text" class="form-control" placeholder="Project URL" [(ngModel)]="project.url">
+      </div>
+    </div>
+
+    <div class="row mb-2">
+      <div class="col-4">
+        Repository Name
+      </div>
+      <div class="col-8">
+        <input type="text" class="form-control" placeholder="Repository Name" [(ngModel)]="project.repositoryName">
+      </div>
+    </div>
+
+    <div class="row mb-2">
+      <div class="col-4">
+        Repository URL
+      </div>
+      <div class="col-8">
+        <input type="text" class="form-control" placeholder="Repository URL" [(ngModel)]="project.repositoryUrl">
+      </div>
+    </div>
+
+		<div class="text-end">
+      <span class="me-2 text-success" *ngIf="isSaved">Project updated!</span>
+			<button type="button" class="btn btn-primary" (click)="save()">Save</button>
+		</div>
+	</div>
+</ng-template>

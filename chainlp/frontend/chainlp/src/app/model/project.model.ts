@@ -5,6 +5,9 @@ export class Project extends Page<Project> {
   id: number;
   name: string;
   createdAt: number;
+  url: string;
+  repositoryName: string;
+  repositoryUrl: string;
 
   // used in project-listing.component
   builds: Page<Build>;
