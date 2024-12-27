@@ -73,7 +73,7 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.error = this.errorService.getError(err);
       }
-  });
+    });
   }
   
   search(): void {

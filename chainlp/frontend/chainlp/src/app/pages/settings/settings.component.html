@@ -5,22 +5,89 @@
           <div class="d-flex">
               <h4>Settings</h4>
           </div>
+          <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav nav-underline pt-4">
+            <li [ngbNavItem]="1">
+              <button ngbNavLink>General</button>
+              <ng-template ngbNavContent>
+                <div class="row">
+                  <div class="col-4">
+                    Theme
+                  </div>
+                  <div class="col-8">
+                    <select class="form-select" aria-label="Select theme" (change)="changeTheme($event)">
+                      <option value="{{theme.val}}"
+                        [selected]="theme.val === activeTheme"
+                        *ngFor="let theme of themes">{{theme.name}}</option>
+                    </select>
+                  </div>
+                </div>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="2">
+              <button ngbNavLink>Secrets</button>
+              <ng-template ngbNavContent>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    S3 Security Credentials
+                  </div>
+                  <div class="col-8">
+                    <div class="row">
+                      <div class="input-group">
+                        <input type="password" class="form-control" placeholder="AWS_ACCESS_KEY_ID"
+                          aria-label="AWS_ACCESS_KEY_ID" [(ngModel)]="awsSecrets.AWS_ACCESS_KEY_ID"
+                          title="Specifies an AWS access key associated with an IAM account" />
+                        <input type="password" class="form-control" placeholder="AWS_SECRET_ACCESS_KEY"
+                          aria-label="AWS_SECRET_ACCESS_KEY" [(ngModel)]="awsSecrets.AWS_SECRET_ACCESS_KEY"
+                          title="Specifies the secret key associated with the access key. This is essentially the password for the access key" />
+                        <input type="text" class="form-control" placeholder="AWS_REGION"
+                          aria-label="AWS_REGION" [(ngModel)]="awsSecrets.AWS_REGION"
+                          title="Identifies the AWS Region whose servers you want to send your requests to by default" />
+                        <button class="btn btn-primary" type="button" (click)="saveSecrets(awsSecrets)">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    Azure Blob Credentials
+                  </div>
+                  <div class="col-8">
+                    <div class="row">
+                      <div class="input-group">
+                        <input type="password" class="form-control" placeholder="AZURE_TENANT_ID"
+                          aria-label="AZURE_TENANT_ID" [(ngModel)]="azureSecrets.AZURE_TENANT_ID"
+                          title="The Microsoft Entra tenant (directory) ID" />
+                        <input type="password" class="form-control" placeholder="AZURE_CLIENT_ID"
+                          aria-label="AZURE_CLIENT_ID" [(ngModel)]="azureSecrets.AZURE_CLIENT_ID"
+                          title="The client (application) ID of an App Registration in the tenant" />
+                        <input type="password" class="form-control" placeholder="AZURE_CLIENT_SECRET"
+                          aria-label="AZURE_CLIENT_SECRET" [(ngModel)]="azureSecrets.AZURE_CLIENT_SECRET"
+                          title="A client secret that was generated for the App Registration" />
+                        <button class="btn btn-primary" type="button" (click)="saveSecrets(azureSecrets)">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-4">
+                    Azure Blob Connection String
+                  </div>
+                  <div class="col-8">
+                    <div class="input-group">
+                      <input type="password" class="form-control" placeholder="AZURE_STORAGE_CONNECTION_STRING"
+                        aria-label="AZURE_ACCESS_CONNECTION_STRING" [(ngModel)]="azureConnectionString.AZURE_ACCESS_CONNECTION_STRING" />
+                      <button class="btn btn-primary" type="button" (click)="saveSecrets(azureConnectionString)">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </li>
+          </ul>
       </div>
   </div>
 
   <div class="container pt-5">
-    <div class="row">
-      <div class="col-4">
-        Theme
-      </div>
-      <div class="col-4">
-        <select class="form-select" aria-label="Select theme" (change)="changeTheme($event)">
-          <option value="{{theme.val}}"
-            [selected]="theme.val === activeTheme"
-            *ngFor="let theme of themes">{{theme.name}}</option>
-        </select>
-      </div>
-    </div>
+    <div [ngbNavOutlet]="nav"></div>
   </div>
 </div>
 <!-- /main-content -->
