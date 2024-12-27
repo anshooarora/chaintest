@@ -5,8 +5,9 @@
       <div class="d-flex justify-content-between">
         <h4>Build {{build.id}}</h4>
         <div>
-          <button type="button" class="btn btn-outline-primary btn-sm ms-1" [ngClass]="{'active': !displaySummary}" (click)="toggleDisplaySummary()">
-            <i class="bi bi-toggle"></i> Toggle Summary
+          <button type="button" class="btn btn-outline-primary btn-sm ms-1" 
+            [ngClass]="{'active': !displaySummary}" (click)="toggleDisplaySummary()">
+            <i class="bi bi-bar-chart-fill me-1"></i> Toggle Summary
           </button>
         </div>
       </div>
