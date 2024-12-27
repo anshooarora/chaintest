@@ -15,7 +15,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,6 +40,13 @@ public class Build {
     @Column(name = "project_id")
     private Integer projectId;
 
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "number")
+    private Integer number;
+
+    @Column(name = "project_name")
     private String projectName;
 
     @OneToMany(mappedBy = "build", cascade = CascadeType.ALL)
@@ -66,9 +72,6 @@ public class Build {
 
     @Column(name = "testrunner")
     private String testRunner;
-
-    @Column
-    private String name;
 
     @Column
     private String result;
