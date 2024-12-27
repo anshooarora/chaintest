@@ -18,7 +18,8 @@ import java.util.UUID;
 public class Embed {
 
     private static final Logger log = LoggerFactory.getLogger(Embed.class);
-    private static final List<String> SUPPORTED_MEDIA_TYPES = List.of(
+
+    public static final List<String> SUPPORTED_MEDIA_TYPES = List.of(
             "image/png",
             "image/jpg",
             "image/jpeg",

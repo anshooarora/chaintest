@@ -44,23 +44,18 @@ public class AWSS3Client implements StorageService {
 
     @Override
     public boolean create(final Map<String, String> config) {
-        /*AwsCredentials credentials;
-        if (config.containsKey(AWS_ACCESS_KEY_ID) && config.containsKey(AWS_SECRET_ACCESS_KEY) && config.containsKey(AWS_DEFAULT_REGION)) {
-            credentials = AwsBasicCredentials.create(config.get(AWS_ACCESS_KEY_ID), config.get(AWS_SECRET_ACCESS_KEY));
+        try {
+            _client = S3Client.builder()
+                    .httpClientBuilder(ApacheHttpClient.builder())
+                    .credentialsProvider(DefaultCredentialsProvider.builder().build())
+                    .build();
+            _bucket = config.getOrDefault(STORAGE_CONTAINER_NAME, DEFAULT_CONTAINER_NAME);
+            _bucket = _bucket.isBlank() ? DEFAULT_CONTAINER_NAME : _bucket;
+            return true;
+        } catch (final Exception e) {
+            log.error("Failed to create AWS S3 client", e);
+            return false;
         }
-        if (System.getenv(AWS_ACCESS_KEY_ID) != null && System.getenv(AWS_SECRET_ACCESS_KEY) != null && System.getenv(AWS_DEFAULT_REGION) != null) {
-            credentials = AwsBasicCredentials.create(System.getenv(AWS_ACCESS_KEY_ID), System.getenv(AWS_SECRET_ACCESS_KEY));
-        }
-        if (System.getProperty(AWS_ACCESS_KEY_ID) != null && System.getProperty(AWS_SECRET_ACCESS_KEY) != null && System.getProperty(AWS_DEFAULT_REGION) != null) {
-            credentials = AwsBasicCredentials.create(System.getProperty(AWS_ACCESS_KEY_ID), System.getProperty(AWS_SECRET_ACCESS_KEY));
-        }
-        */
-        _client = S3Client.builder()
-                .httpClientBuilder(ApacheHttpClient.builder())
-                .credentialsProvider(DefaultCredentialsProvider.builder().build())
-                .build();
-        _bucket = config.getOrDefault(STORAGE_CONTAINER_NAME, DEFAULT_CONTAINER_NAME);
-        return false;
     }
 
     private void createBucket(final String bucketName) {
@@ -109,11 +104,11 @@ public class AWSS3Client implements StorageService {
     @Override
     public void upload(final Test test, Embed embed) {
         if (null != embed.getBytes()) {
-            upload(test, embed.id(), embed.getBytes());
+            upload(test, embed.getName(), embed.getBytes());
         } else if (null != embed.getBase64() && !embed.getBase64().isBlank()) {
-            upload(test, embed.id(), embed.getBase64());
+            upload(test, embed.getName(), embed.getBase64());
         } else if (null != embed.getFile()) {
-            upload(test, embed.id(), embed.getFile());
+            upload(test, embed.getName(), embed.getFile());
         } else {
             log.error("Unable to upload Embed to Azure Blob Storage. Source missing");
         }

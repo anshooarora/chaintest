@@ -5,6 +5,7 @@ import com.aventstack.chaintest.domain.Build;
 import com.aventstack.chaintest.domain.Embed;
 import com.aventstack.chaintest.domain.SystemInfo;
 import com.aventstack.chaintest.domain.Test;
+import com.aventstack.chaintest.generator.ChainTestPropertyKeys;
 import com.aventstack.chaintest.generator.Generator;
 import com.aventstack.chaintest.storage.StorageService;
 import com.aventstack.chaintest.storage.StorageServiceFactory;
@@ -91,6 +92,7 @@ public class ChainPluginService {
     }
 
     private void init(final Map<String, String> config) {
+        _build.setProjectName(config.get(ChainTestPropertyKeys.PROJECT_NAME));
         register(config);
         startStorageService(config);
     }

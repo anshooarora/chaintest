@@ -113,6 +113,7 @@ public class Test implements ChainTestEntity {
     /**
      * The embedded media associated with the test.
      */
+    @JsonIgnore
     private final List<Embed> embeds = new ArrayList<>();
 
     /**
