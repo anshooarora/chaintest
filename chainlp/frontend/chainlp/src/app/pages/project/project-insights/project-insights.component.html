@@ -1,0 +1,52 @@
+<!-- main-content -->
+<div class="main-content app-content">
+  <div class="page-header">
+      <div class="container">
+          <div class="d-flex justify-content-between">
+              <h4>Insights</h4>
+              <div>
+                <button class="btn btn-outline-primary" [routerLink]="['/projects']">
+                  <i class="bi bi-arrow-left me-1"></i> Back to Projects</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="container mt-4">
+    
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header">
+            <h5>Build Status</h5>
+          </div>
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Project Name</th>
+                  <th colspan="19">Newest -> Oldest Builds</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let project of projectPage.content">
+                  <td>{{ project.name }}</td>
+                  <td *ngFor="let build of project.builds.content">
+                    <span class="" role="button" [routerLink]="['/', 'projects', project.id, 'builds', build.id]">
+                      <i class="bi bi-check-circle-fill text-success" *ngIf="build.result == 'PASSED'"></i>
+                      <i class="bi bi-x-circle-fill text-danger" *ngIf="build.result != 'PASSED'"></i>
+                    </span>
+                  </td>
+                  <td *ngIf="project.builds.content.length < 20" 
+                    colspan="20 - project.builds.content.length"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- /main-content -->
