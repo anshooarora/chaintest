@@ -26,6 +26,7 @@ import { ExecutionsTrendComponent } from './components/executions-trend/executio
 import { ProjectMetricsComponent } from './pages/project/project-metrics/project-metrics.component';
 import { BuildTestGrowthComponent } from './components/build-test-growth/build-test-growth.component';
 import { ProjectSettingsComponent } from './components/project-settings/project-settings.component';
+import { ProjectInsightsComponent } from './pages/project/project-insights/project-insights.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { ProjectSettingsComponent } from './components/project-settings/project-
     ExecutionsTrendComponent,
     ProjectMetricsComponent,
     BuildTestGrowthComponent,
-    ProjectSettingsComponent
+    ProjectSettingsComponent,
+    ProjectInsightsComponent
   ],
   imports: [
     BrowserModule,
