@@ -13,40 +13,58 @@
   </div>
 
   <div class="container mt-4">
-    
-    <div class="row">
-      <div class="col">
-        <div class="card">
-          <div class="card-header">
-            <h5>Build Status</h5>
-          </div>
-          <div class="card-body">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Project Name</th>
-                  <th colspan="19">Newest -> Oldest Builds</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let project of projectPage.content">
-                  <td>{{ project.name }}</td>
-                  <td *ngFor="let build of project.builds.content">
-                    <span class="" role="button" [routerLink]="['/', 'projects', project.id, 'builds', build.id]">
-                      <i class="bi bi-check-circle-fill text-success" *ngIf="build.result == 'PASSED'"></i>
-                      <i class="bi bi-x-circle-fill text-danger" *ngIf="build.result != 'PASSED'"></i>
-                    </span>
-                  </td>
-                  <td *ngIf="project.builds.content.length < 20" 
-                    colspan="20 - project.builds.content.length"></td>
-                </tr>
-              </tbody>
-            </table>
+    <ng-container *ngIf="projectPage && projectPage.content">
+
+      <div class="row">
+        <div class="col">
+          <div class="card pb-3">
+            <div class="card-header pt-3">
+              <h5>Time Taken Comparison (minutes)</h5>
+            </div>
+            <div class="card-body py-0">
+              <div class="mx-auto">
+                <canvas baseChart [type]="chartType" [data]="data" [options]="options"></canvas>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+              <h5>Build Status</h5>
+            </div>
+            <div class="card-body pb-0">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Project Name</th>
+                    <th colspan="19">Newest -> Oldest Builds</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let project of projectPage.content">
+                    <td>{{ project.name }}</td>
+                    <ng-container *ngIf="project.builds && project.builds.content">
+                      <td *ngFor="let build of project.builds.content">
+                        <span class="" role="button" [routerLink]="['/', 'projects', project.id, 'builds', build.id]">
+                          <i class="bi bi-check-circle-fill text-success" *ngIf="build.result == 'PASSED'"></i>
+                          <i class="bi bi-x-circle-fill text-danger" *ngIf="build.result != 'PASSED'"></i>
+                        </span>
+                      </td>
+                      <td *ngIf="project.builds.content.length < 20" 
+                        colspan="20 - project.builds.content.length"></td>
+                    </ng-container>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
   </div>
 </div>
 <!-- /main-content -->
