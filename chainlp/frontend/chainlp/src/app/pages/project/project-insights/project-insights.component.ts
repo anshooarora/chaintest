@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
 import { Subject, takeUntil } from 'rxjs';
 import { ChartData, ChartOptions } from 'chart.js';
 import * as moment from 'moment';
@@ -30,8 +29,7 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
   error: any;
   projectPage: Page<Project>;
 
-  constructor(private router: Router,
-    private projectService: ProjectService, 
+  constructor(private projectService: ProjectService, 
     private buildService: BuildService,
     private errorService: ErrorHandlerService) { }
   
@@ -69,14 +67,13 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
   }
 
   findBuilds(project: Project): void {
-    this.buildService.findByProjectId(project.id, 0, 15, 'id,desc')
+    this.buildService.findByProjectId(project.id, 0, 20, 'id,desc')
     .pipe(takeUntil(this._build$))
     .subscribe({
       next: (response: Page<Build>) => {
         project.builds = response;
         this.appendToCountsTrend(project, response.content);
         this.chart?.update();
-        console.log(this.data)
       },
       error: (err) => {
         this.error = this.errorService.getError(err);
@@ -103,11 +100,6 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
         ticks: {
           display: false
         }
-      }
-    },
-    plugins: {
-      legend: {
-        
       }
     }
   };
