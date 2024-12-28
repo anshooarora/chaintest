@@ -188,7 +188,13 @@
                           <span class="badge bg-light">{{leaf.durationMs | prettyTime}}</span>
                         </div>
                       </div>
+                      <div class="mt-2 screenshots" *ngIf="leaf.screenshotURL">
+                        <img *ngFor="let s of leaf.screenshotURL" [src]="s" class="img-fluid" alt="screenshot" />
+                      </div>
                     </div>
+                  </div>
+                  <div class="mt-2 screenshots" *ngIf="child && child.screenshotURL">
+                    <img *ngFor="let s of child.screenshotURL" [src]="s" class="img-fluid" alt="screenshot" />
                   </div>
                 </div>
               </div>

@@ -15,6 +15,7 @@ export class Test extends Page<Test> {
     children: Test[];
     error: string;
     bdd: boolean;
+    screenshotURL: string[];
 
     history: Page<Test>;
 }
