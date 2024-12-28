@@ -10,10 +10,14 @@
               <button ngbNavLink>General</button>
               <ng-template ngbNavContent>
                 <div class="row">
-                  <div class="col-4">
-                    Theme
+                  <div class="col-3">
+                    <h5>Theme</h5>
+                    <div class="text-secondary">
+                      Theme can be changed anywhere in the app by pressing the 'L' key
+                    </div>
                   </div>
-                  <div class="col-8">
+                  <div class="col-1"></div>
+                  <div class="col-3">
                     <select class="form-select" aria-label="Select theme" (change)="changeTheme($event)">
                       <option value="{{theme.val}}"
                         [selected]="theme.val === activeTheme"
@@ -26,10 +30,15 @@
             <li [ngbNavItem]="2">
               <button ngbNavLink>Secrets</button>
               <ng-template ngbNavContent>
-                <div class="row mb-3">
-                  <div class="col-4">
-                    S3 Security Credentials
+                <div class="row mb-5">
+                  <div class="col-3">
+                    <h5>S3 Security Credentials</h5>
+                    <div class="text-secondary">
+                      AWS access keys consist of an access key ID and a secret access key. 
+                      These keys are used to sign programmatic requests that you make to AWS services.
+                    </div>
                   </div>
+                  <div class="col-1"></div>
                   <div class="col-8">
                     <div class="row">
                       <div class="input-group">
@@ -47,10 +56,14 @@
                     </div>
                   </div>
                 </div>
-                <div class="row mb-3">
-                  <div class="col-4">
-                    Azure Blob Credentials
+                <div class="row mb-5">
+                  <div class="col-3">
+                    <h5>Azure Blob Credentials</h5>
+                    <div class="text-secondary">
+                      Azure Tenant ID, Client ID, and Client Secret are required to authenticate with Azure Blob Storage
+                    </div>
                   </div>
+                  <div class="col-1"></div>
                   <div class="col-8">
                     <div class="row">
                       <div class="input-group">
@@ -68,10 +81,14 @@
                     </div>
                   </div>
                 </div>
-                <div class="row mb-3">
-                  <div class="col-4">
-                    Azure Blob Connection String
+                <div class="row mb-5">
+                  <div class="col-3">
+                    <h5>Azure Blob Connection String</h5>
+                    <div class="text-secondary">
+                      Azure Blob Storage connection string is a string that contains the authentication information required for your application to access data in an Azure Storage account at runtime using Shared Key authorization.
+                    </div>
                   </div>
+                  <div class="col-1"></div>
                   <div class="col-8">
                     <div class="input-group">
                       <input type="password" class="form-control" placeholder="AZURE_STORAGE_CONNECTION_STRING"
