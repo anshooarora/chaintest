@@ -74,7 +74,7 @@ export class BuildsDurationComponent {
   }
 
   showTrends() {
-    const builds:Build[] = this.builds.content;
+    const builds:Build[] = this.builds.content.slice().reverse();
     for (let i = 0; i < builds.length; i++) {
       this.data.labels?.push('#' + builds[i].id);
       this.data.datasets[0].data.push(builds[i].durationMs / 1000);

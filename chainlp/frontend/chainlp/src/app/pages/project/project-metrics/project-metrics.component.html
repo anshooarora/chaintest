@@ -11,7 +11,7 @@
 		</div>
 	</div>
 
-	<div class="container mt-4">
+	<div class="container mt-4" *ngIf="buildPage && buildPage.content">
     <div class="row">
       <div class="col-12">
         <div class="card">
@@ -59,36 +59,36 @@
 		<div class="row" *ngIf="failingTestsPage && failingTestsPage.content">
 			<div class="col-12">
         <div class="card">
-          <div class="card-header">
+          <div class="card-header text-danger pb-0">
             <h6>Failing tests</h6>
           </div>
           <div class="card-body">
-            <table class="table table-hover">
+            <table class="table table-hover table-hover-danger">
               <thead>
                 <tr>
-                  <th scope="col" style="width:50px">ID</th>
-                  <th scope="col" style="width: 30%">Name</th>
+                  <th scope="col" style="width: 50%">Name</th>
                   <th scope="col">Time</th>
                   <th scope="col">Started</th>
                   <th scope="col">Ended</th>
-                  <th scope="col">Error</th>
                   <th scope="col" style="width: 120px">Build</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let test of failingTestsPage.content">
-                  <td>{{test.id}}</td>
-                  <td>{{test.name}}</td>
+                  <td>
+                    <span class="text-primary" role="button" (click)="selectedTest = test; openEnd(content)">{{test.name}}</span>
+                    <div class="mt-1">
+                      <span class="badge badge-outline me-1" *ngFor="let tag of test.tags">
+                        {{tag.name}}
+                      </span>
+                    </div>
+                  </td>
                   <td>{{test.durationMs | prettyTime}}</td>
                   <td>{{test.startedAt | date:'yyyy-MM-dd h:m:s a'}}</td>
                   <td>{{test.endedAt | date:'yyyy-MM-dd h:m:s a'}}</td>
                   <td>
-                    <span class="badge badge-danger" role="button" *ngIf="test.error" (click)="selectedTest = test; openEnd(content)">
-                      <i class="bi bi-exclamation-circle text-danger"></i></span>
-                  </td>
-                  <td>
                     <span class="badge badge-outline" role="button" [routerLink]="['/', 'projects', projectId, 'builds', test.buildId]">
-                      <i class="bi bi-box-arrow-up-right me-2"></i>Go to build</span>
+                      <i class="bi bi-box-arrow-up-right me-2"></i>Build {{test.buildId}}</span>
                   </td>
                 </tr>
               </tbody>
@@ -107,6 +107,6 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
   </div>
   <div class="offcanvas-body px-4">
-    <pre class="my-0" style="max-height: fit-content">{{selectedTest.error}}</pre>
+    <app-test [test]="selectedTest" [showMeta]="true"></app-test>
   </div>
 </ng-template>

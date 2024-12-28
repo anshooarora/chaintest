@@ -62,7 +62,7 @@ export class ProjectMetricsComponent implements OnInit, OnDestroy {
   }
 
   findFailingTests(pageNum: number = 0): void {
-    this.testService.search(0, '', this.projectId, -1, -1, 'FAILED', '', '', pageNum)
+    this.testService.search(0, '', this.projectId, -1, 0, 'FAILED', '', '', pageNum)
     .pipe(takeUntil(this._failingTests$))
     .subscribe({
       next: (page: Page<Test>) => {

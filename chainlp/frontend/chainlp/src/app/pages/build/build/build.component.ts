@@ -41,6 +41,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   result: string = 'FAILED';
   pageNum: number = 0;
   tagDepth: number = 0;
+  testCount: number | undefined = 0;
 
   constructor(private route: ActivatedRoute,
     private _buildService: BuildService,
@@ -156,6 +157,8 @@ export class BuildComponent implements OnInit, OnDestroy {
         } else {
           this.tagDepth = build.buildstats.length - 1;
         }
+
+        this.testCount = build.buildstats.find(x => x.depth == 0)?.total;
 
         this.build = build;
         this.buildDepth = build.buildstats.length;
