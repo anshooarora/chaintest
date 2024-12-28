@@ -288,6 +288,12 @@ background-color: rgb(223, 203, 250);
     font-size: .8rem;
     font-weight: 500;
   }
+
+  tr:last-child {
+    td {
+      border-bottom: none;
+    }
+  }
 }
 
 /* page-header */
