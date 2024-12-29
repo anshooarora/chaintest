@@ -359,7 +359,7 @@ ${log}
                 <#list build.systemInfo as s>
                   <tr>
                     <td>${s.name}</td>
-                    <td>${s.value}</td>
+                    <td>${s.val}</td>
                   </tr>
                 </#list>
               </tbody>

@@ -9,13 +9,13 @@ public class SystemInfo {
 
     private long id;
     private String name;
-    private String value;
+    private String val;
 
     public SystemInfo() { }
 
-    public SystemInfo(final String name, final String value) {
+    public SystemInfo(final String name, final String val) {
         this.name = name;
-        this.value = value;
+        this.val = val;
     }
 
 }

@@ -3,6 +3,8 @@ package com.aventstack.chainlp.api.build.SystemInfo;
 import com.aventstack.chainlp.api.build.Build;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,9 +19,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Data
-@ToString(exclude = "build")
 @Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = { "build" })
 @Table(name = "systeminfo")
 public class SystemInfo {
 
@@ -35,6 +39,6 @@ public class SystemInfo {
     private Build build;
 
     private String name;
-    private String value;
+    private String val;
 
 }
