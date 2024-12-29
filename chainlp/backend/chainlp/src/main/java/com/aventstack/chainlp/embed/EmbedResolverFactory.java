@@ -1,16 +1,16 @@
 package com.aventstack.chainlp.embed;
 
 import com.aventstack.chainlp.embed.aws.AWSResolver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmbedResolverFactory {
 
-    @Autowired
-    private AWSResolver awsResolver;
+    private final AWSResolver awsResolver = new AWSResolver();
 
-    public StoragePathResolver getResolver(final String path) {
+    public EmbedResolverFactory() { }
+
+    public PresignedUrlResolver getResolver(final String path) {
         if (path.toLowerCase().contains(".amazonaws.")) {
             return awsResolver;
         } else {

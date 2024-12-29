@@ -1,8 +1,7 @@
 package com.aventstack.chainlp.embed.aws;
 
-import com.aventstack.chainlp.embed.StoragePathResolver;
+import com.aventstack.chainlp.embed.PresignedUrlResolver;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Uri;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -14,15 +13,15 @@ import java.net.URI;
 import java.time.Duration;
 
 @Slf4j
-@Service
-public class AWSResolver implements StoragePathResolver {
+public class AWSResolver implements PresignedUrlResolver {
 
-    private final S3Client s3Client = S3Client.create();
+    public AWSResolver() { }
 
     @Override
     public String resolve(final String path) {
         log.debug("Resolving path: [{}]", path);
         final URI uri = URI.create(path);
+        final S3Client s3Client = S3Client.create();
         final S3Uri s3URI = s3Client.utilities().parseUri(uri);
         final String bucket = s3URI.bucket()
                 .orElseThrow(() -> new IllegalArgumentException("Bucket not found"));
