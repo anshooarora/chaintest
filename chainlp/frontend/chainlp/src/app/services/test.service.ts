@@ -46,7 +46,7 @@ export class TestService extends BaseService<Test> {
   }
 
   history(id: number) {
-    return this.http.get<Page<Test>>(`${this._api_endpoint.href}/${id}/history`);
+    return this.http.get<Page<Test>>(`${this._path}/${id}/history`);
   }
 
 }
