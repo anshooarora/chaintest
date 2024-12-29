@@ -1,8 +1,8 @@
 # ChainTest
 
-An open-source reporting framework with multiple generators creating static reports (like ExtentReports) and a reporting server (ChainLP) for long-playing analytics.
+An open-source reporting framework with multiple generators creating static reports (ExtentReports) and a reporting server (ChainLP) for long-playing analytics.
 
-### Generators (Samples)
+### Generators
 
 * SimpleGenerator: [Light](https://chaintestblob.blob.core.windows.net/chaintest/light/Index.html) | [Dark](https://chaintestblob.blob.core.windows.net/chaintest/dark/Index.html)
 * EmailGenerator: [Sample](https://chaintestblob.blob.core.windows.net/chaintest/email/Email.html)
@@ -14,10 +14,10 @@ A generator is responsible for creating output files based on the test results a
 
 #### Supported Test Frameworks
 
-* JUnit Jupiter
-* Cucumber JVM
-* TestNG
-* PyTest (in progress)
+* junit-jupiter
+* cucumber-jvm
+* testng
+* pytest (in progress)
 
 ### Contributing
 
