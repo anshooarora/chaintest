@@ -2,8 +2,6 @@ package com.aventstack.chaintest.plugins;
 
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.service.ChainPluginService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.IClassListener;
 import org.testng.IExecutionListener;
 import org.testng.ISuite;
@@ -20,7 +18,6 @@ import java.util.Optional;
 
 public class ChainTestListener implements IExecutionListener, ISuiteListener, IClassListener, ITestListener {
 
-    private static final Logger log = LoggerFactory.getLogger(ChainTestListener.class);
     private static final String TESTNG = "testng";
     private static final List<Test> _suites = Collections.synchronizedList(new ArrayList<>(1));
     private static final List<Test> _contexts = Collections.synchronizedList(new ArrayList<>(1));
