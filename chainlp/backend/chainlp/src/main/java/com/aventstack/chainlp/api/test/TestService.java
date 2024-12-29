@@ -2,7 +2,7 @@ package com.aventstack.chainlp.api.test;
 
 import com.aventstack.chainlp.api.build.BuildService;
 import com.aventstack.chainlp.api.project.ProjectService;
-import com.aventstack.chainlp.embed.EmbedResolverFactory;
+import com.aventstack.chainlp.embed.SignedEmbedResolverFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,11 +24,11 @@ public class TestService {
     private final TestRepository repository;
     private final ProjectService projectService;
     private final BuildService buildService;
-    private final EmbedResolverFactory embedResolver;
+    private final SignedEmbedResolverFactory embedResolver;
 
     @Autowired
     public TestService(final TestRepository repository, final ProjectService projectService, final BuildService buildService,
-                       final EmbedResolverFactory embedResolver) {
+                       final SignedEmbedResolverFactory embedResolver) {
         this.repository = repository;
         this.projectService = projectService;
         this.buildService = buildService;

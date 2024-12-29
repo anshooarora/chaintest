@@ -1,6 +1,5 @@
-package com.aventstack.chainlp.embed.aws;
+package com.aventstack.chainlp.embed;
 
-import com.aventstack.chainlp.embed.PresignedUrlResolver;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Uri;
@@ -13,9 +12,9 @@ import java.net.URI;
 import java.time.Duration;
 
 @Slf4j
-public class AWSResolver implements PresignedUrlResolver {
+public class AwsS3SignedUrlResolver implements SignedUrlResolver {
 
-    public AWSResolver() { }
+    public AwsS3SignedUrlResolver() { }
 
     @Override
     public String resolve(final String path) {
