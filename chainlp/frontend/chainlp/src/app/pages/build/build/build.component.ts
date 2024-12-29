@@ -226,7 +226,7 @@ export class BuildComponent implements OnInit, OnDestroy {
 
   filterTag(tag: string): void {
     this.page = new Page<Test>();
-    this._testService.search(0, '', this.buildId, -1, -1, this.result, tag, '', 0, 'AND')
+    this._testService.search(0, '', -1, this.buildId, 0, this.result, tag, '', 0, 'AND')
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (page: Page<Test>) => {
