@@ -33,16 +33,11 @@
     <link id="style" href="resources/bootstrap.min.css" rel="stylesheet">
     <link id="icons" href="resources/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="resources/template.css">
-    <#else>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-        rel="stylesheet">
+  <#else>
+    <link href=https://raw.githubusercontent.com/anshooarora/chaintest/f39767d1af21463f3a4673c555fbcb53d01ca283/cdn/simple/chaintest-pkg.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   </#if>
-  <#if config['css']??>
-    <style>
-      ${config['css']}
-    </style>
-  </#if>
+  <#if config['css']??><style>${config['css']}</style></#if>
 </head>
 
 <body data-bs-theme="${config['darkTheme']?then('dark', '')}">
@@ -310,11 +305,6 @@ ${log}
     </#list>
   </div>
 
-  <#if config['offline']>
-    <script src="resources/chart.umd.js"></script>
-  <#else>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-  </#if>
   <script>
     <#if build.runStats?? && build.runStats ? size != 0>
     const stats1Annotation = {'total': ${ build.runStats[0].total }, 'passed': ${ build.runStats[0].passed }};
@@ -339,10 +329,15 @@ ${log}
     <#else>
       const stats3 = null;
     </#if >
-      <#if config['js'] ??> ${ config['js'] }</#if >
+    <#if config['js'] ??> ${ config['js'] }</#if >
   </script>
   </#if>
-  <script src="resources/template.js"></script>
+  <#if config['offline']>
+    <script src="resources/chart.umd.js"></script>
+    <script src="resources/template.js"></script>
+  <#else>
+    <script src="https://raw.githubusercontent.com/anshooarora/chaintest/f39767d1af21463f3a4673c555fbcb53d01ca283/cdn/simple/chaintest-pkg.js"></script>
+  </#if>
 
   <#if build.systemInfo?? && build.systemInfo?has_content>
     <div id="sys-info-modal" class="modal" tabindex="-1">
