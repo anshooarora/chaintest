@@ -11,16 +11,17 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChainTestListener implements IExecutionListener, ISuiteListener, IClassListener, ITestListener {
 
     private static final String TESTNG = "testng";
-    private static final List<Test> _suites = Collections.synchronizedList(new ArrayList<>(1));
-    private static final List<Test> _contexts = Collections.synchronizedList(new ArrayList<>(1));
+    private static final Map<String, Test> _suites = new ConcurrentHashMap<>();
+    private static final Map<String, Test> _classes = new ConcurrentHashMap<>();
+    private static final Map<String, Test> _methods = new ConcurrentHashMap<>();
     private static final ChainPluginService _service = new ChainPluginService(TESTNG);
 
     @Override
@@ -35,33 +36,27 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
 
     @Override
     public void onStart(final ISuite suite) {
-        _suites.add(new Test(suite.getName()));
+        _suites.put(suite.getName(), new Test(suite.getName()));
     }
 
     @Override
     public void onFinish(final ISuite suite) {
-        _suites.stream().filter(x -> x.getName().equals(suite.getName()))
-                .findAny().ifPresent(x -> {
-                    x.complete();
-                    _service.afterTest(x, Optional.empty());
-                    _service.flush();
-                });
+        final Test suiteTest = _suites.get(suite.getName());
+        suiteTest.complete();
+        _service.afterTest(suiteTest, Optional.empty());
+        _service.flush();
     }
 
     @Override
     public void onBeforeClass(final ITestClass testClass) {
-        _suites.stream().filter(x -> x.getName().equals(testClass.getXmlTest().getSuite().getName())).findAny()
-                .ifPresent(suite -> {
-                    final Test contextTest = new Test(testClass.getName());
-                    _contexts.add(contextTest);
-                    suite.addChild(contextTest);
-                });
+        final Test testClazz = new Test(testClass.getName());
+        _classes.put(testClass.getName(), testClazz);
+        _suites.get(testClass.getXmlTest().getSuite().getName()).addChild(testClazz);
     }
 
     @Override
     public void onAfterClass(final ITestClass testClass) {
-        _contexts.stream().filter(x -> x.getName().equals(testClass.getName()))
-                .findAny().ifPresent(Test::complete);
+        _classes.get(testClass.getName()).complete();
     }
 
     @Override
@@ -74,11 +69,12 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
 
     @Override
     public void onTestStart(final ITestResult result) {
-        _contexts.stream().filter(x -> x.getName().equals(result.getTestClass().getName()))
-                .findAny().ifPresent(x ->
-                    x.addChild(new Test(result.getMethod().getMethodName(),
-                            Optional.of(result.getTestClass().getName()),
-                            List.of(result.getMethod().getGroups()))));
+        final Test method = new Test(result.getMethod().getMethodName(),
+                Optional.of(result.getTestClass().getName()),
+                List.of(result.getMethod().getGroups()));
+        method.setExternalId(result.getMethod().getQualifiedName());
+        _classes.get(result.getTestClass().getName()).addChild(method);
+        _methods.put(result.getMethod().getQualifiedName(), method);
     }
 
     @Override
@@ -87,14 +83,7 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
     }
 
     private void onTestComplete(final ITestResult result) {
-        _contexts.stream()
-                .filter(x -> x.getName().equals(result.getTestClass().getName())).findAny()
-                .ifPresent(x -> {
-                    final Optional<Test> method = x.getChildren().stream()
-                            .filter(y -> y.getName().equals(result.getMethod().getMethodName()))
-                            .findAny();
-                    method.ifPresent(y -> y.complete(result.getThrowable()));
-                });
+        _methods.get(result.getMethod().getQualifiedName()).complete(result.getThrowable());
     }
 
     @Override
