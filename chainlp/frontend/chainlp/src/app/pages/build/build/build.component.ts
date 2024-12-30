@@ -120,6 +120,9 @@ export class BuildComponent implements OnInit, OnDestroy {
       responsive: true,
       maintainAspectRatio: false,
       cutout: '70%',
+      animation: {
+        duration: 250
+      },
       plugins: {
         legend: {
           position: 'right',

@@ -53,6 +53,9 @@ export class BuildListingComponent implements OnInit, OnDestroy {
   options: ChartOptions<any> = {
     responsive: true,
     cutout: '65%',
+    animation: {
+      duration: 250
+    },
     plugins: {
       legend: {
         position: 'right',
