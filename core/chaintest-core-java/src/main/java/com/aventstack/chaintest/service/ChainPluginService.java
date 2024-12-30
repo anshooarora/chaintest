@@ -82,13 +82,12 @@ public class ChainPluginService {
     }
 
     public void start() {
-        if (START_INVOKED.getAndSet(true)) {
-            log.info("Generator::start can only be invoked once");
-            return;
-        }
         final Optional<Map<String, String>> config = Optional.ofNullable(ConfigurationManager.getConfig());
-        config.ifPresent(this::init);
-        _generators.forEach(x -> x.start(config, _testRunner, _build));
+        if (!START_INVOKED.getAndSet(true)) {
+            config.ifPresent(this::init);
+        }
+        _generators.stream().filter(x -> !x.started())
+                .forEach(x -> x.start(config, _testRunner, _build));
     }
 
     private void init(final Map<String, String> config) {
@@ -129,7 +128,6 @@ public class ChainPluginService {
                 _storageService = storageService;
             }
         }
-
     }
 
     public void afterTest(final Test test, final Optional<Throwable> throwable) {

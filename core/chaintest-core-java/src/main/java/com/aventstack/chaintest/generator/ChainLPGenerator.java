@@ -42,10 +42,6 @@ public class ChainLPGenerator implements Generator {
         this("");
     }
 
-    public boolean isReady() {
-        return CALLBACK_INVOKED.get();
-    }
-
     public void client(final ChainTestApiClient client) {
         _client = client;
     }
@@ -61,7 +57,7 @@ public class ChainLPGenerator implements Generator {
     @Override
     public void start(final Optional<Map<String, String>> config, final String testRunner, final Build build) {
         _testRunner = testRunner;
-        if (isReady()) {
+        if (started()) {
             return;
         }
 
@@ -109,8 +105,13 @@ public class ChainLPGenerator implements Generator {
     }
 
     @Override
+    public boolean started() {
+        return CALLBACK_INVOKED.get();
+    }
+
+    @Override
     public void executionFinished() {
-        if (!isReady()) {
+        if (!started()) {
             return;
         }
         _build.setExecutionStage(ExecutionStage.FINISHED);
@@ -119,7 +120,7 @@ public class ChainLPGenerator implements Generator {
 
     @Override
     public void flush(final List<Test> tests) {
-        if (!isReady()) {
+        if (!started()) {
             return;
         }
         _tests = tests;
@@ -138,7 +139,7 @@ public class ChainLPGenerator implements Generator {
 
     @Override
     public void afterTest(final Test test, final Optional<Throwable> throwable) {
-        if (!isReady()) {
+        if (!started()) {
             return;
         }
 

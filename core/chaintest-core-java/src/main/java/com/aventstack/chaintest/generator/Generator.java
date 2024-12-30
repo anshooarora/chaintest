@@ -11,6 +11,8 @@ public interface Generator {
 
     void start(final Optional<Map<String, String>> config, final String testRunner, final Build build);
 
+    boolean started();
+
     void afterTest(final Test test, final Optional<Throwable> throwable);
 
     void flush(List<Test> tests);

@@ -9,18 +9,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChainTestEmailGenerator extends FileGenerator implements Generator {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestEmailGenerator.class);
     private static final String NAME = "email";
     private static final String EMAIL_CLIENT_ENABLED = "chaintest.generator.email.enabled";
-    private static final AtomicBoolean ENABLED = new AtomicBoolean();
     private static final String TEMPLATE_DIR = "email/";
     private static final String INDEX = "index.ftl";
     private static final String OUT_FILE = "target/chaintest/Email.html";
 
+    private boolean _started;
     private Build _build;
     private String _source;
 
@@ -46,14 +45,19 @@ public class ChainTestEmailGenerator extends FileGenerator implements Generator 
         _build = build;
         try {
             cacheTemplate(ChainTestEmailGenerator.class, TEMPLATE_DIR, INDEX);
-            ENABLED.set(true);
+            _started = true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
+    public boolean started() {
+        return _started;
+    }
+
     public void flush(final List<Test> tests) {
-        if (tests.isEmpty() || !ENABLED.get()) {
+        if (tests.isEmpty()) {
             return;
         }
         _source = processTemplate(Map.of("build", _build, "tests", tests), OUT_FILE);

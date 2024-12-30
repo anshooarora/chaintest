@@ -49,6 +49,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
             "esc", "Reset all filters"
     );
 
+    private boolean _started;
     private Build _build;
     private String _projectName;
     private File _outFile;
@@ -99,9 +100,15 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
         log.trace("Start was called for testRunner: {}", testRunner);
         try {
             cacheTemplate(ChainTestSimpleGenerator.class, GENERATOR_NAME, BASE_TEMPLATE_NAME);
+            _started = true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean started() {
+        return _started;
     }
 
     private void saveResources() {
