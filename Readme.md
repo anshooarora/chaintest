@@ -1,6 +1,6 @@
 # ChainTest
 
-An open-source reporting framework with multiple generators creating static reports (ExtentReports) and a reporting server (ChainLP) for long-playing analytics.
+An open-source reporting framework with multiple generators creating static reports and a reporting server (ChainLP) for long-playing analytics.
 
 ### Generators
 
