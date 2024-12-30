@@ -18,6 +18,9 @@ export class BuildsDurationComponent {
   @Input()
   maxHeight: number = 125;
 
+  @Input()
+  minHeight: number = 125;
+
   /* build trend chart */
   chartType: any = 'line';
   data: ChartData<any> = {

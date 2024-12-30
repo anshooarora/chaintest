@@ -3,7 +3,7 @@
     <h6>Duration <small class="text-secondary">(seconds)</small></h6>
   </div>
   <div class="card-body py-0">
-    <div class="mx-auto" style="max-height: {{maxHeight}}px;">
+    <div class="mx-auto" style="min-height: {{minHeight}}px; max-height: {{maxHeight}}px">
       <canvas baseChart [type]="chartType" [data]="data" [options]="options"></canvas>
     </div>
   </div>
