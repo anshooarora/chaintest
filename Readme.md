@@ -24,3 +24,5 @@ A generator is responsible for creating output files based on the test results a
 Contributions are welcome. Please open an issue or submit a pull request.
 
 ### License
+
+ChainTest is open-source software and licensed under Apache-2.0.
