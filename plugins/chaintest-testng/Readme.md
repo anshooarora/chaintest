@@ -4,7 +4,7 @@ ChainTest plugin for [TestNG](https://testng.org/) framework.  Visit [chaintest-
 
 ## Setup
 
-1. Add [chaintest.properties](https://github.com/anshooarora/chaintest/Config.md) to your classpath, example: `src/test/resources/chaintest.properties`
+1. Add [chaintest.properties](https://github.com/anshooarora/chaintest/blob/main/Config.md) to your classpath, example: `src/test/resources/chaintest.properties`
 2. Add `ChainTestListener` to the test class
 
 ```java
