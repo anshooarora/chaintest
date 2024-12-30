@@ -2,6 +2,7 @@ package com.aventstack.chaintest.storage;
 
 import com.aventstack.chaintest.domain.Embed;
 import com.aventstack.chaintest.domain.Test;
+import com.azure.identity.DefaultAzureCredential;
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
@@ -37,8 +38,6 @@ public class AzureBlobClient implements StorageService {
 
     private static final Logger log = LoggerFactory.getLogger(AzureBlobClient.class);
     private static final String AZURE_STORAGE_CONNECTION_STRING = "AZURE_STORAGE_CONNECTION_STRING";
-    private static final String AZURE_TENANT_ID = "AZURE_TENANT_ID";
-    private static final String AZURE_CLIENT_ID = "AZURE_CLIENT_ID";
     private static final String AZURE_CONTAINER_NAME = "AZURE_CONTAINER_NAME";
 
     private BlobContainerClient _containerClient;
@@ -55,18 +54,17 @@ public class AzureBlobClient implements StorageService {
         if (connectionString == null) {
             connectionString = System.getProperty(AZURE_STORAGE_CONNECTION_STRING);
         }
-        if (connectionString == null && config.containsKey(STORAGE_SERVICE_ENDPOINT)) {
-            connectionString = config.get(AZURE_STORAGE_CONNECTION_STRING);
-        }
         if (connectionString != null) {
             return builder.connectionString(connectionString).buildClient();
         }
-        if (System.getenv().containsKey(AZURE_TENANT_ID) || System.getenv().containsKey(AZURE_CLIENT_ID)) {
-            log.debug(AZURE_TENANT_ID + " or " + AZURE_CLIENT_ID + " are set. " +
-                    "Will use the DefaultAzureCredentialBuilder to authenticate.");
-            return builder.credential(new DefaultAzureCredentialBuilder().build()).buildClient();
+        try {
+            log.debug("Will use the DefaultAzureCredentialBuilder to authenticate");
+            final DefaultAzureCredential defaultAzureCredential = new DefaultAzureCredentialBuilder().build();
+            return builder.credential(defaultAzureCredential).buildClient();
+        } catch (final Exception e) {
+            log.error("Failed to create Azure Blob Storage client", e);
+            return null;
         }
-        return null;
     }
 
     private BlobContainerClient getContainerClient(final Map<String, String> config) {

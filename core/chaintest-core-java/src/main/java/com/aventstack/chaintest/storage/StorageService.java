@@ -9,8 +9,6 @@ import java.util.Map;
 public interface StorageService {
 
     String DEFAULT_CONTAINER_NAME = "chaintest";
-    String STORAGE_SERVICE = "chaintest.storage.service";
-    String STORAGE_SERVICE_ENDPOINT = "chaintest.storage.service.endpoint";
     String STORAGE_CONTAINER_NAME = "chaintest.storage.service.container-name";
 
     boolean create(final Map<String, String> config);
