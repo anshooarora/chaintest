@@ -144,13 +144,11 @@ public class ChainTestCucumberListener implements EventListener {
         }
     };
 
-    private final EventHandler<EmbedEvent> embedEventhandler = event -> {
+    private final EventHandler<EmbedEvent> embedEventhandler = event ->
         _service.embed(_scenarios.get(event.getTestCase().getId()), event.getData(), event.getMediaType());
-    };
 
-    private final EventHandler<WriteEvent> writeEventhandler = event -> {
+    private final EventHandler<WriteEvent> writeEventhandler = event ->
         _scenarios.get(event.getTestCase().getId()).addLog(event.getText());
-    };
 
     private final EventHandler<TestRunFinished> runFinishedHandler = event -> {
         for (final Map.Entry<URI, Test> entry : _features.entrySet()) {

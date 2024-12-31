@@ -104,9 +104,11 @@ public class HttpRetryHandler {
             trySendAsyncCollection(failures);
             if (!failures.isEmpty() && retryAttempts <= _maxRetryAttempts) {
                 try {
-                    Thread.sleep(_retryIntervalMs);
+                    wait(_retryIntervalMs);
                     log.debug("Retrying {} of {} times", retryAttempts, _maxRetryAttempts);
-                } catch (final InterruptedException ignored) {}
+                } catch (final InterruptedException ignored) {
+                    log.debug("Interrupted while waiting for retry interval");
+                }
             }
         }
         handleFailures(failures, size);
@@ -125,22 +127,26 @@ public class HttpRetryHandler {
         }
     }
 
-    private void trySendAsyncCollection(final Map<String, WrappedResponseAsync<Test>> collection) {
+    private synchronized void trySendAsyncCollection(final Map<String, WrappedResponseAsync<Test>> collection) {
         collection.forEach((k, v) -> v.setError(null));
         for (final Map.Entry<String, WrappedResponseAsync<Test>> entry : collection.entrySet()) {
             final boolean completed = entry.getValue().getResponseFuture().isDone();
             if (!completed) {
                 try {
                     entry.getValue().getResponseFuture().join();
-                } catch (final Exception ignored) { }
+                } catch (final Exception ignored) {
+                    log.debug("Failed to join response future");
+                }
             }
             HttpResponse<Test> response = entry.getValue().getResponse();
             final long startedMillis = System.currentTimeMillis();
             while (null == response && (System.currentTimeMillis() - startedMillis) < 5000L) {
                 try {
-                    Thread.sleep(100L);
+                    wait(100L);
                     response = entry.getValue().getResponse();
-                } catch (final InterruptedException ignored) { }
+                } catch (final InterruptedException ignored) {
+                    log.debug("Interrupted while waiting for response");
+                }
             }
             if (null != response) {
                 if (200 == response.statusCode() || 409 == response.statusCode()) {
@@ -155,7 +161,9 @@ public class HttpRetryHandler {
         for (final Map.Entry<String, WrappedResponseAsync<Test>> entry : collection.entrySet()) {
             try {
                 entry.getValue().setResponseFuture(_client.sendAsync(entry.getValue().getEntity(), Test.class));
-            } catch (final IOException ignore) { }
+            } catch (final IOException ignore) {
+                log.debug("Failed to send entity, will retry");
+            }
         }
     }
 

@@ -1,9 +1,13 @@
 package com.aventstack.chaintest.http;
 
 import com.aventstack.chaintest.domain.ChainTestEntity;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.net.http.HttpResponse;
 
+@Setter
+@Getter
 public class WrappedResponse<T extends ChainTestEntity> extends BaseResponse<T> {
 
     private HttpResponse<T> response;
@@ -21,12 +25,21 @@ public class WrappedResponse<T extends ChainTestEntity> extends BaseResponse<T> 
         super(error);
     }
 
-    public HttpResponse<T> getResponse() {
-        return response;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        WrappedResponse<?> that = (WrappedResponse<?>) obj;
+        return response.equals(that.response);
     }
 
-    public void setResponse(HttpResponse<T> response) {
-        this.response = response;
+    @Override
+    public int hashCode() {
+        return response.hashCode();
     }
 
 }

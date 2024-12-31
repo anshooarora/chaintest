@@ -26,7 +26,7 @@ public class ConfigurationManager {
         }
     }
 
-    public synchronized static Optional<Configuration> getConfiguration() {
+    public static synchronized Optional<Configuration> getConfiguration() {
         if (_conf == null) {
             INSTANCE.load();
         }

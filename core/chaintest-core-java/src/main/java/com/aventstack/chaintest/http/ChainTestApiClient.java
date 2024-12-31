@@ -185,12 +185,12 @@ public class ChainTestApiClient {
         return send(data, DEFAULT_HTTP_METHOD);
     }
 
-    public CompletableFuture<HttpResponse<String>> sendAsync(final byte[] data, final HttpMethod method) throws IOException {
+    public CompletableFuture<HttpResponse<String>> sendAsync(final byte[] data, final HttpMethod method) {
         final HttpRequest request = createRequest(data, method);
         return _httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public CompletableFuture<HttpResponse<String>> sendAsync(final byte[] data) throws IOException {
+    public CompletableFuture<HttpResponse<String>> sendAsync(final byte[] data) {
         return sendAsync(data, DEFAULT_HTTP_METHOD);
     }
 

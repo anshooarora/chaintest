@@ -1,7 +1,11 @@
 package com.aventstack.chaintest.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Tag {
 
@@ -10,14 +14,6 @@ public class Tag {
     public Tag() { }
 
     public Tag(final String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 

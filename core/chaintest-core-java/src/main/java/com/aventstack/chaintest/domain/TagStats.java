@@ -20,6 +20,7 @@ public class TagStats extends Stat {
 
     private long durationMs;
 
+    @Override
     public void update(final Test test) {
         super.update(test);
         durationMs += test.getDurationMs();

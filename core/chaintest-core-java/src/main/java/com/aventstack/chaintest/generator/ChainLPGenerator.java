@@ -26,7 +26,7 @@ public class ChainLPGenerator implements Generator {
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _wrappedResponses = new ConcurrentHashMap<>();
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
 
-    public static ChainLPGenerator INSTANCE;
+    private static ChainLPGenerator instance;
 
     private String _testRunner;
     private ChainTestApiClient _client;
@@ -35,7 +35,7 @@ public class ChainLPGenerator implements Generator {
 
     public ChainLPGenerator(final String testRunner) {
         _testRunner = testRunner;
-        INSTANCE = this;
+        instance = this;
     }
 
     public ChainLPGenerator() {
@@ -48,6 +48,10 @@ public class ChainLPGenerator implements Generator {
 
     public ChainTestApiClient getClient() {
         return _client;
+    }
+
+    public ChainLPGenerator getInstance() {
+        return instance;
     }
 
     public Build getBuild() {
@@ -98,7 +102,7 @@ public class ChainLPGenerator implements Generator {
                 CALLBACK_INVOKED.set(true);
                 log.debug("All tests in this run will be associated with buildId: {}", _build.getId());
             }
-        } catch (final Exception e) {
+        } catch (final IOException | InterruptedException e) {
             log.debug("Failed to send Build. PluginService will shutdown and " +
                     "future events will be ignored", e);
         }

@@ -1,10 +1,13 @@
 package com.aventstack.chaintest.http;
 
 import com.aventstack.chaintest.domain.ChainTestEntity;
+import lombok.Getter;
 
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 
+
+@Getter
 public class WrappedResponseAsync<T extends ChainTestEntity> extends WrappedResponse<T> {
 
     private CompletableFuture<HttpResponse<T>> responseFuture;
@@ -22,10 +25,6 @@ public class WrappedResponseAsync<T extends ChainTestEntity> extends WrappedResp
         super(error);
     }
 
-    public CompletableFuture<HttpResponse<T>> getResponseFuture() {
-        return responseFuture;
-    }
-
     public void setResponseFuture(CompletableFuture<HttpResponse<T>> responseFuture) {
         responseFuture.whenComplete((res, e) -> {
             if (null != e) {
@@ -35,6 +34,23 @@ public class WrappedResponseAsync<T extends ChainTestEntity> extends WrappedResp
             }
         });
         this.responseFuture = responseFuture;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        WrappedResponseAsync<?> that = (WrappedResponseAsync<?>) obj;
+        return responseFuture.equals(that.responseFuture);
+    }
+
+    @Override
+    public int hashCode() {
+        return responseFuture.hashCode();
     }
 
 }

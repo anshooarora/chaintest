@@ -48,7 +48,7 @@ public class AzureBlobClient implements StorageService {
         return null != _containerClient;
     }
 
-    private BlobServiceClient getServiceClient(final Map<String, String> config) {
+    private BlobServiceClient getServiceClient() {
         final BlobServiceClientBuilder builder = new BlobServiceClientBuilder();
         String connectionString = System.getenv(AZURE_STORAGE_CONNECTION_STRING);
         if (connectionString == null) {
@@ -68,7 +68,7 @@ public class AzureBlobClient implements StorageService {
     }
 
     private BlobContainerClient getContainerClient(final Map<String, String> config) {
-        final BlobServiceClient serviceClient = getServiceClient(config);
+        final BlobServiceClient serviceClient = getServiceClient();
         if (serviceClient == null) {
             return null;
         }
@@ -126,8 +126,6 @@ public class AzureBlobClient implements StorageService {
     }
 
     @Override
-    public void close() {
-
-    }
+    public void close() { }
 
 }

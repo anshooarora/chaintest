@@ -103,7 +103,7 @@ public class Test implements ChainTestEntity {
     /**
      * The child tests of this test.
      */
-    private volatile List<Test> children = Collections.synchronizedList(new ArrayList<>());
+    private List<Test> children = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * The logs associated with the test.
@@ -329,8 +329,9 @@ public class Test implements ChainTestEntity {
             setResult(Result.FAILED.getResult());
         });
         if (null != parent) {
-            final Result result = Result.computePriority(Result.valueOf(getResult()), Result.valueOf(parent.getResult()));
-            parent.setResult(result.getResult());
+            final Result computedResult = Result.computePriority(Result.valueOf(getResult()),
+                    Result.valueOf(parent.getResult()));
+            parent.setResult(computedResult.getResult());
             parent.complete();
         }
     }

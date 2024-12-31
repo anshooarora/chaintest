@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,8 +47,8 @@ public class ChainTestEmailGenerator extends FileGenerator implements Generator 
         try {
             cacheTemplate(ChainTestEmailGenerator.class, TEMPLATE_DIR, INDEX);
             _started = true;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 

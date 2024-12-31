@@ -36,35 +36,41 @@ public class ChainTestExecutionCallback
 
     @Override
     public void beforeTestExecution(final ExtensionContext context) {
-        final String className = context.getTestClass().get().getSimpleName();
-        TESTS.computeIfAbsent(className, key -> {
-            final Test test = new Test(className, Optional.of(className), context.getTags());
-            test.setExternalId("C" + context.getUniqueId());
-            return test;
+        context.getTestClass().ifPresent(testclass -> {
+            final String className = testclass.getSimpleName();
+            TESTS.computeIfAbsent(className, key -> {
+                final Test test = new Test(className, Optional.of(className), context.getTags());
+                test.setExternalId("C" + context.getUniqueId());
+                return test;
+            });
+            final Test test = new Test(context.getDisplayName(), Optional.of(className), context.getTags());
+            test.setExternalId(context.getUniqueId());
+            TESTS.get(className).addChild(test);
         });
-        final Test test = new Test(context.getDisplayName(), Optional.of(className), context.getTags());
-        test.setExternalId(context.getUniqueId());
-        TESTS.get(className).addChild(test);
     }
 
     @Override
     public void afterTestExecution(final ExtensionContext context) {
-        final Test test = TESTS.get(context.getTestClass().get().getSimpleName())
-                .getChildren().stream()
-                .filter(t -> t.getExternalId().equals(context.getUniqueId())).findAny()
-                .orElseThrow(() -> new IllegalStateException("Test not found"));
-        test.complete(context.getExecutionException());
-        log.trace("Ended test {} with status {}", test.getName(), test.getResult());
+        context.getTestClass().ifPresent(testclass -> {
+            final Test test = TESTS.get(testclass.getSimpleName())
+                    .getChildren().stream()
+                    .filter(t -> t.getExternalId().equals(context.getUniqueId())).findAny()
+                    .orElseThrow(() -> new IllegalStateException("Test not found"));
+            test.complete(context.getExecutionException());
+            log.trace("Ended test {} with status {}", test.getName(), test.getResult());
+        });
     }
 
     @Override
     public void afterAll(final ExtensionContext extensionContext) {
         log.trace("Executing afterAll hook");
-        final Test test = TESTS.get(extensionContext.getTestClass().get().getSimpleName());
-        if (null != test) {
-            _service.afterTest(test, Optional.empty());
-            _service.flush();
-        }
+        extensionContext.getTestClass().ifPresent(ctx -> {
+            final Test test = TESTS.get(ctx.getSimpleName());
+            if (null != test) {
+                _service.afterTest(test, Optional.empty());
+                _service.flush();
+            }
+        });
     }
 
 }

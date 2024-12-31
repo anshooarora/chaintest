@@ -2,6 +2,7 @@ package com.aventstack.chaintest.generator;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.util.Map;
 
@@ -27,7 +29,10 @@ public abstract class FileGenerator {
         try (final FileWriter out = new FileWriter(outputFile)) {
             _template.process(objectModel, out);
             return out.toString();
-        } catch (final Exception e) {
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (final TemplateException e) {
+            log.error("Error processing template", e);
             throw new RuntimeException(e);
         }
     }

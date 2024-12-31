@@ -10,6 +10,7 @@ import com.aventstack.chaintest.generator.Generator;
 import com.aventstack.chaintest.storage.StorageService;
 import com.aventstack.chaintest.storage.StorageServiceFactory;
 import com.aventstack.chaintest.util.RegexUtil;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,9 @@ public class ChainPluginService {
             "os.arch",
             "os.version"
     );
-    public static ChainPluginService INSTANCE;
+
+    @Getter
+    public static ChainPluginService instance;
 
     private final Build _build;
     private final String _testRunner;
@@ -55,7 +58,7 @@ public class ChainPluginService {
     private StorageService _storageService;
 
     public ChainPluginService(final String testRunner) {
-        INSTANCE = this;
+        instance = this;
         _build = new Build(testRunner);
         _build.setSystemInfo(getProps());
         _testRunner = testRunner;

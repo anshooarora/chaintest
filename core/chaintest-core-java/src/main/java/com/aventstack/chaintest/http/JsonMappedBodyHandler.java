@@ -1,8 +1,11 @@
 package com.aventstack.chaintest.http;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.UncheckedIOException;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
@@ -31,10 +34,10 @@ public class JsonMappedBodyHandler<T> implements HttpResponse.BodyHandler<T> {
                 }
                 try {
                     return _objectMapper.readValue(body, _clazz);
-                } catch (final Exception e) {
+                } catch (final JsonProcessingException e) {
                     log.error("Failed to map expected response of type {}. Received response: {}",
                             _clazz.getSimpleName(), body, e);
-                    throw new RuntimeException(e);
+                    throw new UncheckedIOException(e);
                 }
             });
     }

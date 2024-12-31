@@ -15,6 +15,7 @@ public class RunStats extends Stat {
         setDepth((depth));
     }
 
+    @Override
     public void update(final Test test) {
         super.update(test);
     }
