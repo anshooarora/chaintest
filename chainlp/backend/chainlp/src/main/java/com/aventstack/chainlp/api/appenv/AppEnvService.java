@@ -16,7 +16,6 @@ public class AppEnvService {
     private AppEnvRepository repository;
 
     public List<AppEnv> findAll(final int id, final String name) {
-        System.getProperties().forEach((k, v) -> System.out.println(k + ":" + v));
         final AppEnv env = AppEnv.builder().id(id).k(name).build();
         final AppEnvSpec spec = new AppEnvSpec(env);
         return repository.findAll(spec);

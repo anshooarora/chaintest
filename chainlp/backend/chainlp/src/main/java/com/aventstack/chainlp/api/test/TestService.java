@@ -17,9 +17,13 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.function.Function;
+
 @Slf4j
 @Service
 public class TestService {
+
+    private static final Function<Long, String> TEST_NOT_FOUND = x -> "Test with ID " + x + " was not found";
 
     private final TestRepository repository;
     private final ProjectService projectService;
@@ -57,7 +61,7 @@ public class TestService {
     @Cacheable(value = "test", key = "#id", unless = "#result == null")
     public Test findById(final long id) {
         final Test test = repository.findById(id)
-                .orElseThrow(() -> new TestNotFoundException("Test with ID " + id + " was not found"));
+                .orElseThrow(() -> new TestNotFoundException(TEST_NOT_FOUND.apply(id)));
         return resolveEmbeds(test);
     }
 
@@ -96,7 +100,7 @@ public class TestService {
         repository.findById(test.getId())
                 .ifPresentOrElse(
                     x -> repository.save(test),
-                    () -> { throw new TestNotFoundException("Test with ID " + test.getId() + " was not found"); }
+                    () -> { throw new TestNotFoundException(TEST_NOT_FOUND.apply(test.getId())); }
                 );
         return test;
     }
