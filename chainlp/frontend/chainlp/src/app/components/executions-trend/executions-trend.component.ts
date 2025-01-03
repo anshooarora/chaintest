@@ -1,7 +1,9 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { ChartData, ChartOptions } from 'chart.js';
 import { Build } from '../../model/build.model';
 import { DateTimeService } from '../../services/date-time.service';
+import { BaseChartDirective } from 'ng2-charts';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-executions-trend',
@@ -11,7 +13,11 @@ import { DateTimeService } from '../../services/date-time.service';
 export class ExecutionsTrendComponent {
 
   @Input()
+  builds$: BehaviorSubject<Build[]> = new BehaviorSubject<Build[]>([]);
+
   builds: Build[] = [];
+
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   chartType: any = 'bar';
   data: ChartData<any> = {
@@ -45,8 +51,17 @@ export class ExecutionsTrendComponent {
 
   constructor(private datetimeService: DateTimeService) { }
 
+  ngOnInit() {
+    this.builds$.subscribe((builds) => {
+      this.builds = builds;
+      this.showTrends();
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges) {
-    this.showTrends();
+    
+    //this.showTrends();
+    //this.chart?.update();
   }
 
   showTrends() {
@@ -56,7 +71,7 @@ export class ExecutionsTrendComponent {
     };
     const data: any = {};
     this.builds.forEach((build) => {
-      const dt = this.datetimeService.formatDate(build.startedAt, 'MMDD');
+      const dt = this.datetimeService.formatDate(build.startedAt, 'MMM/DD');
       const project = build.projectName;
       if (dt in data) {
         if (data[dt].some((d: any) => d.project === project)) {
@@ -86,7 +101,6 @@ export class ExecutionsTrendComponent {
           });
         }
       });
-      console.log(this.data)
     }
   }
   

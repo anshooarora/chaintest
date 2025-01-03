@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { ChartData, ChartOptions } from 'chart.js';
 import * as moment from 'moment';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
@@ -21,13 +21,14 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
   
   private readonly _destroy$: Subject<any> = new Subject<any>();
   private readonly _build$: Subject<any> = new Subject<any>();
-  private readonly _del$: Subject<any> = new Subject<any>();
 
   moment: any = moment;
 
   q: string;
   error: any;
   projectPage: Page<Project>;
+  builds: Build[] = [];
+  builds$: BehaviorSubject<Build[]> = new BehaviorSubject<Build[]>([]);
 
   constructor(private projectService: ProjectService, 
     private buildService: BuildService,
@@ -72,11 +73,18 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (response: Page<Build>) => {
         project.builds = response;
-        this.appendToCountsTrend(project, response.content);
+        
+        // number of build executions
+        this.builds.push(...project.builds.content);
+
+        this.buildDurationTrend(project, response.content);
         this.chart?.update();
       },
       error: (err) => {
         this.error = this.errorService.getError(err);
+      },
+      complete: () => {
+        this.builds$.next(this.builds);
       }
     });
   }
@@ -104,7 +112,7 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
     }
   };
 
-  appendToCountsTrend(project: Project, builds: Build[]) {
+  buildDurationTrend(project: Project, builds: Build[]) {
     const data: any[] = [];
     const dataset = {
       label: project.name,
