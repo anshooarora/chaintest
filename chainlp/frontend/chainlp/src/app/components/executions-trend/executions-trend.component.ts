@@ -1,24 +1,51 @@
-import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ChartData, ChartOptions } from 'chart.js';
-import { Build } from '../../model/build.model';
-import { DateTimeService } from '../../services/date-time.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { BehaviorSubject } from 'rxjs';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Build } from '../../model/build.model';
+import { DateTimeService } from '../../services/date-time.service';
 
 @Component({
   selector: 'app-executions-trend',
   templateUrl: './executions-trend.component.html',
   styleUrl: './executions-trend.component.scss'
 })
-export class ExecutionsTrendComponent {
+export class ExecutionsTrendComponent implements OnInit {
 
   @Input()
   builds$: BehaviorSubject<Build[]> = new BehaviorSubject<Build[]>([]);
 
-  builds: Build[] = [];
-
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
+  /* sum of all datasets - chartjs plugin */
+  totalizer: any = {
+    id: 'totalizer',
+
+    beforeUpdate: (chart: any) => {
+      let totals: any = {};
+      let utmost: number = 0;
+  
+      chart.data.datasets.forEach((dataset: any, datasetIndex: number) => {
+        if (chart.isDatasetVisible(datasetIndex)) {
+          utmost = datasetIndex;
+          dataset.data.forEach((value: any, index: number) => {
+            totals[index] = (totals[index] || 0) + value;
+          })
+        }
+      })
+  
+      chart.$totalizer = {
+        totals: totals,
+        utmost: utmost
+      }
+    }
+  }
+
+  plugins = [ChartDataLabels, this.totalizer];
+  builds: Build[] = [];
+
+  /* chart */
   chartType: any = 'bar';
   data: ChartData<any> = {
     labels: [],
@@ -45,23 +72,28 @@ export class ExecutionsTrendComponent {
     plugins: {
       legend: {
         display: false
+      },
+      datalabels: {
+        formatter: (value: any, ctx: any) => {
+          const total = ctx.chart.$totalizer.totals[ctx.dataIndex];
+          return total + '\n';
+        },
+        display: function(ctx: any) {
+          return ctx.datasetIndex === ctx.chart.$totalizer.utmost;
+        },
+        anchor: 'end',
       }
     }
   };
 
-  constructor(private datetimeService: DateTimeService) { }
+  constructor(private datetimeService: DateTimeService) {
+  }
 
   ngOnInit() {
     this.builds$.subscribe((builds) => {
       this.builds = builds;
       this.showTrends();
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    
-    //this.showTrends();
-    //this.chart?.update();
   }
 
   showTrends() {
@@ -71,7 +103,7 @@ export class ExecutionsTrendComponent {
     };
     const data: any = {};
     this.builds.forEach((build) => {
-      const dt = this.datetimeService.formatDate(build.startedAt, 'MMM/DD');
+      const dt = this.datetimeService.formatDate(build.startedAt, 'MMM DD');
       const project = build.projectName;
       if (dt in data) {
         if (data[dt].some((d: any) => d.project === project)) {
@@ -97,7 +129,8 @@ export class ExecutionsTrendComponent {
         } else {
           this.data.datasets.push({
             label: d.project,
-            data: [d.executions]
+            data: [d.executions],
+            stack: 'combined'
           });
         }
       });

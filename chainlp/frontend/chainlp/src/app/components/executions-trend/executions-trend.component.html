@@ -1,10 +1,10 @@
 <div class="card pb-2" *ngIf="data.labels && data.labels.length">
   <div class="card-header">
-    <h6>Build Executions</h6>
+    <h5>Build Executions</h5>
   </div>
   <div class="card-body py-0">
     <div class="mx-auto" style="max-height: 125px;">
-      <canvas baseChart [type]="chartType" [data]="data" [options]="trendChartOptions"></canvas>
+      <canvas baseChart [type]="chartType" [data]="data" [options]="trendChartOptions" [plugins]="plugins"></canvas>
     </div>
   </div>
 </div>
