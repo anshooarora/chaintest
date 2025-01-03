@@ -3,7 +3,7 @@
 	<div class="page-header">
 		<div class="container">
 			<div class="d-flex justify-content-between">
-				<h4>Metrics</h4>
+				<h4>Metrics<span *ngIf="projectName"> - {{projectName}}</span></h4>
 				<div>
 					<app-project-settings></app-project-settings>
 				</div>

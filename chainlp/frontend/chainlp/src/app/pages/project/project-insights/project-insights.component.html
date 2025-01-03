@@ -1,20 +1,29 @@
 <!-- main-content -->
 <div class="main-content app-content">
   <div class="page-header">
-      <div class="container">
-          <div class="d-flex justify-content-between">
-              <h4>Insights</h4>
-              <div>
-                <button class="btn btn-outline-primary" [routerLink]="['/projects']">
-                  <i class="bi bi-arrow-left me-1"></i> Back to Projects</button>
-              </div>
+    <div class="container">
+      <div class="d-flex justify-content-between">
+        <h4>Insights</h4>
+        <div>
+          <div ngbDropdown class="d-inline-block">
+            <button type="button" class="btn btn-outline-primary" id="buildTimeRangeDropdown" ngbDropdownToggle>
+              Time Range ({{ buildTimeAgoFilterDays }} days)
+            </button>
+            <div ngbDropdownMenu aria-labelledby="buildTimeRangeDropdown">
+              <button ngbDropdownItem (click)="buildsWithinTimeRange(1)" [ngClass]="{'active': buildTimeAgoFilterDays == 1}">Past 1 day</button>
+              <button ngbDropdownItem (click)="buildsWithinTimeRange(2)" [ngClass]="{'active': buildTimeAgoFilterDays == 2}">Past 2 days</button>
+              <button ngbDropdownItem (click)="buildsWithinTimeRange(7)" [ngClass]="{'active': buildTimeAgoFilterDays == 7}">Past 7 days</button>
+              <button ngbDropdownItem (click)="buildsWithinTimeRange(14)" [ngClass]="{'active': buildTimeAgoFilterDays == 14}">Past 14 days</button>
+              <button ngbDropdownItem (click)="buildsWithinTimeRange(30)" [ngClass]="{'active': buildTimeAgoFilterDays == 30}">Past 30 days</button>
+            </div>
           </div>
+        </div>
       </div>
+    </div>
   </div>
 
   <div class="container mt-4">
     <ng-container *ngIf="projectPage && projectPage.content">
-
       <app-executions-trend [builds$]="builds$"></app-executions-trend>
 
       <div class="row">

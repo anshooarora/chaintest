@@ -27,6 +27,7 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
   q: string;
   error: any;
   projectPage: Page<Project>;
+  buildTimeAgoFilterDays: number = 7;
   builds: Build[] = [];
   builds$: BehaviorSubject<Build[]> = new BehaviorSubject<Build[]>([]);
 
@@ -68,7 +69,9 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
   }
 
   findBuilds(project: Project): void {
-    this.buildService.findByProjectId(project.id, 0, 20, 'id,desc')
+    const timeAgo = new Date(new Date().getTime() - (this.buildTimeAgoFilterDays * 24 * 60 * 60 * 1000)).getTime();
+
+    this.buildService.q(project.id, '', timeAgo, -1, 0, 0, 'id,desc')
     .pipe(takeUntil(this._build$))
     .subscribe({
       next: (response: Page<Build>) => {
@@ -86,6 +89,17 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
       complete: () => {
         this.builds$.next(this.builds);
       }
+    });
+  }
+
+  buildsWithinTimeRange(buildTimeAgoFilterDays: number = 7): void {
+    console.log(buildTimeAgoFilterDays)
+    this.buildTimeAgoFilterDays = buildTimeAgoFilterDays;
+    this.builds = [];
+    this.builds$.next([]);
+    this.projectPage.content.forEach(project => {
+      project.display = true;
+      this.findBuilds(project);
     });
   }
 

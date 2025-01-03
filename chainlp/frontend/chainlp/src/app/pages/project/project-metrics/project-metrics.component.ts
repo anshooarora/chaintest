@@ -24,6 +24,7 @@ export class ProjectMetricsComponent implements OnInit, OnDestroy {
   
   projectId: number = 0;
   buildPage: Page<Build>;
+  projectName: string = '';
   failingTestsPage: Page<Test>;
   selectedTest: Test;
   error: any;
@@ -53,7 +54,13 @@ export class ProjectMetricsComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (buildPage: Page<Build>) => {
         this.buildPage = buildPage;
-        console.log(this.buildPage)
+
+        for (let build of buildPage.content) {
+          if (build.projectName) {
+            this.projectName = build.projectName;
+            break;
+          }
+        }
       },
       error: (err) => {
         this.error = this.errorService.getError(err);
