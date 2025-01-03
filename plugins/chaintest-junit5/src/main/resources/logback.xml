@@ -9,5 +9,5 @@
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="com.aventstack" level="INFO"/>
+    <logger name="com.aventstack" level="DEBUG"/>
 </configuration>
