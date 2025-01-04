@@ -1,6 +1,6 @@
 # ChainTest JUnit 5 Plugin
 
-ChainTest plugin for [junit 5](https://junit.org/junit5/).  Visit [chaintest-cucumber-jvm-example](https://github.com/anshooarora/chaintest/tree/main/examples/chaintest-junit-jupiter-example) for example usage.
+ChainTest plugin for [junit 5](https://junit.org/junit5/).  Visit [chaintest-junit5-example](https://github.com/anshooarora/chaintest/tree/main/examples/chaintest-junit5-example) for example usage.
 
 ## Setup
 
