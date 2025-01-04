@@ -2,6 +2,8 @@
 
 An open-source reporting framework with multiple generators creating static reports and a reporting server (ChainLP) for long-playing analytics.
 
+Note: ChainTest is still in active development with no artifacts currently in release.
+
 ### Generators
 
 * SimpleGenerator: [Light](https://chaintestblob.blob.core.windows.net/chaintest/light/Index.html) | [Dark](https://chaintestblob.blob.core.windows.net/chaintest/dark/Index.html)
