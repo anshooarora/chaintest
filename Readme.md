@@ -1,4 +1,4 @@
-# ChainTest
+# ChainTest [![CodeFactor](https://www.codefactor.io/repository/github/anshooarora/chaintest/badge)](https://www.codefactor.io/repository/github/anshooarora/chaintest)
 
 An open-source reporting framework with multiple generators creating static reports and a reporting server (ChainLP) for long-playing analytics.
 
