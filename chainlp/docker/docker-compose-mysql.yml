@@ -1,0 +1,13 @@
+version: '3'
+services:
+  chaintest:
+    image: anshooarora/chaintest:latest
+    container_name: chaintest
+    environment:
+      - "SPRING_PROFILES_ACTIVE=mysql"
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/chaintest?autoReconnect=true
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=com.mysql.cj.jdbc.Driver
+      - SPRING_DATASOURCE_USERNAME=
+      - SPRING_DATASOURCE_PASSWORD=
+    ports:
+      - 80:80
