@@ -34,7 +34,7 @@
     <link id="icons" href="resources/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="resources/template.css">
   <#else>
-    <link href=https://raw.githubusercontent.com/anshooarora/chaintest/f39767d1af21463f3a4673c555fbcb53d01ca283/cdn/simple/chaintest-pkg.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/anshooarora/chaintest/cdn/simple/chaintest-pkg.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   </#if>
   <#if config['css']??><style>${config['css']}</style></#if>
@@ -336,7 +336,7 @@ ${log}
     <script src="resources/chart.umd.js"></script>
     <script src="resources/template.js"></script>
   <#else>
-    <script src="https://raw.githubusercontent.com/anshooarora/chaintest/f39767d1af21463f3a4673c555fbcb53d01ca283/cdn/simple/chaintest-pkg.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/anshooarora/chaintest/cdn/simple/chaintest-pkg.js"></script>
   </#if>
 
   <#if build.systemInfo?? && build.systemInfo?has_content>
