@@ -16,7 +16,7 @@ A generator is responsible for creating output files based on the test results a
 
 #### Supported Test Frameworks
 
-* [junit-jupiter](https://github.com/anshooarora/chaintest/tree/main/plugins/chaintest-junit-jupiter)
+* [junit5](https://github.com/anshooarora/chaintest/tree/main/plugins/chaintest-junit5)
 * [cucumber-jvm](https://github.com/anshooarora/chaintest/tree/main/plugins/chaintest-cucumber-jvm)
 * [testng](https://github.com/anshooarora/chaintest/tree/main/plugins/chaintest-testng)
 * pytest (in progress)
