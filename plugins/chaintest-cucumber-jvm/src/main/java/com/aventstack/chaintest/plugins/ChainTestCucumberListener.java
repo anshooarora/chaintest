@@ -134,8 +134,6 @@ public class ChainTestCucumberListener implements EventListener {
             final HookTestStep hook = ((HookTestStep) event.getTestStep());
             step = new Test("Hook: " + hook.getHookType().name(), Optional.of("Hook"));
             _scenarios.get(event.getTestCase().getId()).addChild(step);
-        } else {
-            log.error("Unknown Step type of: {}", event.getTestStep().getClass().getName());
         }
         if (null != step) {
             log.debug("Step ending: {}", step.getName());
