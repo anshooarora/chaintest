@@ -4,6 +4,6 @@ export class Secret {
 
   constructor(k: string, v: string) {
     this.k = k;
-    this.v = v;
+    this.v = btoa(v);
   }
 }

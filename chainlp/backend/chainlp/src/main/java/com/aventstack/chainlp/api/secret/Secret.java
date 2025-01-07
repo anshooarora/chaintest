@@ -27,4 +27,6 @@ public class Secret {
     private String k;
     private String v;
 
+    private transient String decoded;
+
 }

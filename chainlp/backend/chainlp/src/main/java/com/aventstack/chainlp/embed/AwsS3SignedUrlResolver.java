@@ -14,8 +14,6 @@ import java.time.Duration;
 @Slf4j
 public class AwsS3SignedUrlResolver implements SignedUrlResolver {
 
-    public AwsS3SignedUrlResolver() { }
-
     @Override
     public String resolve(final String path) {
         log.debug("Resolving path: [{}]", path);
