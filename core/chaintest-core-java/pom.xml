@@ -6,7 +6,7 @@
 
     <groupId>com.aventstack</groupId>
     <artifactId>chaintest-core</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <url>https://github.com/anshooarora/chaintest</url>
     <name>${artifactId}</name>
     <description>Core Java client library for ChainTest framework</description>

@@ -4,23 +4,38 @@ ChainTest plugin for [junit 5](https://junit.org/junit5/).  Visit [chaintest-jun
 
 ## Setup
 
+1. Add plugin dependency:
+
+    ```xml
+    <dependency>
+      <groupId>com.aventstack</groupId>
+      <artifactId>chaintest-junit5</artifactId>
+      <version>${chaintest.junit5.version}</version>
+    </dependency>
+    ```
+
+    ```json
+    implementation 'com.aventstack:chaintest-junit5:$version'
+    ```
+
 1. Add [chaintest.properties](https://github.com/anshooarora/chaintest/blob/main/Config.md) to your classpath, example: `src/test/resources/chaintest.properties`
-2. Annotate test class with `@ExtendWith(ChainTestExecutionCallback.class)`
 
-```java
-import com.aventstack.chaintest.plugins.ChainTestExecutionCallback;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+1. Annotate test class with `@ExtendWith(ChainTestExecutionCallback.class)`
 
-@ExtendWith(ChainTestExecutionCallback.class)
-public class TestClass { 
-  @Test
-  public void sum() {
-    Assert.assertTrue(true);
-  }
-}
-```
+    ```java
+    import com.aventstack.chaintest.plugins.ChainTestExecutionCallback;
+    import org.junit.jupiter.api.extension.ExtendWith;
+    import org.junit.jupiter.api.Assertions;
+    import org.junit.jupiter.api.Test;
+
+    @ExtendWith(ChainTestExecutionCallback.class)
+    public class TestClass { 
+      @Test
+      public void sum() {
+        Assert.assertTrue(true);
+      }
+    }
+    ```
 
 ## License
 

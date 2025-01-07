@@ -4,18 +4,32 @@ ChainTest plugin for [Cucumber-JVM](https://cucumber.io/docs/installation/java/)
 
 ## Setup
 
+1. Add plugin dependency:
+
+    ```xml
+    <dependency>
+      <groupId>com.aventstack</groupId>
+      <artifactId>chaintest-cucumber-jvm</artifactId>
+      <version>${chaintest.cucumberjvm.version}</version>
+    </dependency>
+    ```
+
+    ```json
+    implementation 'com.aventstack:chaintest-cucumber-jvm:$version'
+    ```
+
 1. Add [chaintest.properties](https://github.com/anshooarora/chaintest/blob/main/Config.md) to your classpath, example: `src/test/resources/chaintest.properties`
-2. Add `com.aventstack.chaintest.plugins.ChainTestCucumberListener:` to the runner class
 
-```java
-@RunWith(Cucumber.class)
-@CucumberOptions(plugin = { 
-  "com.aventstack.chaintest.plugins.ChainTestCucumberListener:" 
-})
-public class RunCukes {
-}
+1. Add `com.aventstack.chaintest.plugins.ChainTestCucumberListener:` to the runner class
 
-```
+    ```java
+    @RunWith(Cucumber.class)
+    @CucumberOptions(plugin = { 
+      "com.aventstack.chaintest.plugins.ChainTestCucumberListener:" 
+    })
+    public class RunCukes {
+    }
+    ```
 
 ## License
 

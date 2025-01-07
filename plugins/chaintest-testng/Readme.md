@@ -4,23 +4,38 @@ ChainTest plugin for [TestNG](https://testng.org/) framework.  Visit [chaintest-
 
 ## Setup
 
+1. Add plugin dependency:
+
+    ```xml
+    <dependency>
+      <groupId>com.aventstack</groupId>
+      <artifactId>chaintest-testng</artifactId>
+      <version>${chaintest.testng.version}</version>
+    </dependency>
+    ```
+
+    ```json
+    implementation 'com.aventstack:chaintest-testng:$version'
+    ```
+
 1. Add [chaintest.properties](https://github.com/anshooarora/chaintest/blob/main/Config.md) to your classpath, example: `src/test/resources/chaintest.properties`
-2. Add `ChainTestListener` to the test class
 
-```java
-import org.testng.annotations.Listeners;
-import com.aventstack.chaintest.plugins.ChainTestListener;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+1. Add `ChainTestListener` in the list of `@Listeners` of the test class
 
-@Listeners(ChainTestListener.class)
-public class TestClass { 
-  @Test
-  public void sum() {
-    Assert.assertTrue(true);
-  }
-}
-```
+    ```java
+    import org.testng.annotations.Listeners;
+    import com.aventstack.chaintest.plugins.ChainTestListener;
+    import org.testng.Assert;
+    import org.testng.annotations.Test;
+
+    @Listeners(ChainTestListener.class)
+    public class TestClass { 
+      @Test
+      public void sum() {
+        Assert.assertTrue(true);
+      }
+    }
+    ```
 
 ## License
 
