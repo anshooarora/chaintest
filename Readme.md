@@ -2,8 +2,6 @@
 
 A comprehensive reporting framework supporting multiple generators - static, email & realtime, historical analytics with ChainLP. 
 
-Note: ChainTest is still in active development with no artifacts currently in release.
-
 ## Generators
 
 * Simple: [Dark](https://chaintestblob.blob.core.windows.net/chaintest/dark/Index.html) | [Light](https://chaintestblob.blob.core.windows.net/chaintest/light/Index.html)
