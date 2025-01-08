@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>chaintest-cucumber-jvm-example</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>com.aventstack</groupId>
-            <artifactId>chaintest-cucumber</artifactId>
+            <artifactId>chaintest-cucumber-jvm</artifactId>
             <version>${version}</version>
         </dependency>
     </dependencies>
