@@ -105,6 +105,11 @@ public class ChainPluginService {
         for (final Map.Entry<String, String> entry : config.entrySet()) {
             log.trace("Reading property: {}", entry.getKey());
             if (entry.getKey().matches(GEN_PATTERN) && !generatorNames.contains(entry.getKey().split("\\.")[2])) {
+                final String enabled = entry.getValue();
+                if (!Boolean.parseBoolean(enabled)) {
+                    log.debug("Generator {} was not enabled. To enable, set property {}=true in your configuration", entry.getKey(), entry.getKey());
+                    continue;
+                }
                 final String classNameKey = RegexUtil.match("(.*)\\.", entry.getKey()) + "class-name";
                 log.debug("Found configuration entry {}, will use {} to resolve class", entry.getKey(), classNameKey);
                 if (!config.containsKey(classNameKey)) {

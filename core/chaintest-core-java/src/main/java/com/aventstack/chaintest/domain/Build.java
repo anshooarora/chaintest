@@ -5,13 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
 /**
@@ -35,7 +34,7 @@ public class Build implements ChainTestEntity {
     private String name;
     private String result = Result.PASSED.getResult();
     @JsonIgnore
-    private final List<RunStats> runStats = Collections.synchronizedList(new ArrayList<>(3));
+    private final List<RunStats> runStats = new CopyOnWriteArrayList<>();
     @JsonIgnore
     private final Set<TagStats> tagStats = ConcurrentHashMap.newKeySet();
     private final Map<String, TagStats> tagStatsMonitor = new ConcurrentHashMap<>();
@@ -98,7 +97,7 @@ public class Build implements ChainTestEntity {
         test.setIsBdd(isBDD());
     }
 
-    private void updateRunStats(final Test test) {
+    private synchronized void updateRunStats(final Test test) {
         final RunStats stat = runStats.stream()
                 .filter(x -> x.getDepth() == test.getDepth())
                 .findAny()

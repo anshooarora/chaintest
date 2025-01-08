@@ -141,7 +141,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     }
 
     private void saveEmbeds(final List<Test> tests, final File resourceDir) {
-        for (final Test test : tests) {
+        final Test[] testsArray = tests.toArray(new Test[0]);
+        for (final Test test : testsArray) {
             for (final Embed embed : test.getEmbeds()) {
                 final File toFile = embed.makePath(resourceDir);
                 try {
