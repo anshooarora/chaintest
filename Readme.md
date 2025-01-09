@@ -23,6 +23,38 @@ ChainTest is still in active development, and only Java unit test frameworks are
 * [testng](https://github.com/anshooarora/chaintest/tree/main/plugins/chaintest-testng)
 * pytest (in progress)
 
+## ChainLP
+
+ChainLP is a Java (Spring) server which packs the Angular frontend and is distributed as a Docker image. ChainLP is the framework component providing historical analytics.
+
+Docker image is available from https://hub.docker.com/r/anshooarora/chaintest.
+
+The recommended way to run ChainLP is with docker-compose. Currently, the supported databases are listed below but most RDBMS database should work.
+
+* H2
+* MySQL
+* PostgreSQL
+
+For each database, there is a separate docker-compose.yml available at https://github.com/anshooarora/chaintest/tree/main/chainlp/docker. H2 provides the most straight-forward way to test, but it is NOT recommended for production use. 
+
+```
+# example
+git clone https://github.com/anshooarora/chaintest.git
+cd chaintest/chainlp/docker
+docker compose -f docker-compose-h2.yml up
+```
+
+```
+# h2
+docker compose -f docker-compose-h2.yml up
+
+# mysql
+docker compose -f docker-compose-mysql.yml up
+
+# posgres
+docker compose -f docker-compose-postgres.yml up
+```
+
 ## Contributing
 
 Contributions are welcome. Please open an issue or submit a pull request.
