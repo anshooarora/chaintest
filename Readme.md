@@ -35,7 +35,7 @@ The recommended way to run ChainLP is with docker-compose. Currently, the suppor
 * MySQL
 * PostgreSQL
 
-For each database, there is a separate docker-compose.yml available at https://github.com/anshooarora/chaintest/tree/main/chainlp/docker. H2 provides the most straight-forward way to test, but it is NOT recommended for production use. 
+For each database, there is a separate docker-compose.yml available at [chainlp/docker](https://github.com/anshooarora/chaintest/tree/main/chainlp/docker). H2 provides the most straight-forward way to test, but it is NOT recommended for production use.
 
 ```
 # example
@@ -54,6 +54,25 @@ docker compose -f docker-compose-mysql.yml up
 # posgres
 docker compose -f docker-compose-postgres.yml up
 ```
+
+### ChainLP config
+
+Use the `host:port` of the ChainLP server, include it in [chaintest.properties](https://github.com/anshooarora/chaintest/blob/main/Config.md) along with the required value for `chaintest.project.name`. 
+
+The `host:port` combination is where the client (via plugin) will connect to and communicate over TCP. For more information how communication is established, look into [ChainTestApiClient](https://github.com/anshooarora/chaintest/blob/main/core/chaintest-core-java/src/main/java/com/aventstack/chaintest/http/ChainTestApiClient.java).
+
+```
+# (only the relevant bits shows below)
+
+# chaintest configuration
+chaintest.project.name=default
+
+# generators:
+## chainlp
+chaintest.generator.chainlp.enabled=true
+chaintest.generator.chainlp.host.url=<host:port>
+```
+
 
 ## Contributing
 
