@@ -37,6 +37,7 @@ public class ChainTestCucumberListener implements EventListener {
     private static final Logger log = LoggerFactory.getLogger(ChainTestCucumberListener.class);
     private static final String CUCUMBER_JVM = "cucumber-jvm";
 
+    private final Map<URI, Test> _testSourceReadFeature = new HashMap<>();
     private final Map<URI, Test> _features = new HashMap<>();
     private final Map<UUID, Test> _scenarios = new HashMap<>();
     private final Map<UUID, Test> _steps = new HashMap<>();
@@ -70,7 +71,7 @@ public class ChainTestCucumberListener implements EventListener {
                 final Test test = new Test("Feature: " + feature.getName(),
                         Optional.of("Feature"),
                         tags);
-                _features.put(event.getUri(), test);
+                _testSourceReadFeature.put(event.getUri(), test);
             });
         }
     };
@@ -103,6 +104,9 @@ public class ChainTestCucumberListener implements EventListener {
         final Test scenario = new Test(event.getTestCase().getKeyword() + ": " + event.getTestCase().getName(),
                 Optional.of("Scenario"),
                 event.getTestCase().getTags());
+        if (!_features.containsKey(event.getTestCase().getUri())) {
+            _features.put(event.getTestCase().getUri(), _testSourceReadFeature.get(event.getTestCase().getUri()));
+        }
         _features.get(event.getTestCase().getUri()).addChild(scenario);
         _scenarios.put(event.getTestCase().getId(), scenario);
     };
