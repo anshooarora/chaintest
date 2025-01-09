@@ -81,7 +81,7 @@ public class ChainTestCucumberListener implements EventListener {
                 .includeSource(false)
                 .build();
         try {
-            final Optional<Envelope> envelope = parser.parse(Paths.get(event.getUri().getPath()))
+            final Optional<Envelope> envelope = parser.parse(Paths.get(event.getUri()))
                     .findAny();
             if (envelope.isEmpty() || envelope.get().getGherkinDocument().isEmpty()) {
                 log.error("No features were found in {}", event.getUri());
