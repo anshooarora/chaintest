@@ -125,7 +125,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     }
 
     public void flush(final List<Test> tests) {
-        final File resourceDir = new File(_outFile.getParentFile().getPath() + RESOURCES_DIR);
+        final File resourceDir = new File(_outFile.getParentFile(), RESOURCES_DIR);
+        resourceDir.mkdirs();
         saveEmbeds(tests, resourceDir);
         processTemplate(Map.of("build", _build,
                 "tests", tests,
