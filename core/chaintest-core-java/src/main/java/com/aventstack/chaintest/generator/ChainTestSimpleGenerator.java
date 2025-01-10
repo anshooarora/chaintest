@@ -125,6 +125,11 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     }
 
     public void flush(final List<Test> tests) {
+        if (null == _build || null == tests || tests.isEmpty()) {
+            log.debug("No tests to process, skipping flush");
+            return;
+        }
+
         final File resourceDir = new File(_outFile.getParentFile(), RESOURCES_DIR);
         resourceDir.mkdirs();
         saveEmbeds(tests, resourceDir);

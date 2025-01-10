@@ -58,7 +58,8 @@ public class ChainTestEmailGenerator extends FileGenerator implements Generator 
     }
 
     public void flush(final List<Test> tests) {
-        if (tests.isEmpty()) {
+        if (null == _build || null == tests || tests.isEmpty()) {
+            log.debug("No tests to process, skipping flush");
             return;
         }
         _source = processTemplate(Map.of("build", _build, "tests", tests), OUT_FILE);

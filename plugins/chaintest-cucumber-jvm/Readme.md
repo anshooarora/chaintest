@@ -11,6 +11,7 @@ ChainTest plugin for [Cucumber-JVM](https://cucumber.io/docs/installation/java/)
       <groupId>com.aventstack</groupId>
       <artifactId>chaintest-cucumber-jvm</artifactId>
       <version>${chaintest.cucumberjvm.version}</version>
+      <scope>provided</scope>
     </dependency>
     ```
 

@@ -42,6 +42,7 @@
     </table>
 
     <!-- stats -->
+    <#if build.runStats?? && build.runStats?size != 0>
     <table align="center" width="650" style="margin-bottom:2px;">
 	  <tbody>
 	    <tr>
@@ -72,6 +73,7 @@
 	    </tr>
 	  </tbody>
 	</table>
+	</#if>
 
     <!-- tags -->
     <#if build.tagStats??>

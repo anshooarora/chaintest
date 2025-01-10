@@ -24,6 +24,7 @@ const getOptions = (data) => {
 }
 
 // chart: Features or Classes
+if (stats1) {
 (async function() {
   new Chart(
     document.getElementById('stats1'),
@@ -43,6 +44,7 @@ const getOptions = (data) => {
     }
   );
 })();
+}
 
 // chart: Scenarios or Methods
 if (stats2) {
