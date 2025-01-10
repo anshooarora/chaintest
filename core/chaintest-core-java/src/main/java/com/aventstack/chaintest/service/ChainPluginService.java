@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -194,6 +195,10 @@ public class ChainPluginService {
         if (null != test.getExternalId()) {
             _embeds.remove(test.getExternalId());
         }
+    }
+
+    public String getQuelifiedName(final Method method) {
+        return method.getDeclaringClass().getName() + "." + method.getName();
     }
 
     private void putBlob(final Test test, final Embed embed) {

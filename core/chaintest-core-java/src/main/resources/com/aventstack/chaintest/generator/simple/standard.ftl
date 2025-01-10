@@ -25,6 +25,15 @@
         <#if leaf.error??>
           <pre class="py-2 mt-2">${leaf.error}</pre>
         </#if>
+        <#if leaf.embeds?has_content>
+          <div class="row mt-3">
+            <#list leaf.embeds as embed>
+              <div class="embed col-2 mb-1">
+                <img src="resources/${embed.name}" />
+              </div>
+            </#list>
+          </div>
+        </#if>
       </#list>
   </div>
 </#if>
