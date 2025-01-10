@@ -23,6 +23,7 @@ export class BuildListingComponent implements OnInit, OnDestroy {
   private _destroyDel$: Subject<any> = new Subject<any>();
 
   projectId: number;
+  projectName: string;
 
   error: any;
   tagDisplayLimit: number = 5;
@@ -115,6 +116,9 @@ export class BuildListingComponent implements OnInit, OnDestroy {
             this.builds.content.push(...builds.content);
             this.builds.first = builds.first;
             this.builds.last = builds.last;
+          }
+          if (!this.projectName) {
+            this.projectName = builds.content[0].projectName;
           }
           console.log(this.builds)
         },
