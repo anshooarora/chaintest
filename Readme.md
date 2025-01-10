@@ -73,6 +73,16 @@ chaintest.generator.chainlp.enabled=true
 chaintest.generator.chainlp.host.url=<host:port>
 ```
 
+## Is Docker must to generate ChainTest Report?
+No, you do not necessarily need Docker to generate and view static reports with ChainTest. Docker is a convenient way to deploy and run applications with all their dependencies in an isolated environment, but for generating static reports, it is not a strict requirement.
+
+## When Docker is Needed for ChainTest?
+Docker is useful in these cases:
+
+* Comprehensive Dashboard: Ideal for generating historical analytics and consolidating multiple project reports in one place.
+* Quick Setup: If you want to avoid manually setting up dependencies, Docker provides a pre-configured environment.
+* Consistency: Ensures that the application runs the same way across different systems without dependency conflicts.
+* Testing Complete Functionality: If you want to test the entire ChainTest environment with all its features (not just static report generation), Docker simplifies the setup.
 
 ## Contributing
 
