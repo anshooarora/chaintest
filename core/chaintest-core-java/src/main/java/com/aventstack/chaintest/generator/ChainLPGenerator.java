@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,7 +31,7 @@ public class ChainLPGenerator implements Generator {
     private String _testRunner;
     private ChainTestApiClient _client;
     private Build _build;
-    private List<Test> _tests;
+    private Queue<Test> _tests;
 
     public ChainLPGenerator(final String testRunner) {
         _testRunner = testRunner;
@@ -94,7 +94,7 @@ public class ChainLPGenerator implements Generator {
 
         try {
             final HttpResponse<Build> response = _client.retryHandler().trySend(buildReq, Build.class, HttpMethod.POST);
-            if (200 == response.statusCode()) {
+            if (null != response && 200 == response.statusCode()) {
                 buildReq = response.body();
                 _build = build;
                 _build.setId(buildReq.getId());
@@ -123,7 +123,7 @@ public class ChainLPGenerator implements Generator {
     }
 
     @Override
-    public void flush(final List<Test> tests) {
+    public void flush(final Queue<Test> tests) {
         if (!started()) {
             return;
         }

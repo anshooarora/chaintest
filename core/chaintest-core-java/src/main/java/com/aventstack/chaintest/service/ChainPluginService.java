@@ -17,13 +17,14 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class ChainPluginService {
     private static final String GEN_PATTERN = "chaintest.generator.[a-zA-Z]+.enabled";
     private static final String STORAGE_SERVICE = "chaintest.storage.service";
     private static final String STORAGE_SERVICE_ENABLED = STORAGE_SERVICE + ".enabled";
-    private static final List<Test> _tests = Collections.synchronizedList(new ArrayList<>());
+    private static final Queue<Test> _tests = new ConcurrentLinkedQueue<>();
     private static final Map<String, Embed> _embeds = new ConcurrentHashMap<>();
     private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
     private static final List<String> SYS_PROPS = List.of(
@@ -201,7 +202,7 @@ public class ChainPluginService {
         }
     }
 
-    private void embed(final List<Test> tests, final String externalId, final Embed embed) {
+    private void embed(final Queue<Test> tests, final String externalId, final Embed embed) {
         final Predicate<Test> predicate = test -> null != test.getExternalId() && test.getExternalId().equals(externalId);
         final Optional<Test> any = tests.stream().filter(predicate).findAny();
         if (any.isPresent()) {

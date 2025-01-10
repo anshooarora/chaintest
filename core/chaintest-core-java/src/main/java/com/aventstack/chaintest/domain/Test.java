@@ -15,8 +15,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
@@ -104,7 +106,7 @@ public class Test implements ChainTestEntity {
     /**
      * The child tests of this test.
      */
-    private List<Test> children = new CopyOnWriteArrayList<>();
+    private Queue<Test> children = new ConcurrentLinkedQueue<>();
 
     /**
      * The logs associated with the test.
