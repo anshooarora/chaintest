@@ -37,6 +37,26 @@ ChainTest plugin for [TestNG](https://testng.org/) framework.  Visit [chaintest-
     }
     ```
 
+## Screenshots
+
+Screenshots can be attached to tests while the test is in-flight or after completing in the `@AfterMethod` hook:
+
+```
+@Test
+public void testMethod(final Method method) {
+  final String qualifiedName = ChainPluginService.getInstance().getQualifiedName(method);
+  ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
+}
+```
+
+```
+@AfterMethod
+public void afterMethod(final ITestResult result) {
+  final String qualifiedName = result.getMethod().getQualifiedName();
+  ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
+}
+```
+
 ## License
 
 TestNG plugin for ChainTest is open-source software and licensed under Apache-2.0.

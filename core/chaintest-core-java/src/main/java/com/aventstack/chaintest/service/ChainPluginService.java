@@ -197,7 +197,7 @@ public class ChainPluginService {
         }
     }
 
-    public String getQuelifiedName(final Method method) {
+    public String getQualifiedName(final Method method) {
         return method.getDeclaringClass().getName() + "." + method.getName();
     }
 

@@ -37,6 +37,17 @@ ChainTest plugin for [junit 5](https://junit.org/junit5/).  Visit [chaintest-jun
     }
     ```
 
+## Screenshots
+
+Screenshots can be attached to tests while the test with the `AfterTestExecutionCallback`:
+
+```
+@Override
+public void afterTestExecution(final ExtensionContext context) {
+  ChainPluginService.getInstance().embed(context.getUniqueId(), bytes, "image/png");
+}
+```
+
 ## License
 
 Junit 5 plugin for ChainTest is open-source software and licensed under Apache-2.0.
