@@ -14,6 +14,7 @@ import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 
 public class ChainTestSimpleGenerator extends FileGenerator implements Generator {
 
@@ -124,8 +125,8 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
         }
     }
 
-    public void flush(final List<Test> tests) {
-        if (null == _build || null == tests || tests.isEmpty()) {
+    public void flush(final Queue<Test> tests) {
+        if (null == _build || null == tests || tests.isEmpty() || _build.getRunStats().isEmpty()) {
             log.debug("No tests to process, skipping flush");
             return;
         }
@@ -146,7 +147,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
                         "css", _css)), _outFile);
     }
 
-    private void saveEmbeds(final List<Test> tests, final File resourceDir) {
+    private void saveEmbeds(final Queue<Test> tests, final File resourceDir) {
         final Test[] testsArray = tests.toArray(new Test[0]);
         for (final Test test : testsArray) {
             for (final Embed embed : test.getEmbeds()) {

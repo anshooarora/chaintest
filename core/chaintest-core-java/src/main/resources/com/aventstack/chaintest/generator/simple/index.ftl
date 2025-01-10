@@ -3,7 +3,7 @@
     title1 = 'Features', title2 = 'Scenarios', title3 = 'Steps'
   >
 <#elseif build.testRunner == 'testng'>
-  <#if build.runStats?size == 3>
+  <#if build.runStats?size gte 3>
     <#assign
       title1 = 'Suites', title2 = 'Classes', title3 = 'Methods'
     >
@@ -86,7 +86,7 @@
               </div>
             </div>
           </div>
-          <#if build.runStats?size==2>
+          <#if build.runStats?size gte 2>
           <div class="col-4">
             <div class="card card-custom" style="height: 175px">
               <div class="card-header">
@@ -105,7 +105,7 @@
             </div>
           </div>
           </#if>
-          <#if build.isBDD() || build.runStats?size==3>
+          <#if build.isBDD() || build.runStats?size gte 3>
             <div class="col-4">
               <div class="card card-custom" style="height: 175px">
                 <div class="card-header">
@@ -117,11 +117,9 @@
                   </div>
                 </div>
                 <div class="card-footer small">
-                  <#if build.runStats?? && build.runStats?size==3>
-                    ${build.runStats[2].passed} Passed,
-                    ${build.runStats[2].failed} Failed,
-                    ${build.runStats[2].skipped} Skipped
-                  </#if>
+                  ${build.runStats[2].passed} Passed,
+                  ${build.runStats[2].failed} Failed,
+                  ${build.runStats[2].skipped} Skipped
                 </div>
               </div>
             </div>
@@ -313,17 +311,17 @@ ${log}
       { result: 'Failed', count: ${ build.runStats[0].failed }, bg: 'rgb(233,80,113)' },
       { result: 'Skipped', count: ${ build.runStats[0].skipped }, bg: 'rgb(221, 91, 96)' }
     ];
-    <#if build.runStats?size == 2>
-    const stats2Annotation = {'total': ${ build.runStats[1].total }, 'passed': ${ build.runStats[1].passed }};
-    const stats2 = [
-      { result: 'Passed', count: ${ build.runStats[1].passed }, bg: 'rgb(140, 197, 83)' },
-      { result: 'Failed', count: ${ build.runStats[1].failed }, bg: 'rgb(233,80,113)' },
-      { result: 'Skipped', count: ${ build.runStats[1].skipped }, bg: 'rgb(221, 91, 96)' }
-    ];
+    <#if build.runStats?size gte 2>
+      const stats2Annotation = {'total': ${ build.runStats[1].total }, 'passed': ${ build.runStats[1].passed }};
+      const stats2 = [
+        { result: 'Passed', count: ${ build.runStats[1].passed }, bg: 'rgb(140, 197, 83)' },
+        { result: 'Failed', count: ${ build.runStats[1].failed }, bg: 'rgb(233,80,113)' },
+        { result: 'Skipped', count: ${ build.runStats[1].skipped }, bg: 'rgb(221, 91, 96)' }
+      ];
     <#else>
       const stats2 = null;
     </#if>
-    <#if build.runStats?size == 3>
+    <#if build.runStats?size gte 3>
       const stats3Annotation = {'total': ${ build.runStats[2].total }, 'passed': ${ build.runStats[2].passed }};
       const stats3 = [
         { result: 'Passed', count: ${ build.runStats[2].passed }, bg: 'rgb(140, 197, 83)' },
