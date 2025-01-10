@@ -39,14 +39,31 @@ ChainTest plugin for [junit 5](https://junit.org/junit5/).  Visit [chaintest-jun
 
 ## Screenshots
 
-Screenshots can be attached to tests while the test with the `AfterTestExecutionCallback`:
+Screenshots can be attached to tests while the test is in-flight or after completing in the `@AfterTestExecutionCallback` hook:
 
 ```
-@Override
-public void afterTestExecution(final ExtensionContext context) {
-  ChainPluginService.getInstance().embed(context.getUniqueId(), bytes, "image/png");
+@Test
+public void testMethod(final TestInfo info) {
+  final byte[] bytes = new byte[]{};
+  final String qualifiedName = ChainPluginService.getInstance()
+      .getQualifiedName(info.getTestMethod().get());
+  ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
 }
 ```
+
+```
+public class ChainTestExecutionCallback implements AfterTestExecutionCallback {
+  @Override
+  public void afterTestExecution(final ExtensionContext context) {
+    final byte[] bytes = new byte[]{};
+    final String qualifiedName = ChainPluginService.getInstance()
+        .getQualifiedName(context.getTestMethod().get());
+    ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
+  }
+}
+```
+
+
 
 ## License
 

@@ -37,14 +37,14 @@ public class ChainTestExecutionCallback
     @Override
     public void beforeTestExecution(final ExtensionContext context) {
         context.getTestClass().ifPresent(testclass -> {
-            final String className = testclass.getSimpleName();
+            final String className = testclass.getName();
             TESTS.computeIfAbsent(className, key -> {
                 final Test test = new Test(className, Optional.of(className), context.getTags());
-                test.setExternalId("C" + context.getUniqueId());
+                test.setExternalId(className);
                 return test;
             });
             final Test test = new Test(context.getDisplayName(), Optional.of(className), context.getTags());
-            test.setExternalId(context.getUniqueId());
+            test.setExternalId(getExternalId(context));
             TESTS.get(className).addChild(test);
         });
     }
@@ -52,20 +52,32 @@ public class ChainTestExecutionCallback
     @Override
     public void afterTestExecution(final ExtensionContext context) {
         context.getTestClass().ifPresent(testclass -> {
-            final Test test = TESTS.get(testclass.getSimpleName())
+            final Test test = TESTS.get(testclass.getName())
                     .getChildren().stream()
-                    .filter(t -> t.getExternalId().equals(context.getUniqueId())).findAny()
+                    .filter(t -> t.getExternalId().equals(getExternalId(context))).findAny()
                     .orElseThrow(() -> new IllegalStateException("Test not found"));
             test.complete(context.getExecutionException());
             log.trace("Ended test {} with status {}", test.getName(), test.getResult());
         });
     }
 
+    private String getExternalId(final ExtensionContext context) {
+        if (context.getTestMethod().isPresent()) {
+            return _service.getQualifiedName(context.getTestMethod().get());
+        } else {
+            if (context.getTestClass().isPresent()) {
+                return context.getTestClass().get().getName() + "." + context.getDisplayName();
+            } else {
+                return context.getDisplayName();
+            }
+        }
+    }
+
     @Override
     public void afterAll(final ExtensionContext extensionContext) {
         log.trace("Executing afterAll hook");
         extensionContext.getTestClass().ifPresent(ctx -> {
-            final Test test = TESTS.get(ctx.getSimpleName());
+            final Test test = TESTS.get(ctx.getName());
             if (null != test) {
                 _service.afterTest(test, Optional.empty());
                 _service.flush();

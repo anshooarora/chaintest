@@ -44,6 +44,7 @@ Screenshots can be attached to tests while the test is in-flight or after comple
 ```
 @Test
 public void testMethod(final Method method) {
+  final byte[] bytes = new byte[]{};
   final String qualifiedName = ChainPluginService.getInstance().getQualifiedName(method);
   ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
 }
@@ -52,6 +53,7 @@ public void testMethod(final Method method) {
 ```
 @AfterMethod
 public void afterMethod(final ITestResult result) {
+  final byte[] bytes = new byte[]{};
   final String qualifiedName = result.getMethod().getQualifiedName();
   ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
 }
