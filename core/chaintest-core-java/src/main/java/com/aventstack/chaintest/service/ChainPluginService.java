@@ -225,6 +225,14 @@ public class ChainPluginService {
         }
     }
 
+    public void addSystemInfo(final String key, final String value) {
+        _build.getSystemInfo().add(new SystemInfo(key, value));
+    }
+
+    public void addSystemInfo(final Map<String, String> sysInfo) {
+        sysInfo.forEach(this::addSystemInfo);
+    }
+
     private List<Test> flattenTests() {
         return _tests.stream()
                 .flatMap(test -> flattenTests(test).stream())
