@@ -30,6 +30,7 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
   buildTimeAgoFilterDays: number = 7;
   builds: Build[] = [];
   builds$: BehaviorSubject<Build[]> = new BehaviorSubject<Build[]>([]);
+  buildStatusReady: boolean = false;
 
   constructor(private projectService: ProjectService, 
     private buildService: BuildService,
@@ -57,6 +58,7 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
         next: (response: Page<Project>) => {
           response.content.sort((a,b) => a.name > b.name ? 1 : -1)
           this.projectPage = response;
+          this.buildStatusReady = false;
           response.content.forEach(project => {
             project.display = true;
             this.findBuilds(project);
@@ -75,6 +77,10 @@ export class ProjectInsightsComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this._build$))
     .subscribe({
       next: (response: Page<Build>) => {
+        if (response.content.length > 0) {
+          this.buildStatusReady = true;
+        }
+
         project.builds = response;
         
         // number of build executions

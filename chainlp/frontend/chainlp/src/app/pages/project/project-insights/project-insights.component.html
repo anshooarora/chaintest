@@ -26,7 +26,7 @@
     <ng-container *ngIf="projectPage && projectPage.content">
       <app-executions-trend [builds$]="builds$"></app-executions-trend>
 
-      <div class="row">
+      <div class="row" *ngIf="data && data.datasets && data.datasets.length">
         <div class="col">
           <div class="card pb-3">
             <div class="card-header pt-3">
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" *ngIf="buildStatusReady">
         <div class="col">
           <div class="card">
             <div class="card-header">
