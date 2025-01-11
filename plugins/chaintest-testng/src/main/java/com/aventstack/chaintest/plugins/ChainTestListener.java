@@ -7,10 +7,10 @@ import org.testng.IExecutionListener;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestClass;
-import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,14 +60,6 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
     }
 
     @Override
-    public void onStart(final ITestContext context) {
-    }
-
-    @Override
-    public void onFinish(final ITestContext context) {
-    }
-
-    @Override
     public void onTestStart(final ITestResult result) {
         final Test method = new Test(result.getMethod().getMethodName(),
                 Optional.of(result.getTestClass().getName()),
@@ -75,6 +67,13 @@ public class ChainTestListener implements IExecutionListener, ISuiteListener, IC
         method.setExternalId(result.getMethod().getQualifiedName());
         _classes.get(result.getTestClass().getName()).addChild(method);
         _methods.put(result.getMethod().getQualifiedName(), method);
+
+        if (null != result.getParameters() && result.getParameters().length > 0) {
+            final String params = String.join(", ", Arrays.stream(result.getParameters())
+                    .map(Object::toString)
+                    .toArray(String[]::new));
+            method.setDescription("[" + params + "]");
+        }
     }
 
     @Override

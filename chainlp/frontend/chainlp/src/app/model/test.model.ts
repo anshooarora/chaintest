@@ -9,6 +9,7 @@ export class Test extends Page<Test> {
     durationMs: number;
     packageName: string;
     className: string;
+    description: string;
     name: string;
     result: string;
     tags: Tag[];

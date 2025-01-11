@@ -235,6 +235,7 @@
                   </#list>
                 </div>
               </#if>
+              <#if test.description??><code class="mt-2">${test.description}</code></#if>
             </div>
             <div class="col-8">
               <#list test.children as child>
@@ -261,6 +262,7 @@
                         <span class="badge text-dark bg-light">${child.durationPretty}</span>
                       </div>
                     </div>
+                    <#if child.description??><code class="ms-4 small">${child.description}</code></#if>
                     <#if child.error??>
                       <pre class="mt-2">${child.error}</pre>
                     </#if>
