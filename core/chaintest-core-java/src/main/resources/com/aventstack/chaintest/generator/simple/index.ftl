@@ -145,13 +145,13 @@
                     </div>
                   </div>
                   <div class="card-footer">
-                    <#if build.runStats?? && build.runStats?size gte 1 && build.runStats[1].total gt 0>
+                    <#if build.runStats?? && build.runStats?size gte 2 && build.runStats[1].total gt 0>
                       <#assign passRate=(build.runStats[1].passed/build.runStats[1].total)*100>
                         <div class="progress" role="progressbar" aria-label="Success example"
                           aria-valuenow="${passRate}" aria-valuemin="0" aria-valuemax="100">
                           <div class="progress-bar bg-success" style="width: ${passRate}%">${passRate}%</div>
                         </div>
-                    <#elseif build.runStats?? && build.runStats?size gte 0 && build.runStats[0].total gt 0>
+                    <#elseif build.runStats?? && build.runStats?size gte 1 && build.runStats[0].total gt 0>
                       <#assign passRate=(build.runStats[0].passed/build.runStats[0].total)*100>
                         <div class="progress" role="progressbar" aria-label="Success example"
                           aria-valuenow="${passRate}" aria-valuemin="0" aria-valuemax="100">
