@@ -42,6 +42,24 @@ ChainTest plugin for [TestNG](https://testng.org/) framework.  Visit [chaintest-
 Screenshots can be attached to tests while the test is in-flight or after completing in the `@AfterMethod` hook:
 
 ```
+// Version 1.0.5 and greater
+@Test
+public void testMethod(final Method method) {
+  final byte[] bytes = new byte[]{};
+  ChainPluginService.getInstance().embed(method, bytes, "image/png");
+}
+```
+
+```
+// Version 1.0.5 and greater
+@AfterMethod
+public void afterMethod(final ITestResult result) {
+  final byte[] bytes = new byte[]{};
+  ChainPluginService.getInstance().embed(result.getMethod(), bytes, "image/png");
+}
+```
+
+```
 @Test
 public void testMethod(final Method method) {
   final byte[] bytes = new byte[]{};

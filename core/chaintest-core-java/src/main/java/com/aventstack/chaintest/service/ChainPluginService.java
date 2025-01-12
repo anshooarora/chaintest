@@ -177,6 +177,24 @@ public class ChainPluginService {
         embed(_tests, externalId, embed);
     }
 
+    public void embed(final Method method, final byte[] data, final String mimeType) {
+        embed(getQualifiedName(method), new Embed(data, mimeType));
+    }
+
+    public void embed(final Method method, final File file, final String mimeType) {
+        embed(getQualifiedName(method), new Embed(file, mimeType));
+    }
+
+    public void embed(final Method method, final String base64, final String mimeType) {
+        embed(getQualifiedName(method), new Embed(base64, mimeType));
+    }
+
+    public void embed(final Method method, final Embed embed) {
+        final String externalId = getQualifiedName(method);
+        _embeds.put(externalId, embed);
+        embed(_tests, externalId, embed);
+    }
+
     public void embed(final Test test, final byte[] data, final String mimeType) {
         embed(test, new Embed(data, mimeType));
     }
