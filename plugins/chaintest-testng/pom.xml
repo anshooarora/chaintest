@@ -6,7 +6,7 @@
 
     <groupId>com.aventstack</groupId>
     <artifactId>chaintest-testng</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
     <url>https://github.com/anshooarora/chaintest</url>
     <name>${artifactId}</name>
     <description>ChainTest plugin for TestNG Framework</description>
