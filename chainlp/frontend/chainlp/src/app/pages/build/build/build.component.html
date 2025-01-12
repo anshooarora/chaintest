@@ -74,7 +74,7 @@
       <!-- /charts -->
 
       <!-- tags -->
-      <div class="row">
+      <div class="row" *ngIf="build.tagStats && build.tagStats.length">
         <div class="col">
           <div id="tags" class="card">
             <div class="card-header">
