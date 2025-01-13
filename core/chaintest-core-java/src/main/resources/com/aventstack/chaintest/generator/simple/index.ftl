@@ -284,12 +284,11 @@
                     </#if>
                     <#if child.logs?has_content>
                       <div class="mt-3">
-                        <p class="h6">Logs</p>
-                          <pre class="pb-0">
-                            <#list child.logs as log>
+                        <pre class="pb-0">
+                          <#list child.logs as log>
 ${log}
-                            </#list>
-                          </pre>
+                          </#list>
+                        </pre>
                       </div>
                     </#if>
                     <#if child.embeds?has_content>
