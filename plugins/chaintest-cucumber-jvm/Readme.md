@@ -19,6 +19,8 @@ ChainTest plugin for [Cucumber-JVM](https://cucumber.io/docs/installation/java/)
     implementation 'com.aventstack:chaintest-cucumber-jvm:$version'
     ```
 
+    Note: Do not include the `chaintest-core` dependency in your project, it will automatically be included via plugin dependency.
+
 1. Add [chaintest.properties](https://github.com/anshooarora/chaintest/blob/main/Config.md) to your classpath, example: `src/test/resources/chaintest.properties`
 
 1. Add `com.aventstack.chaintest.plugins.ChainTestCucumberListener:` to the runner class
