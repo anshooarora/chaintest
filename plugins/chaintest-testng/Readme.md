@@ -17,7 +17,7 @@ ChainTest plugin for [TestNG](https://testng.org/) framework.  Visit [chaintest-
     ```json
     implementation 'com.aventstack:chaintest-testng:$version'
     ```
-    
+
     Note: Do not include the `chaintest-core` dependency in your project, it will automatically be included via plugin dependency.
 
 1. Add [chaintest.properties](https://github.com/anshooarora/chaintest/blob/main/Config.md) to your classpath, example: `src/test/resources/chaintest.properties`
@@ -50,7 +50,6 @@ public void testMethod(final Method method) {
   ChainTestListener.log("log example");
 
   // embed
-  final byte[] bytes = new byte[]{};
   ChainTestListener.embed(bytes, "image/png");
 }
 ```
@@ -62,7 +61,6 @@ public void beforeMethod(final ITestResult result) {
   ChainTestListener.log("log example");
 
   // embed
-  final byte[] bytes = new byte[]{};
   ChainTestListener.embed(bytes, "image/png");
 }
 ```
@@ -74,7 +72,6 @@ public void afterMethod(final ITestResult result) {
   ChainTestListener.log("log example");
 
   // embed
-  final byte[] bytes = new byte[]{};
   ChainTestListener.embed(bytes, "image/png");
 }
 ```

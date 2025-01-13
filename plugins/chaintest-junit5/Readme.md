@@ -47,7 +47,6 @@ Screenshots can be attached to tests while the test is in-flight or after comple
 // Version 1.0.5 and greater
 @Test
 public void testMethod(final TestInfo info) {
-  final byte[] bytes = new byte[]{};
   ChainPluginService.getInstance().embed(info.getTestMethod().get(), bytes, "image/png");
 }
 ```
@@ -57,7 +56,6 @@ public void testMethod(final TestInfo info) {
 public class ChainTestExecutionCallback implements AfterTestExecutionCallback {
   @Override
   public void afterTestExecution(final ExtensionContext context) {
-    final byte[] bytes = new byte[]{};
     ChainPluginService.getInstance().embed(context.getTestMethod().get(), bytes, "image/png");
   }
 }
@@ -66,7 +64,6 @@ public class ChainTestExecutionCallback implements AfterTestExecutionCallback {
 ```
 @Test
 public void testMethod(final TestInfo info) {
-  final byte[] bytes = new byte[]{};
   final String qualifiedName = ChainPluginService.getInstance()
       .getQualifiedName(info.getTestMethod().get());
   ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
@@ -77,7 +74,6 @@ public void testMethod(final TestInfo info) {
 public class ChainTestExecutionCallback implements AfterTestExecutionCallback {
   @Override
   public void afterTestExecution(final ExtensionContext context) {
-    final byte[] bytes = new byte[]{};
     final String qualifiedName = ChainPluginService.getInstance()
         .getQualifiedName(context.getTestMethod().get());
     ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
