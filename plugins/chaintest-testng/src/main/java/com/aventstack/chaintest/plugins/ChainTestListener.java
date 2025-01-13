@@ -138,6 +138,15 @@ public class ChainTestListener implements
     }
 
     @Override
+    public void onStart(final ITestContext context) { }
+
+    @Override
+    public void onFinish(final ITestContext context) { }
+
+    @Override
+    public void onTestStart(final ITestResult result) { }
+
+    @Override
     public void onTestSuccess(final ITestResult result) {
         onTestComplete(result);
     }
@@ -167,4 +176,6 @@ public class ChainTestListener implements
         onTestFailure(result);
     }
 
+    @Override
+    public void onTestFailedButWithinSuccessPercentage(final ITestResult result) { }
 }
