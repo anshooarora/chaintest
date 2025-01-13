@@ -170,6 +170,9 @@
                       <span class="badge bg-light">{{child.durationMs | prettyTime}}</span>
                     </div>
                   </div>
+                  <div class="mt-2" *ngIf="child.logs && child.logs.length">
+                    <pre>{{child.logs.join('\n')}}</pre>
+                  </div>
                   <div class="mt-2" *ngIf="child.error">
                     <pre>{{child.error}}</pre>
                   </div>
@@ -189,6 +192,9 @@
                         </div>
                       </div>
                       <code class="ms-4 small" *ngIf="leaf.description">{{leaf.description}}</code>
+                      <div class="mt-2" *ngIf="leaf.logs && leaf.logs.length">
+                        <pre>{{leaf.logs.join('\n')}}</pre>
+                      </div>
                       <div class="mt-2 mb-4" *ngIf="leaf.error">
                         <pre>{{leaf.error}}</pre>
                       </div>

@@ -116,4 +116,9 @@ public class Test {
     @Column
     private List<String> screenshotURL;
 
+    @ElementCollection
+    @CollectionTable(name = "log", joinColumns = @JoinColumn(name="id"))
+    @Column
+    private List<String> logs;
+
 }

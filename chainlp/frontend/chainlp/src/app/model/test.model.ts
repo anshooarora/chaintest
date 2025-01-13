@@ -17,6 +17,7 @@ export class Test extends Page<Test> {
     error: string;
     bdd: boolean;
     screenshotURL: string[];
+    logs: string[];
 
     history: Page<Test>;
 }
