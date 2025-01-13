@@ -185,7 +185,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
   
   findTests(pageNum: number = 0, append: boolean = false): void {
-    this._testService.search(0, '', this.build.projectId, this.buildId, 0, this.result, '', '', pageNum)
+    this._testService.search(0, '', this.build.projectId, this.buildId, 0, this.result, '', '', pageNum, 'AND', 'id,asc')
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (page: Page<Test>) => {
