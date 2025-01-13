@@ -1,3 +1,30 @@
+<#if build.isBDD()>
+  <#assign
+    title1 = 'Features', title2 = 'Scenarios', title3 = 'Steps', tagStatsLevel = 1
+  >
+<#elseif build.testRunner == 'testng'>
+  <#if build.runStats?size gte 3>
+    <#assign
+      title1 = 'Suites', title2 = 'Classes', title3 = 'Methods', tagStatsLevel = 2
+    >
+    <#else>
+      <#assign
+        title1 = 'Classes', title2 = 'Methods', tagStatsLevel = 1
+      >
+  </#if>
+<#elseif build.testRunner == 'junit' || build.testRunner == 'junit5' || build.testRunner == 'junit-jupiter'>
+  <#assign
+    title1 = 'Classes', title2 = 'Methods', tagStatsLevel = 1
+  >
+<#else>
+    <#assign
+        title1 = 'Tests', title2 = 'Methods', title3 = 'Events', tagStatsLevel = 1
+    >
+</#if>
+<#if build.runStats?? && build.runStats?has_content && (tagStatsLevel gte build.runStats?size) && build.runStats?size gte 1>
+    <#assign tagStatsLevel = build.runStats?size - 1>
+</#if>
+
 <!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
   <head>
@@ -96,6 +123,7 @@
                     <td style="" width="60">Skip</td>
                   </tr>
                   <#list build.tagStats as tag>
+                  <#if tag.depth == tagStatsLevel>
                   <tr style="height:10px;"></tr>
                   <tr>
                     <td width="350">${tag.name}</td>
@@ -106,6 +134,7 @@
                       <td class="padding" width="10"></td>
                       <td style="" width="60">${tag.skipped}</td>
                   </tr>
+                  </#if>
                   </#list>
                 </table>
               </td>

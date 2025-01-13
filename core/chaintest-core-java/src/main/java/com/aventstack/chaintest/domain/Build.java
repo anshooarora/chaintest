@@ -119,13 +119,16 @@ public class Build implements ChainTestEntity {
         if (null != test.getTags()) {
             addTags(test.getTags());
             for (final Tag tag : test.getTags()) {
-                if (!tagStatsMonitor.containsKey(tag.getName())) {
+                if (!tagStatsMonitor.containsKey(tag.getName() + test.getDepth())) {
                     final TagStats ts = new TagStats(test.getDepth());
                     ts.setName(tag.getName());
                     tagStats.add(ts);
-                    tagStatsMonitor.put(tag.getName(), ts);
+                    tagStatsMonitor.put(tag.getName() + test.getDepth(), ts);
                 }
-                tagStatsMonitor.get(tag.getName()).update(test);
+                tagStatsMonitor.get(tag.getName() + test.getDepth()).update(test);
+                for (final Test child : test.getChildren()) {
+                    updateTagStats(child);
+                }
             }
         }
     }

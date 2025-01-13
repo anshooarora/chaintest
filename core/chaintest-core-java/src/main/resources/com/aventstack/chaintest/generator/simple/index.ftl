@@ -1,25 +1,28 @@
 <#if build.isBDD()>
   <#assign
-    title1 = 'Features', title2 = 'Scenarios', title3 = 'Steps'
+    title1 = 'Features', title2 = 'Scenarios', title3 = 'Steps', tagStatsLevel = 1
   >
 <#elseif build.testRunner == 'testng'>
   <#if build.runStats?size gte 3>
     <#assign
-      title1 = 'Suites', title2 = 'Classes', title3 = 'Methods'
+      title1 = 'Suites', title2 = 'Classes', title3 = 'Methods', tagStatsLevel = 2
     >
     <#else>
       <#assign
-        title1 = 'Classes', title2 = 'Methods'
+        title1 = 'Classes', title2 = 'Methods', tagStatsLevel = 1
       >
   </#if>
 <#elseif build.testRunner == 'junit' || build.testRunner == 'junit-jupiter'>
   <#assign
-    title1 = 'Classes', title2 = 'Methods'
+    title1 = 'Classes', title2 = 'Methods', tagStatsLevel = 1
   >
 <#else>
     <#assign
-        title1 = 'Tests', title2 = 'Methods', title3 = 'Events'
+        title1 = 'Tests', title2 = 'Methods', title3 = 'Events', tagStatsLevel = 1
     >
+</#if>
+<#if build.runStats?? && build.runStats?has_content && (tagStatsLevel gte build.runStats?size) && build.runStats?size gte 1>
+    <#assign tagStatsLevel = build.runStats?size - 1>
 </#if>
 
 <!DOCTYPE html>
@@ -188,6 +191,7 @@
               </thead>
               <tbody>
                 <#list build.tagStats as tag>
+                  <#if tag.depth == tagStatsLevel>
                   <tr>
                     <td><a href="#" class="secondary tag">${tag.name}</a></td>
                     <td>${tag.total}</td>
@@ -195,6 +199,7 @@
                     <td>${tag.failed}</td>
                     <td>${tag.durationPretty}</td>
                   </tr>
+                  </#if>
                 </#list>
               </tbody>
             </table>
