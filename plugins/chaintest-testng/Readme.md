@@ -37,43 +37,43 @@ ChainTest plugin for [TestNG](https://testng.org/) framework.  Visit [chaintest-
     }
     ```
 
-## Screenshots
+## Logs, Screenshots
 
-Screenshots can be attached to tests while the test is in-flight or after completing in the `@AfterMethod` hook:
-
-```
-// Version 1.0.5 and greater
-@Test
-public void testMethod(final Method method) {
-  final byte[] bytes = new byte[]{};
-  ChainPluginService.getInstance().embed(method, bytes, "image/png");
-}
-```
-
-```
-// Version 1.0.5 and greater
-@AfterMethod
-public void afterMethod(final ITestResult result) {
-  final byte[] bytes = new byte[]{};
-  ChainPluginService.getInstance().embed(result.getMethod(), bytes, "image/png");
-}
-```
+Starting `chaintest-testng` plugin `1.0.5+`, screenshots can be attached to tests while the test is in-flight or completing in the `@BeforeMethod` and `@AfterMethod` hooks:
 
 ```
 @Test
 public void testMethod(final Method method) {
+  //log
+  ChainTestListener.log("log example");
+
+  // embed
   final byte[] bytes = new byte[]{};
-  final String qualifiedName = ChainPluginService.getInstance().getQualifiedName(method);
-  ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
+  ChainTestListener.embed(bytes, "image/png");
+}
+```
+
+```
+@BeforeMethod
+public void beforeMethod(final ITestResult result) {
+  //log
+  ChainTestListener.log("log example");
+
+  // embed
+  final byte[] bytes = new byte[]{};
+  ChainTestListener.embed(bytes, "image/png");
 }
 ```
 
 ```
 @AfterMethod
 public void afterMethod(final ITestResult result) {
+  //log
+  ChainTestListener.log("log example");
+
+  // embed
   final byte[] bytes = new byte[]{};
-  final String qualifiedName = result.getMethod().getQualifiedName();
-  ChainPluginService.getInstance().embed(qualifiedName, bytes, "image/png");
+  ChainTestListener.embed(bytes, "image/png");
 }
 ```
 

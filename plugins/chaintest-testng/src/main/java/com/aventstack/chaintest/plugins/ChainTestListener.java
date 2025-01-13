@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.plugins;
 
+import com.aventstack.chaintest.domain.Embed;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.service.ChainPluginService;
 import org.testng.IClassListener;
@@ -13,23 +14,51 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ChainTestListener implements
-        IExecutionListener, ISuiteListener, IClassListener, ITestListener, IInvokedMethodListener {
+    IExecutionListener, ISuiteListener, IClassListener, ITestListener, IInvokedMethodListener {
 
     private static final String TESTNG = "testng";
     private static final Map<String, Test> _suites = new ConcurrentHashMap<>();
     private static final Map<String, Test> _classes = new ConcurrentHashMap<>();
     private static final Map<String, Test> _methods = new ConcurrentHashMap<>();
     private static final ChainPluginService _service = new ChainPluginService(TESTNG);
+    private static final ThreadLocal<Test> _currentTest = new ThreadLocal<>();
+    private static final ThreadLocal<Queue<String>> _logs = ThreadLocal.withInitial(ConcurrentLinkedQueue::new);
+    private static final ThreadLocal<Boolean> _allowLog = ThreadLocal.withInitial(() -> false);
 
-    private static final Map<Long, String> _externalIds = new ConcurrentHashMap<>();
+    public static void log(final String log) {
+        if (null != _allowLog.get() && _allowLog.get()) {
+            _logs.get().add(log);
+        }
+    }
+
+    public static void embed(final byte[] data, final String mimeType) {
+        if (null != _allowLog.get() && _allowLog.get() && _currentTest.get() != null) {
+            ChainPluginService.getInstance().embed(_currentTest.get(), new Embed(data, mimeType));
+        }
+    }
+
+    public static void embed(final File file, final String mimeType) {
+        if (null != _allowLog.get() && _allowLog.get() && _currentTest.get() != null) {
+            ChainPluginService.getInstance().embed(_currentTest.get(), new Embed(file, mimeType));
+        }
+    }
+
+    public static void embed(final String base64, final String mimeType) {
+        if (null != _allowLog.get() && _allowLog.get() && _currentTest.get() != null) {
+            ChainPluginService.getInstance().embed(_currentTest.get(), new Embed(base64, mimeType));
+        }
+    }
 
     @Override
     public void onExecutionStart() {
@@ -68,14 +97,20 @@ public class ChainTestListener implements
 
     @Override
     public void beforeInvocation(final IInvokedMethod method, final ITestResult result) {
+        if (method.isConfigurationMethod() && method.getTestMethod().isBeforeMethodConfiguration()) {
+            _allowLog.set(true);
+        }
         if (method.isTestMethod()) {
             final Test testMethod = new Test(result.getMethod().getMethodName(),
                     Optional.of(result.getTestClass().getName()),
                     List.of(result.getMethod().getGroups()));
             testMethod.setExternalId(result.getMethod().getQualifiedName() + "_" + result.id());
-            _externalIds.put(Thread.currentThread().getId(), testMethod.getExternalId());
+            while (!_logs.get().isEmpty()) {
+                testMethod.addLog(_logs.get().poll());
+            }
             _classes.get(result.getTestClass().getName()).addChild(testMethod);
             _methods.put(result.getMethod().getQualifiedName(), testMethod);
+            _currentTest.set(testMethod);
 
             if (null != result.getParameters() && result.getParameters().length > 0) {
                 final String params = String.join(", ", Arrays.stream(result.getParameters())
@@ -89,8 +124,17 @@ public class ChainTestListener implements
         }
     }
 
-    public static String getExternalId(final long threadId) {
-        return _externalIds.get(threadId);
+    @Override
+    public void afterInvocation(final IInvokedMethod method, final ITestResult result, ITestContext ctx) {
+        if (method.isConfigurationMethod() && method.getTestMethod().isAfterMethodConfiguration()) {
+            final Test testMethod = _currentTest.get();
+            if (null != testMethod) {
+                while (!_logs.get().isEmpty()) {
+                    testMethod.addLog(_logs.get().poll());
+                }
+            }
+            _allowLog.set(false);
+        }
     }
 
     @Override
@@ -100,7 +144,11 @@ public class ChainTestListener implements
 
     private void onTestComplete(final ITestResult result) {
         if (_methods.containsKey(result.getMethod().getQualifiedName())) {
-            _methods.get(result.getMethod().getQualifiedName()).complete(result.getThrowable());
+            final Test completingMethod = _currentTest.get();
+            completingMethod.complete(result.getThrowable());
+            while (!_logs.get().isEmpty()) {
+                completingMethod.addLog(_logs.get().poll());
+            }
         }
     }
 

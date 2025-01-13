@@ -78,6 +78,10 @@ public class ChainPluginService {
         return _build;
     }
 
+    public Map<String, Queue<String>> getLogs() {
+        return _logs;
+    }
+
     public void register(final Generator generator) {
         _generators.add(generator);
     }
