@@ -27,18 +27,18 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ChainPluginService {
-    
-    private static final Logger log = LoggerFactory.getLogger(ChainPluginService.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(ChainPluginService.class);
     private static final String GEN_PATTERN = "chaintest.generator.[a-zA-Z]+.enabled";
     private static final String STORAGE_SERVICE = "chaintest.storage.service";
     private static final String STORAGE_SERVICE_ENABLED = STORAGE_SERVICE + ".enabled";
     private static final Queue<Test> _tests = new ConcurrentLinkedQueue<>();
     private static final Map<String, Embed> _embeds = new ConcurrentHashMap<>();
+    private static final Map<String, Queue<String>> _logs = new ConcurrentHashMap<>();
     private static final AtomicBoolean START_INVOKED = new AtomicBoolean();
     private static final List<String> SYS_PROPS = List.of(
             "java.version",
@@ -105,17 +105,17 @@ public class ChainPluginService {
         final Set<String> generatorNames = new HashSet<>();
         _generators.forEach(x -> generatorNames.add(x.getName()));
         for (final Map.Entry<String, String> entry : config.entrySet()) {
-            log.trace("Reading property: {}", entry.getKey());
+            logger.trace("Reading property: {}", entry.getKey());
             if (entry.getKey().matches(GEN_PATTERN) && !generatorNames.contains(entry.getKey().split("\\.")[2])) {
                 final String enabled = entry.getValue();
                 if (!Boolean.parseBoolean(enabled)) {
-                    log.debug("Generator {} was not enabled. To enable, set property {}=true in your configuration", entry.getKey(), entry.getKey());
+                    logger.debug("Generator {} was not enabled. To enable, set property {}=true in your configuration", entry.getKey(), entry.getKey());
                     continue;
                 }
                 final String classNameKey = RegexUtil.match("(.*)\\.", entry.getKey()) + "class-name";
-                log.debug("Found configuration entry {}, will use {} to resolve class", entry.getKey(), classNameKey);
+                logger.debug("Found configuration entry {}, will use {} to resolve class", entry.getKey(), classNameKey);
                 if (!config.containsKey(classNameKey)) {
-                    log.info("{} was true from configuration but the required property {} was not provided", entry.getKey(), classNameKey);
+                    logger.info("{} was true from configuration but the required property {} was not provided", entry.getKey(), classNameKey);
                     continue;
                 }
                 final String className = config.get(classNameKey);
@@ -124,7 +124,7 @@ public class ChainPluginService {
                     final Generator gen = (Generator) clazz.getDeclaredConstructor().newInstance();
                     _generators.add(gen);
                 } catch (Exception e) {
-                    log.error("Failed to create an instance of {} generator", className, e);
+                    logger.error("Failed to create an instance of {} generator", className, e);
                 }
             }
         }
@@ -148,6 +148,7 @@ public class ChainPluginService {
 
     public void flush() {
         embedRemaining();
+        attachLogs();
         _build.complete();
         _generators.forEach(x -> x.flush(_tests));
     }
@@ -173,6 +174,7 @@ public class ChainPluginService {
     }
 
     public void embed(final String externalId, final Embed embed) {
+        System.out.println("Setting embed for " + externalId);
         _embeds.put(externalId, embed);
         embed(_tests, externalId, embed);
     }
@@ -226,20 +228,30 @@ public class ChainPluginService {
     }
 
     private void embed(final Queue<Test> tests, final String externalId, final Embed embed) {
-        final Predicate<Test> predicate = test -> null != test.getExternalId() && test.getExternalId().equals(externalId);
-        final Optional<Test> any = tests.stream().filter(predicate).findAny();
+        final Optional<Test> any = testByExternalId(tests, externalId);
         if (any.isPresent()) {
             putBlob(any.get(), embed);
             embed(any.get(), embed);
             _embeds.remove(externalId);
-        } else {
-            tests.forEach(test -> embed(test.getChildren(), externalId, embed));
         }
     }
 
+    private Optional<Test> testByExternalId(final Queue<Test> tests, final String externalId) {
+        for (Test test : tests) {
+            if (externalId.equals(test.getExternalId())) {
+                return Optional.of(test);
+            }
+            final Optional<Test> child = testByExternalId(test.getChildren(), externalId);
+            if (child.isPresent()) {
+                return child;
+            }
+        }
+        return Optional.empty();
+    }
+
     private void embedRemaining() {
-        for (final String externalId : _embeds.keySet()) {
-            embed(_tests, externalId, _embeds.get(externalId));
+        for (final Map.Entry<String, Embed> entry : _embeds.entrySet()) {
+            embed(_tests, entry.getKey(), entry.getValue());
         }
     }
 
@@ -249,6 +261,33 @@ public class ChainPluginService {
 
     public void addSystemInfo(final Map<String, String> sysInfo) {
         sysInfo.forEach(this::addSystemInfo);
+    }
+
+    public void log(final String externalId, final String message) {
+        testByExternalId(_tests, externalId)
+            .ifPresentOrElse(
+                    test -> test.addLog(message),
+                    () -> _logs.computeIfAbsent(externalId,
+                            k -> new ConcurrentLinkedQueue<>()).add(message));
+    }
+
+    public void log(final Method method, final String message) {
+        log(getQualifiedName(method), message);
+    }
+
+    private void attachLog(final Test test, final String externalId) {
+        final Queue<String> logs = _logs.get(externalId);
+        if (null != logs) {
+            logs.forEach(test::addLog);
+            _logs.remove(externalId);
+        }
+    }
+
+    private void attachLogs() {
+        for (final Map.Entry<String, Queue<String>> entry : _logs.entrySet()) {
+            final Optional<Test> any = testByExternalId(_tests, entry.getKey());
+            any.ifPresent(test -> attachLog(test, entry.getKey()));
+        }
     }
 
     private List<Test> flattenTests() {

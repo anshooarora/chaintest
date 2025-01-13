@@ -4,5 +4,6 @@
     <suite-files>
         <suite-file path="add.xml" />
         <suite-file path="subtract.xml" />
+        <suite-file path="dataprovider.xml" />
     </suite-files>
 </suite>

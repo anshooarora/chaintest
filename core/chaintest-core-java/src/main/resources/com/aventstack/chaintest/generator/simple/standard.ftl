@@ -26,6 +26,15 @@
       <#if leaf.error??>
         <pre class="py-2 mt-2 mb-4">${leaf.error}</pre>
       </#if>
+      <#if leaf.logs?has_content>
+        <div class="mt-3">
+          <pre class="pb-0">
+          <#list leaf.logs as log>
+${log}
+          </#list>
+          </pre>
+        </div>
+      </#if>
       <#if leaf.embeds?has_content>
         <div class="row mt-3">
           <#list leaf.embeds as embed>
