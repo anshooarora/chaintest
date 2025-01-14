@@ -2,6 +2,7 @@ package com.aventstack.chainlp.api.test;
 
 import com.aventstack.chainlp.api.build.BuildService;
 import com.aventstack.chainlp.api.project.ProjectService;
+import com.aventstack.chainlp.api.tag.Tag;
 import com.aventstack.chainlp.embed.SignedEmbedResolverFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,6 +47,9 @@ public class TestService {
     @Cacheable(value = "tests", unless = "#result == null")
     public Page<Test> findAll(final Test test, final String op, final Pageable pageable) {
         final Page<Test> page = repository.findAll(new TestSpec(test, op), pageable);
+        if (null != test.getTags() && !test.getTags().isEmpty() && !page.isEmpty()) {
+            filterChildrenForTags(page.getContent(), test.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
+        }
         for (final Test t : page.getContent()) {
             resolveEmbeds(t);
         }
@@ -56,6 +63,17 @@ public class TestService {
         }
         test.getChildren().forEach(this::resolveEmbeds);
         return test;
+    }
+
+    private void filterChildrenForTags(final List<Test> tests, final Set<String> tags) {
+        for (final Test t : tests) {
+            t.setChildren(t.getChildren().stream()
+                    .filter(x -> x.getTags().stream().anyMatch(y -> tags.contains(y.getName())))
+                    .toList());
+            if (!t.isBdd()) {
+                filterChildrenForTags(t.getChildren(), tags);
+            }
+        }
     }
 
     @Cacheable(value = "test", key = "#id", unless = "#result == null")

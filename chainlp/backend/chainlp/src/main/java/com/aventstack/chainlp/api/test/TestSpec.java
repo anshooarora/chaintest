@@ -41,7 +41,8 @@ public class TestSpec implements Specification<Test> {
         final List<Predicate> predicates = new ArrayList<>();
 
         if (null != _test.getTags() && !_test.getTags().isEmpty()) {
-            final Set<String> tagNames = _test.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
+            final Set<String> tagNames = _test.getTags().stream()
+                    .map(Tag::getName).collect(Collectors.toSet());
             predicates.add(
                 cb.and(
                     root.join(Test_.tags).get(Tag_.name).in(tagNames)

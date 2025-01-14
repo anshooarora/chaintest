@@ -114,7 +114,7 @@
   <div class="container" *ngIf="build && build.id > 0">
     <div class="row">
       <div *ngIf="page">
-        <div class="mt-3 mb-4 pb-3 border-bottom d-flex justify-content-between">
+        <div class="mt-3 mb-5 pb-3 border-bottom d-flex justify-content-between">
           <div>
             <button type="button" class="btn btn-outline-success btn-sm" [ngClass]="{'active': result == 'PASSED'}"
               (click)="result='PASSED';findTests()">Passed</button>
@@ -127,12 +127,8 @@
           </div>
         </div>
 
-        <div class="col-4 pb-1 alert alert-success" *ngIf="result == 'FAILED' && !page.content.length">
-          <p>All tests passed! <span class="pointer text-primary" (click)="findAllTests()">Show all</span> tests in this build.</p>
-        </div>
-
         <ng-container>
-          <div class="row my-5" *ngFor="let test of page.content">
+          <div class="row my-4 pb-4 border-bottom" *ngFor="let test of page.content">
             <div class="col-4">
               <h5 class="mb-3 testname" [ngClass]="test.result.toLowerCase()">{{test.name}}</h5>
               <div class="">
@@ -161,7 +157,7 @@
                     <div>
                       <i class="bi bi-check-circle-fill text-success" *ngIf="child.result.toString() == 'PASSED'"></i>
                       <i class="bi bi-exclamation-octagon-fill text-danger" *ngIf="child.result.toString() != 'PASSED'"></i>
-                      <span class="ms-2">{{child.name}}</span>
+                      <span class="ms-2" [ngClass]="{'text-danger': child.result == 'FAILED'}">{{child.name}}</span>
                     </div>
                     <div>
                       <span class="tags" *ngIf="child.tags && child.tags.length">
@@ -182,7 +178,7 @@
                         <div>
                           <i class="bi bi-check-circle-fill text-success" *ngIf="leaf.result.toString() == 'PASSED'"></i>
                           <i class="bi bi-exclamation-octagon-fill text-danger" *ngIf="leaf.result.toString() != 'PASSED'"></i>
-                          <span class="ms-2">{{leaf.name}}</span>
+                          <span class="ms-2" [ngClass]="{'text-danger': leaf.result == 'FAILED'}">{{leaf.name}}</span>
                         </div>
                         <div>
                           <span class="tags" *ngIf="leaf.tags && leaf.tags.length">

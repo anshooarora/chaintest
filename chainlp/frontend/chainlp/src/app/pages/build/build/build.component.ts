@@ -38,7 +38,7 @@ export class BuildComponent implements OnInit, OnDestroy {
   displaySummary: boolean = true;
   buildDepth: number = 0;
   error: string;
-  result: string = 'FAILED';
+  result: string = '';
   pageNum: number = 0;
   tagDepth: number = 0;
   testCount: number | undefined = 0;
@@ -48,7 +48,7 @@ export class BuildComponent implements OnInit, OnDestroy {
     private _testService: TestService,
     private _errorService: ErrorHandlerService) { 
       Chart.register(AnnotationPlugin); 
-    }
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(val => {
