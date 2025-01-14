@@ -83,9 +83,9 @@
                 </div>
               </div>
               <div class="card-footer small">
-                ${build.runStats[0].passed} Passed,
-                ${build.runStats[0].failed} Failed,
-                ${build.runStats[0].skipped} Skipped
+                <span id="sp1">${build.runStats[0].passed}</span> Passed,
+                <span id="sf1">${build.runStats[0].failed}</span> Failed,
+                <span id="ss1">${build.runStats[0].skipped}</span> Skipped
               </div>
             </div>
           </div>
@@ -101,9 +101,9 @@
                 </div>
               </div>
               <div class="card-footer small">
-                ${build.runStats[1].passed} Passed,
-                ${build.runStats[1].failed} Failed,
-                ${build.runStats[1].skipped} Skipped
+                <span id="sp2">${build.runStats[1].passed}</span> Passed,
+                <span id="sf2">${build.runStats[1].failed}</span> Failed,
+                <span id="ss2">${build.runStats[1].skipped}</span> Skipped
               </div>
             </div>
           </div>
@@ -120,9 +120,9 @@
                   </div>
                 </div>
                 <div class="card-footer small">
-                  ${build.runStats[2].passed} Passed,
-                  ${build.runStats[2].failed} Failed,
-                  ${build.runStats[2].skipped} Skipped
+                  <span id="sp3">${build.runStats[2].passed}</span> Passed,
+                  <span id="sf3">${build.runStats[2].failed}</span> Failed,
+                  <span id="ss3">${build.runStats[2].skipped}</span> Skipped
                 </div>
               </div>
             </div>
@@ -227,7 +227,7 @@
       </div>
     </div>
     <#list tests as test>
-      <div class="test-container">
+      <div class="test-container ${test.result?lower_case}">
         <div class="container">
           <div class="row">
             <div class="col-4">

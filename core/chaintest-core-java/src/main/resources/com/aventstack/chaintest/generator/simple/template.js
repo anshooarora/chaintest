@@ -23,76 +23,89 @@ const getOptions = (data) => {
   return options;
 }
 
+const emptyStat = [
+  { result: 'Passed', count: 0, bg: 'rgb(140, 197, 83)' },
+  { result: 'Failed', count: 0, bg: 'rgb(233,80,113)' },
+  { result: 'Skipped', count: 0, bg: 'rgb(221, 91, 96)' }
+];
+
+var chart1, chart2, chart3;
+
 // chart: Features or Classes
-if (stats1) {
-(async function() {
-  new Chart(
-    document.getElementById('stats1'),
-    {
-      type: 'doughnut',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            data: stats1.map(row => row.count),
-            backgroundColor: stats1.map(row => row.bg),
-            borderColor: 'transparent'
-          }
-        ]
-      },
-      options: getOptions(stats1Annotation)
-    }
-  );
-})();
-}
-
-// chart: Scenarios or Methods
-if (stats2) {
-(async function() {
-  new Chart(
-    document.getElementById('stats2'),
-    {
-      type: 'doughnut',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            data: stats2.map(row => row.count),
-            backgroundColor: stats2.map(row => row.bg),
-            borderColor: 'transparent'
-          }
-        ]
-      },
-      options: getOptions(stats2Annotation)
-    }
-  );
-})();
-}
-
-// chart: Scenarios or Methods
-if (stats3) {
-(async function() {
-  const el = document.getElementById('stats3');
-  if (el) {
-    new Chart(
-      document.getElementById('stats3'),
+function depth1Chart() {
+  if (stats1) {
+    chart1 = new Chart(
+      document.getElementById('stats1'),
       {
         type: 'doughnut',
         data: {
           labels: labels,
           datasets: [
-          {
-            data: stats3.map(row => row.count),
-            backgroundColor: stats3.map(row => row.bg),
-            borderColor: 'transparent'
-          }
-        ]},
-        options: getOptions(stats3Annotation)
+            {
+              data: stats1.map(row => row.count),
+              backgroundColor: stats1.map(row => row.bg),
+              borderColor: 'transparent'
+            }
+          ]
+        },
+        options: getOptions(stats1Annotation)
       }
     );
   }
-})();
 }
+
+// chart: Scenarios or Methods
+function depth2Chart() {
+  if (stats2) {
+    chart2 = new Chart(
+      document.getElementById('stats2'),
+      {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              data: stats2.map(row => row.count),
+              backgroundColor: stats2.map(row => row.bg),
+              borderColor: 'transparent'
+            }
+          ]
+        },
+        options: getOptions(stats2Annotation)
+      }
+    );
+  }
+}
+
+// chart: Scenarios or Methods
+function depth3Chart() {
+  if (stats3) {
+    const el = document.getElementById('stats3');
+    if (el) {
+      chart3 = new Chart(
+        el,
+        {
+          type: 'doughnut',
+          data: {
+            labels: labels,
+            datasets: [
+            {
+              data: stats3.map(row => row.count),
+              backgroundColor: stats3.map(row => row.bg),
+              borderColor: 'transparent'
+            }
+          ]},
+          options: getOptions(stats3Annotation)
+        }
+      );
+    }
+  }
+}
+
+// init::charts
+depth1Chart();
+depth2Chart();
+depth3Chart();
 
 // init::statusFilters
 const statusFilters = [];
@@ -110,6 +123,10 @@ document.querySelectorAll('.test-container').forEach((card) => {
 const tests = [];
 document.querySelectorAll('.result').forEach((card) => {
   tests.push(card);
+});
+const leafs = [];
+document.querySelectorAll('.leaf').forEach((l) => {
+  leafs.push(l);
 });
 
 // init::tags
@@ -160,6 +177,16 @@ document.querySelectorAll('#status-filter > button').forEach((e) => {
   })
 });
 
+// redraw charts on tag click
+function redrawChart(stat, annotation, containers, idx) {
+  stat[0].count = containers.filter(x => x.classList.contains('passed') && !x.classList.contains('d-none')).length;
+  stat[1].count = containers.filter(x => x.classList.contains('failed') && !x.classList.contains('d-none')).length;
+  annotation.total = stat[0].count + stat[1].count;
+  annotation.passed = stat[0].count;
+  document.querySelector('#sp' + idx).innerText = stat[0].count;
+  document.querySelector('#sf' + idx).innerText = stat[1].count;
+}
+
 // filter tests on click a tag in tags table
 const onTagClick = (tag) => {
   tests.forEach((card) => {
@@ -170,11 +197,41 @@ const onTagClick = (tag) => {
       } else {
         card.classList.add('d-none');
       }
-  })
+  });
+  leafs.forEach((l) => {
+    if ([...l.querySelectorAll('.tag-list > *')]
+      .map(badge => badge.innerText)
+      .filter(text => text === tag).length) {
+        l.classList.remove('d-none');
+      } else {
+        l.classList.add('d-none');
+      }
+  });
   testContainers.forEach((container) => {
     container.querySelectorAll('.result').length == container.querySelectorAll('.result.d-none').length
       ? container.classList.add('d-none') : container.classList.remove('d-none');
   });
+
+  // redraw depth1 chart
+  if (stats1) {
+    redrawChart(stats1, stats1Annotation, testContainers, 1);
+    chart1.destroy();
+    depth1Chart();
+  }
+
+  // redraw depth2 chart
+  if (stats2) {
+    redrawChart(stats2, stats2Annotation, tests, 2);
+    chart2.destroy();
+    depth2Chart();
+  }
+
+  // redraw depth3 chart
+  if (stats3) {
+    redrawChart(stats3, stats3Annotation, leafs, 3);
+    chart3.destroy();
+    depth3Chart();
+  }
 }
 tags.forEach((e) => {
   e.addEventListener('click', el => {
@@ -184,9 +241,9 @@ tags.forEach((e) => {
 
 // resets state: clear all filters and removes modals
 const resetState = () => {
-  filterTests('');
-  toggleSysInfo(false);
-  toggleAttachmentModal(false);
+  setTimeout(function(){
+    window.location.reload(true);
+  });
 }
 
 // on key down events (shortcuts)

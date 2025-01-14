@@ -1,12 +1,13 @@
 <#if child.children?has_content>
   <div class="mt-3 border-top">
     <#list child.children as leaf>
+    <div class="leaf ${leaf.result?lower_case}">
       <div class="d-flex justify-content-between mt-3">
         <div>
           <#if leaf.result=='PASSED'>
             <i class="bi bi-check-circle-fill text-success"></i>
-            <#else>
-              <i class="bi bi-exclamation-octagon-fill text-danger"></i>
+          <#else>
+            <i class="bi bi-exclamation-octagon-fill text-danger"></i>
           </#if>
           <span class="ms-2">${leaf.name}</span>
         </div>
@@ -44,6 +45,7 @@ ${log}
           </#list>
         </div>
       </#if>
+    </div>
     </#list>
   </div>
 </#if>
