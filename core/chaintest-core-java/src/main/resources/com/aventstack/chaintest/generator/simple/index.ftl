@@ -352,7 +352,7 @@ ${log}
     <script src="resources/chart.umd.js"></script>
     <script src="resources/template.js"></script>
   <#else>
-    <script src="https://cdn.jsdelivr.net/gh/anshooarora/chaintest/cdn/simple/chaintest-pkg.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@44756c2b27c4da9d1141ae2de0fc3dda852f17a1/cdn/simple/version/chaintest-pkg.js"></script>
   </#if>
 
   <#if build.systemInfo?? && build.systemInfo?has_content>
