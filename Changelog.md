@@ -1,3 +1,8 @@
+## 1.0.6
+
+* [#25](../../issues/25) Prevent duplication from repeated test inputs to Stats (RunStats, TagStats)
+* [#26](../../issues/26) Enhancement: SimpleGenerator tag centric filters
+
 ## 1.0.5
 
 * [#16](../../issues/16) Add support for including TestNG DataProvider parameters
