@@ -25,7 +25,7 @@ ChainTest is still in active development, and only Java unit test frameworks are
 
 ## ChainLP
 
-ChainLP is a Java (Spring) server which packs the Angular frontend and is distributed as a Docker image. ChainLP is the framework component providing historical analytics.
+ChainLP (Chain-Long-Playing like [LP Record](https://en.wikipedia.org/wiki/LP_record)) is a Java (Spring) server which packs the Angular frontend and is distributed as a Docker image. ChainLP is the framework component providing historical analytics.
 
 Docker image is available from https://hub.docker.com/r/anshooarora/chaintest.
 
