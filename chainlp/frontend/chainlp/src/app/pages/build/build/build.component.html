@@ -116,11 +116,42 @@
       <div *ngIf="page">
         <div class="mt-3 mb-5 pb-3 border-bottom d-flex justify-content-between">
           <div>
-            <button type="button" class="btn btn-outline-success btn-sm" [ngClass]="{'active': result == 'PASSED'}"
-              (click)="result='PASSED';findTests()">Passed</button>
-            <button type="button" class="btn btn-outline-danger btn-sm ms-1" [ngClass]="{'active': result == 'FAILED'}"
-              (click)="result='FAILED';findTests()">Failed</button>
-            <button type="button" class="btn btn-outline-light btn-sm ms-1" (click)="result='';findTests()">Clear Filters</button>
+            <div ngbDropdown class="d-inline-block">
+              <button type="button" class="btn btn-outline-light" id="parentStatus" ngbDropdownToggle>
+                {{statusFilterHierarchy[0]}}
+              </button>
+              <div ngbDropdownMenu aria-labelledby="parentStatus">
+                <button ngbDropdownItem (click)="findTestsByStatus('PASSED', 0)"><i class="bi bi-check-circle-fill text-success me-1"></i> Passed</button>
+                <button ngbDropdownItem (click)="findTestsByStatus('FAILED', 0)"><i class="bi bi-exclamation-octagon-fill text-danger me-1"></i> Failed</button>
+              </div>
+            </div>
+            <div ngbDropdown class="d-inline-block" *ngIf="statusFilterHierarchy.length >= 2">
+              <button type="button" class="btn btn-outline-light ms-1" id="childStatus" ngbDropdownToggle>
+                {{statusFilterHierarchy[1]}}
+              </button>
+              <div ngbDropdownMenu aria-labelledby="childStatus">
+                <button ngbDropdownItem (click)="findTestsByStatus('PASSED', 1)"><i class="bi bi-check-circle-fill text-success me-1"></i> Passed</button>
+                <button ngbDropdownItem (click)="findTestsByStatus('FAILED', 1)"><i class="bi bi-exclamation-octagon-fill text-danger me-1"></i> Failed</button>
+              </div>
+            </div>
+            <div ngbDropdown class="d-inline-block" *ngIf="statusFilterHierarchy.length >= 3">
+              <button type="button" class="btn btn-outline-light ms-1" id="leafStatus" ngbDropdownToggle>
+                {{statusFilterHierarchy[2]}}
+              </button>
+              <div ngbDropdownMenu aria-labelledby="leafStatus">
+                <button ngbDropdownItem (click)="findTestsByStatus('PASSED', 2)"><i class="bi bi-check-circle-fill text-success me-1"></i> Passed</button>
+                <button ngbDropdownItem (click)="findTestsByStatus('FAILED', 2)"><i class="bi bi-exclamation-octagon-fill text-danger me-1"></i> Failed</button>
+                <button ngbDropdownItem (click)="findTestsByStatus('SKIPPED', 2)"><i class="bi bi-check-circle-fill text-info me-1"></i> Skipped</button>
+              </div>
+            </div>
+            <div ngbDropdown class="d-inline-block">
+              <button type="button" class="btn btn-outline-light ms-1" id="tagFilter" ngbDropdownToggle>
+                Tags
+              </button>
+              <div ngbDropdownMenu aria-labelledby="tagFilter">
+                <button ngbDropdownItem *ngFor="let tag of build.tags" (click)="filterTag(tag.name)">{{tag.name}}</button>
+              </div>
+            </div>
           </div>
           <div>
             <span class="small me-3">Showing {{page.content.length}} of {{testCount}} tests</span>

@@ -24,6 +24,10 @@ export abstract class BaseService<T> {
     return this.http.get<Page<T>>(this._path, { params: params });
   }
 
+  body(obj: T, params: HttpParams): Observable<Page<T>> {
+    return this.http.post<Page<T>>(this._path + '/q', obj, { params: params });
+  }
+
   findAll(page: number = 0, pageSize: number = 20, sort: string = ''): Observable<Page<T>> {
     const params = new HttpParams()
       .set('page', page)

@@ -18,6 +18,7 @@ export class Test extends Page<Test> {
     bdd: boolean;
     screenshotURL: string[];
     logs: string[];
+    depth: number;
 
     history: Page<Test>;
 }

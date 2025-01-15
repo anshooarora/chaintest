@@ -52,6 +52,20 @@ public class TestController {
         return ResponseEntity.ok(service.findAll(test, op, pageable));
     }
 
+    @PostMapping("/q")
+    public ResponseEntity<Page<Test>> body(@RequestBody final Test test,
+                                        final Pageable pageable) {
+        if (null != test.getChildren()) {
+            test.getChildren().forEach(x -> {
+                x.setParent(null);
+                if (null != x.getChildren()) {
+                    x.getChildren().forEach(y -> y.setParent(null));
+                }
+            });
+        }
+        return ResponseEntity.ok(service.findAll(test, "AND", pageable));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Test> find(@PathVariable final long id) {
         return ResponseEntity.ok(service.findById(id));

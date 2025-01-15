@@ -15,13 +15,13 @@
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.release>17</maven.compiler.release>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<hibernate.modelgen.ver>6.6.3.Final</hibernate.modelgen.ver>
+		<hibernate.modelgen.ver>6.6.4.Final</hibernate.modelgen.ver>
 	</properties>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.0</version>
+		<version>3.4.1</version>
 		<relativePath/>
 	</parent>
 

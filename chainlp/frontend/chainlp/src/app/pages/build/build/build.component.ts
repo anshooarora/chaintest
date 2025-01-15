@@ -24,11 +24,13 @@ export class BuildComponent implements OnInit, OnDestroy {
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
     
   private _destroy$: Subject<any> = new Subject<any>();
+  private _body$: Subject<any> = new Subject<any>();
   private _history$: Subject<any> = new Subject<any>();
   private _titles: any = {
     'cucumber-jvm': ['Feature', 'Scenario', 'Step'],
     'junit': ['Class', 'Method'],
     'junit-jupiter': ['Class', 'Method'],
+    'junit5': ['Class', 'Method'],
     'testng': ['Suite', 'Class', 'Method']
   };
 
@@ -38,10 +40,12 @@ export class BuildComponent implements OnInit, OnDestroy {
   displaySummary: boolean = true;
   buildDepth: number = 0;
   error: string;
-  result: string = '';
   pageNum: number = 0;
   tagDepth: number = 0;
   testCount: number | undefined = 0;
+
+  /* filter */
+  statusFilterHierarchy: string[];
 
   constructor(private route: ActivatedRoute,
     private _buildService: BuildService,
@@ -75,6 +79,8 @@ export class BuildComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroy$.next(null);
     this._destroy$.complete();
+    this._body$.next(null);
+    this._body$.complete();
   }
   
   /* charts */
@@ -185,11 +191,47 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
   
   findTests(pageNum: number = 0, append: boolean = false): void {
-    this._testService.search(0, '', this.build.projectId, this.buildId, 0, this.result, '', '', pageNum, 'AND', 'id,asc')
+    this._testService.search(0, '', this.build.projectId, this.buildId, 0, '', '', '', pageNum, 'AND', 'id,asc')
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (page: Page<Test>) => {
         this.page = append ? { ...page, content: [...this.page.content, ...page.content] } : page;
+        console.log(this.page);
+        this.findTestsHistory();
+      },
+      error: (err) => {
+        this.error = this._errorService.getError(err);
+      }
+    });
+  }
+
+  findTestsByStatus(result: string, depth: number): void {
+    const test = new Test();
+    test.buildId = this.buildId;
+    test.depth = 0;
+    if (depth === 0) {
+      test.result = result;
+    }
+    if (depth >= 1) {
+      test.result = '';
+      test.children = [new Test()];
+      test.children[0].buildId = this.buildId;
+      if (depth >= 2) {
+        test.children[0].result = '';
+        test.children[0].children = [new Test()];
+        test.children[0].children[0].depth = 2;
+        test.children[0].children[0].result = result;
+        test.children[0].children[0].buildId = this.buildId;
+      } else {
+        test.children[0].depth = 1;
+        test.children[0].result = result;
+      }
+    }
+    this._testService.withBody(test, 0, 'id,asc')
+    .pipe(takeUntil(this._body$))
+    .subscribe({
+      next: (page: Page<Test>) => {
+        this.page = page;
         console.log(this.page);
         this.findTestsHistory();
       },
@@ -218,7 +260,6 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   findAllTests(): void {
-    this.result = '';
     this.findTests(0, false);
   }
 
@@ -229,7 +270,7 @@ export class BuildComponent implements OnInit, OnDestroy {
 
   filterTag(tag: string): void {
     this.page = new Page<Test>();
-    this._testService.search(0, '', -1, this.buildId, 0, this.result, tag, '', 0, 'AND')
+    this._testService.search(0, '', -1, this.buildId, 0, '', tag, '', 0, 'AND')
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (page: Page<Test>) => {
@@ -243,9 +284,17 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   getTitles(): string[] {
+    let titles = [];
     if (this.build.testRunner == 'testng' && this.build.buildstats.length == 2) {
-      return this._titles['testng'].slice(1);
+      titles = this._titles['testng'].slice(1);
+    } else {
+      titles = this._titles[this.build.testRunner];
     }
-    return this._titles[this.build.testRunner];
+    if (this.build.testRunner == 'cucumber-jvm') {
+      this.statusFilterHierarchy = this._titles['cucumber-jvm'].slice(0, -1);
+    } else {
+      this.statusFilterHierarchy = this._titles[this.build.testRunner];
+    }
+    return titles;
   }
 }

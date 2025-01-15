@@ -45,6 +45,13 @@ export class TestService extends BaseService<Test> {
     return super.query(params)
   }
 
+  withBody(test: Test, pageNum: number = 0, sort: string = 'id,desc') {
+    let params = new HttpParams();
+    params = params.set('page', pageNum);
+    params = params.set('sort', sort);
+    return super.body(test, params)
+  }
+
   history(id: number) {
     return this.http.get<Page<Test>>(`${this._path}/${id}/history`);
   }

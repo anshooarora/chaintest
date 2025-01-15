@@ -4,6 +4,7 @@ import com.aventstack.chainlp.api.tag.Tag;
 import com.aventstack.chainlp.api.tag.Tag_;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -50,6 +51,26 @@ public class TestSpec implements Specification<Test> {
             );
         }
 
+        if (null != _test.getChildren() && !_test.getChildren().isEmpty()) {
+            final Join<Test, Test> testChildJoin = root.join(Test_.children);
+            final Test child = _test.getChildren().iterator().next();
+            if (!StringUtils.isBlank(_test.getChildren().iterator().next().getResult())) {
+                predicates.add(
+                        cb.equal(
+                            testChildJoin.get(Test_.result),
+                            child.getResult()
+                        ));
+            } else {
+                final String result = child.getChildren().iterator().next().getResult();
+                final Join<Test, Test> childLeafJoin = testChildJoin.join(Test_.children);
+                predicates.add(
+                        cb.equal(
+                            childLeafJoin.get(Test_.result),
+                            result
+                        ));
+            }
+        }
+
         addPredicateIfNotZero(predicates, cb, root.get(Test_.id), _test.getId());
         addPredicateIfNotBlank(predicates, cb, root.get(Test_.name), _test.getName());
         addPredicateIfNotNull(predicates, cb, root.get(Test_.projectId), _test.getProjectId());
@@ -59,7 +80,8 @@ public class TestSpec implements Specification<Test> {
         addPredicateIfNotBlank(predicates, cb, root.get(Test_.result), _test.getResult());
 
         return _op.equals(Predicate.BooleanOperator.AND)
-                ? cb.and(predicates.toArray(new Predicate[0])) : cb.or(predicates.toArray(new Predicate[0]));
+                ? cb.and(predicates.toArray(new Predicate[0]))
+                : cb.or(predicates.toArray(new Predicate[0]));
     }
 
     private void addPredicateIfNotZero(final List<Predicate> predicates, final CriteriaBuilder cb, Path<?> path, final long value) {

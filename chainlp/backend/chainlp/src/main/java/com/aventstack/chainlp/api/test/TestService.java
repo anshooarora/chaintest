@@ -50,6 +50,10 @@ public class TestService {
         if (null != test.getTags() && !test.getTags().isEmpty() && !page.isEmpty()) {
             filterChildrenForTags(page.getContent(), test.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
         }
+        if (null != test.getChildren() && !test.getChildren().isEmpty() && !page.isEmpty()) {
+            final short depth = getDepth(test, (short) 0);
+            filterChildrenForResult(page.getContent(), test.getChildren().iterator().next(), depth);
+        }
         for (final Test t : page.getContent()) {
             resolveEmbeds(t);
         }
@@ -74,6 +78,30 @@ public class TestService {
                 filterChildrenForTags(t.getChildren(), tags);
             }
         }
+    }
+
+    private void filterChildrenForResult(final List<Test> tests, final Test filter, final short depth) {
+        for (final Test t : tests) {
+            if (depth == 1) {
+                t.setChildren(t.getChildren().stream()
+                        .filter(x -> x.getResult().equals(filter.getResult()))
+                        .toList());
+            }
+            if (depth == 2) {
+                for (final Test child : t.getChildren()) {
+                    child.setChildren(child.getChildren().stream()
+                            .filter(x -> x.getResult().equals(filter.getChildren().iterator().next().getResult()))
+                            .toList());
+                }
+            }
+        }
+    }
+
+    public short getDepth(final Test test, final short startingDepth) {
+        if (null == test.getChildren() || test.getChildren().isEmpty()) {
+            return startingDepth;
+        }
+        return getDepth(test.getChildren().iterator().next(), (short) (startingDepth + 1));
     }
 
     @Cacheable(value = "test", key = "#id", unless = "#result == null")
