@@ -55,14 +55,7 @@ public class TestController {
     @PostMapping("/q")
     public ResponseEntity<Page<Test>> body(@RequestBody final Test test,
                                         final Pageable pageable) {
-        if (null != test.getChildren()) {
-            test.getChildren().forEach(x -> {
-                x.setParent(null);
-                if (null != x.getChildren()) {
-                    x.getChildren().forEach(y -> y.setParent(null));
-                }
-            });
-        }
+        service.clearParentRefs(test);
         return ResponseEntity.ok(service.findAll(test, "AND", pageable));
     }
 

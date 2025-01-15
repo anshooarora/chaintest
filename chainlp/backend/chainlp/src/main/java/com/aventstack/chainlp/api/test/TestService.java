@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -88,20 +89,30 @@ public class TestService {
                         .toList());
             }
             if (depth == 2) {
+                final List<Test> remove = new ArrayList<>();
                 for (final Test child : t.getChildren()) {
                     child.setChildren(child.getChildren().stream()
                             .filter(x -> x.getResult().equals(filter.getChildren().iterator().next().getResult()))
                             .toList());
+                    if (child.getChildren().isEmpty()) {
+                        remove.add(child);
+                    }
+                }
+                for (final Test r : remove) {
+                    t.getChildren().remove(r);
                 }
             }
         }
     }
 
     public short getDepth(final Test test, final short startingDepth) {
-        if (null == test.getChildren() || test.getChildren().isEmpty()) {
-            return startingDepth;
+        short depth = startingDepth;
+        Test currentTest = test;
+        while (currentTest.getChildren() != null && !currentTest.getChildren().isEmpty()) {
+            currentTest = currentTest.getChildren().iterator().next();
+            depth++;
         }
-        return getDepth(test.getChildren().iterator().next(), (short) (startingDepth + 1));
+        return depth;
     }
 
     @Cacheable(value = "test", key = "#id", unless = "#result == null")
@@ -170,6 +181,17 @@ public class TestService {
         log.info("Deleting all tests for build-id {}", buildId);
         repository.deleteByBuildId(buildId);
         log.info("Tests removed");
+    }
+
+    public void clearParentRefs(final Test test) {
+        if (null != test.getChildren()) {
+            test.getChildren().forEach(child -> {
+                child.setParent(null);
+                if (null != child.getChildren()) {
+                    child.getChildren().forEach(leaf -> leaf.setParent(null));
+                }
+            });
+        }
     }
 
 }

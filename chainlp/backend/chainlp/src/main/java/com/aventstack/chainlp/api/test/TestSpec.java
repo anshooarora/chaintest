@@ -41,36 +41,8 @@ public class TestSpec implements Specification<Test> {
     public Predicate toPredicate(final Root<Test> root, final CriteriaQuery<?> query, final CriteriaBuilder cb) {
         final List<Predicate> predicates = new ArrayList<>();
 
-        if (null != _test.getTags() && !_test.getTags().isEmpty()) {
-            final Set<String> tagNames = _test.getTags().stream()
-                    .map(Tag::getName).collect(Collectors.toSet());
-            predicates.add(
-                cb.and(
-                    root.join(Test_.tags).get(Tag_.name).in(tagNames)
-                )
-            );
-        }
-
-        if (null != _test.getChildren() && !_test.getChildren().isEmpty()) {
-            final Join<Test, Test> testChildJoin = root.join(Test_.children);
-            final Test child = _test.getChildren().iterator().next();
-            if (!StringUtils.isBlank(_test.getChildren().iterator().next().getResult())) {
-                predicates.add(
-                        cb.equal(
-                            testChildJoin.get(Test_.result),
-                            child.getResult()
-                        ));
-            } else {
-                final String result = child.getChildren().iterator().next().getResult();
-                final Join<Test, Test> childLeafJoin = testChildJoin.join(Test_.children);
-                predicates.add(
-                        cb.equal(
-                            childLeafJoin.get(Test_.result),
-                            result
-                        ));
-            }
-        }
-
+        addTagPredicates(predicates, cb, root);
+        addChildPredicates(predicates, cb, root);
         addPredicateIfNotZero(predicates, cb, root.get(Test_.id), _test.getId());
         addPredicateIfNotBlank(predicates, cb, root.get(Test_.name), _test.getName());
         addPredicateIfNotNull(predicates, cb, root.get(Test_.projectId), _test.getProjectId());
@@ -82,6 +54,42 @@ public class TestSpec implements Specification<Test> {
         return _op.equals(Predicate.BooleanOperator.AND)
                 ? cb.and(predicates.toArray(new Predicate[0]))
                 : cb.or(predicates.toArray(new Predicate[0]));
+    }
+
+    private void addTagPredicates(final List<Predicate> predicates, final CriteriaBuilder cb, final Root<Test> root) {
+        if (_test.getTags() != null && !_test.getTags().isEmpty()) {
+            final Set<String> tagNames = _test.getTags().stream()
+                    .map(Tag::getName).collect(Collectors.toSet());
+            predicates.add(
+                    cb.and(
+                            root.join(Test_.tags).get(Tag_.name).in(tagNames)
+                    )
+            );
+        }
+    }
+
+    private void addChildPredicates(final List<Predicate> predicates, final CriteriaBuilder cb, final Root<Test> root) {
+        if (_test.getChildren() != null && !_test.getChildren().isEmpty()) {
+            final Join<Test, Test> testChildJoin = root.join(Test_.children);
+            final Test child = _test.getChildren().iterator().next();
+            if (!StringUtils.isBlank(child.getResult())) {
+                predicates.add(
+                        cb.equal(
+                                testChildJoin.get(Test_.result),
+                                child.getResult()
+                        )
+                );
+            } else {
+                final String result = child.getChildren().iterator().next().getResult();
+                final Join<Test, Test> childLeafJoin = testChildJoin.join(Test_.children);
+                predicates.add(
+                        cb.equal(
+                                childLeafJoin.get(Test_.result),
+                                result
+                        )
+                );
+            }
+        }
     }
 
     private void addPredicateIfNotZero(final List<Predicate> predicates, final CriteriaBuilder cb, Path<?> path, final long value) {
