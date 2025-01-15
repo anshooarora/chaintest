@@ -83,7 +83,7 @@ export class ProjectMetricsComponent implements OnInit, OnDestroy {
   }
 
   openEnd(content: TemplateRef<any>) {
-    this.offcanvasService.open(content, { position: 'start', panelClass: 'w-75' });
+    this.offcanvasService.open(content, { position: 'end', panelClass: 'w-75' });
   }
 
 }

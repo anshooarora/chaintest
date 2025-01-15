@@ -1,5 +1,5 @@
 <ng-container>
-  <div class="row my-5">
+  <div class="row my-4 pb-4 border-bottom">
     <div class="col-4">
       <h5 class="mb-3 testname" [ngClass]="test.result.toLowerCase()">{{test.name}}</h5>
       <div class="">
@@ -10,10 +10,6 @@
       <div class="mt-2" *ngIf="test.tags">
         <span class="badge rounded-pill text-bg-secondary me-1" *ngFor="let tag of test.tags">{{tag.name}}</span>
       </div>
-      <div class="mt-3" *ngIf="showMeta">
-        <a [routerLink]="['builds', test.buildId]">
-          <span class="btn btn-outline-primary">Go to build {{test.buildId}} <i class="ms-1 bi bi-arrow-up-right-square"></i></span></a>
-      </div>
     </div>
     <div class="col-8">
       <div class="card mb-1" *ngFor="let child of test.children">
@@ -22,7 +18,7 @@
             <div>
               <i class="bi bi-check-circle-fill text-success" *ngIf="child.result.toString() == 'PASSED'"></i>
               <i class="bi bi-exclamation-octagon-fill text-danger" *ngIf="child.result.toString() != 'PASSED'"></i>
-              <span class="ms-2">{{child.name}}</span>
+              <span class="ms-2" [ngClass]="{'text-danger': child.result == 'FAILED'}">{{child.name}}</span>
             </div>
             <div>
               <span class="tags" *ngIf="child.tags && child.tags.length">
@@ -31,19 +27,19 @@
               <span class="badge bg-light">{{child.durationMs | prettyTime}}</span>
             </div>
           </div>
+          <div class="mt-2" *ngIf="child.logs && child.logs.length">
+            <pre>{{child.logs.join('\n')}}</pre>
+          </div>
           <div class="mt-2" *ngIf="child.error">
             <pre>{{child.error}}</pre>
           </div>
-          <div class="mt-2 screenshots" *ngIf="child.screenshotURL">
-            <img *ngFor="let s of child.screenshotURL" [src]="s" class="img-fluid" alt="screenshot" />
-          </div>
           <div class="pt-1 mt-3 border-top" *ngIf="child.children && child.children.length">
-            <div [ngClass]="{'mt-1': bdd, 'mt-3': !bdd}" *ngFor="let leaf of child.children">
+            <div *ngFor="let leaf of child.children">
               <div class="d-flex justify-content-between">
                 <div>
                   <i class="bi bi-check-circle-fill text-success" *ngIf="leaf.result.toString() == 'PASSED'"></i>
                   <i class="bi bi-exclamation-octagon-fill text-danger" *ngIf="leaf.result.toString() != 'PASSED'"></i>
-                  <span class="ms-2">{{leaf.name}}</span>
+                  <span class="ms-2" [ngClass]="{'text-danger': leaf.result == 'FAILED'}">{{leaf.name}}</span>
                 </div>
                 <div>
                   <span class="tags" *ngIf="leaf.tags && leaf.tags.length">
@@ -52,7 +48,20 @@
                   <span class="badge bg-light">{{leaf.durationMs | prettyTime}}</span>
                 </div>
               </div>
+              <code class="ms-4 small" *ngIf="leaf.description">{{leaf.description}}</code>
+              <div class="mt-2" *ngIf="leaf.logs && leaf.logs.length">
+                <pre>{{leaf.logs.join('\n')}}</pre>
+              </div>
+              <div class="mt-2 mb-4" *ngIf="leaf.error">
+                <pre>{{leaf.error}}</pre>
+              </div>
+              <div class="mt-2 screenshots" *ngIf="leaf.screenshotURL">
+                <img *ngFor="let s of leaf.screenshotURL" [src]="s" class="img-fluid" alt="screenshot" />
+              </div>
             </div>
+          </div>
+          <div class="mt-2 screenshots" *ngIf="child && child.screenshotURL">
+            <img *ngFor="let s of child.screenshotURL" [src]="s" class="img-fluid" alt="screenshot" />
           </div>
         </div>
       </div>
