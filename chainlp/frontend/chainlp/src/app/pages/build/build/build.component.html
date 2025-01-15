@@ -98,7 +98,7 @@
                       <td>{{stat.total}}</td>
                       <td>{{stat.passed}}</td>
                       <td>{{stat.failed}}</td>
-                      <td>{{stat.durationMs}}</td>
+                      <td>{{stat.durationMs | prettyTime}}</td>
                     </ng-container>
                   </tr>
                 </tbody>
@@ -203,8 +203,8 @@
                   <div class="mt-2" *ngIf="child.error">
                     <pre>{{child.error}}</pre>
                   </div>
-                  <div class="pt-1 mt-3 border-top" *ngIf="child.children && child.children.length">
-                    <div [ngClass]="{'mt-1': build.bdd, 'mt-3': !build.bdd}" *ngFor="let leaf of child.children">
+                  <div class="pt-3 mt-2 border-top" *ngIf="child.children && child.children.length">
+                    <div *ngFor="let leaf of child.children">
                       <div class="d-flex justify-content-between">
                         <div>
                           <i class="bi bi-check-circle-fill text-success" *ngIf="leaf.result.toString() == 'PASSED'"></i>
