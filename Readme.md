@@ -73,10 +73,34 @@ chaintest.generator.chainlp.enabled=true
 chaintest.generator.chainlp.host.url=<host:port>
 ```
 
-## Is Docker must to generate ChainTest Report?
-No, you do not necessarily need Docker to generate and view static reports with ChainTest. Docker is a convenient way to deploy and run applications with all their dependencies in an isolated environment, but for generating static reports, it is not a strict requirement.
+### Screenshots/Embeds
 
-## When Docker is Needed for ChainTest?
+The chaintest-core client is the framework component that supports plugins to store embeds for each report. For example, with SimpleGenerator, the client saves all embeds relative to the report file in the `resources` folder.
+
+For embeds to work with ChainLP, the client requires the following to be enabled:
+
+```
+# storage
+chaintest.storage.service.enabled=true
+# [azure-blob, aws-s3]
+chaintest.storage.service=azure-blob
+# s3 bucket or azure container name
+chaintest.storage.service.container-name=
+```
+
+There is still some work to be done within this area but a few quick pointers if you're ready to explore further:
+
+* Storage has been tested to work with both `azure-blob` and `aws-s3` if the bucket or container are `public` access enabled
+* For buckets/containers requiring auth, support for AWS S3 has been completed, and also supports pre-signed URLs when served to the frontend
+* Azure Blob is not fully supported (yet)
+* The client and ChainLP both use the [AWS Credential Chain](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html) to authenticate against the bucket and store/access blob data
+  * For ChainLP, the secrets can be configured via `<host>/settings` by clicking the `Secrets` tab
+
+## Is Docker required for all ChainTest reports?
+* Docker is not a requirement for any of the static reports (SimpleGenerator, EmailGenerator)
+* Docker is required to host ChainLP as it is only available as a Docker image
+
+## When is Docker required for ChainTest?
 In ChainTest's context, Docker is required only if setting up ChainLP given one or more of the below requirements:
 
 * Comprehensive Dashboard: Ideal for generating historical analytics and consolidating multiple project reports in one place.
