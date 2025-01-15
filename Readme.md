@@ -103,10 +103,8 @@ There is still some work to be done within this area but a few quick pointers if
 ## When is Docker required for ChainTest?
 In ChainTest's context, Docker is required only if setting up ChainLP given one or more of the below requirements:
 
-* Comprehensive Dashboard: Ideal for generating historical analytics and consolidating multiple project reports in one place.
-* Quick Setup: If you want to avoid manually setting up dependencies, Docker provides a pre-configured environment.
-* Consistency: Ensures that the application runs the same way across different systems without dependency conflicts.
-* Testing Complete Functionality: If you want to test the entire ChainTest environment with all its features (not just static report generation), Docker simplifies the setup.
+* Comprehensive Dashboard: Ideal for generating historical analytics and consolidating multiple project reports in one place
+* Quick Setup: If you want to avoid manually setting up dependencies, Docker provides a pre-configured environment
 
 ## Contributing
 
