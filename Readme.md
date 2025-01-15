@@ -1,4 +1,4 @@
-# ChainTest [![CodeFactor](https://www.codefactor.io/repository/github/anshooarora/chaintest/badge)](https://www.codefactor.io/repository/github/anshooarora/chaintest) [![Maven Central](https://img.shields.io/maven-central/v/com.aventstack/chaintest-core.svg?maxAge=300)](http://search.maven.org/#search|ga|1|g:"com.aventstack") ![Docker Image Version](https://img.shields.io/docker/v/anshooarora/chaintest?arch=amd64&style=flat&label=ChainLP)
+# ChainTest [![CodeFactor](https://www.codefactor.io/repository/github/anshooarora/chaintest/badge)](https://www.codefactor.io/repository/github/anshooarora/chaintest) [![Maven Central](https://img.shields.io/maven-central/v/com.aventstack/chaintest-core.svg?maxAge=300)](http://search.maven.org/#search|ga|1|g:"com.aventstack") [![Docker Image Version](https://img.shields.io/docker/v/anshooarora/chaintest?style=flat&label=ChainLP&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fanshooarora%2Fchaintest)](https://hub.docker.com/r/anshooarora/chaintest)
 
 A comprehensive reporting framework supporting multiple generators - static, email & realtime, historical analytics with ChainLP. 
 
