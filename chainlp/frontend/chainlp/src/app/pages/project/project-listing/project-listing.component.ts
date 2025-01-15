@@ -41,7 +41,7 @@ export class ProjectListingComponent implements OnInit, OnDestroy {
   }
 
   findAllProjects(pageNumber: number = 0): void {
-    this.projectService.findAll(pageNumber, 9)
+    this.projectService.findAll(pageNumber, 999)
     .pipe(takeUntil(this._destroy$))
       .subscribe({
         next: (response: Page<Project>) => {

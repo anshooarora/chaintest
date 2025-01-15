@@ -85,6 +85,15 @@ public class BuildService {
     public Build create(final Build build) {
         log.info("Creating new build {}", build);
         findAndAssociateProject(build);
+        final Optional<Build> lastBuild = repository.findFirstByProjectIdOrderByIdDesc(build.getProjectId());
+        lastBuild.ifPresent(last -> {
+            if (null != last.getDisplayId() && last.getDisplayId() > 0L) {
+                build.setDisplayId(last.getDisplayId() + 1);
+            }
+        });
+        if (null == build.getDisplayId() || 0L == build.getDisplayId()) {
+            build.setDisplayId(1L);
+        }
         final Build persisted = repository.save(build);
         if (null != build.getSystemInfo()) {
             build.getSystemInfo().forEach(x -> x.setBuild(persisted));
@@ -120,7 +129,10 @@ public class BuildService {
         log.info("Updating build {}", build);
         final Optional<Build> foundBuild = repository.findById(build.getId());
         foundBuild.ifPresentOrElse(
-                persisted -> updateBuild(build),
+                persisted -> {
+                    build.setDisplayId(persisted.getDisplayId());
+                    updateBuild(build);
+                },
                 () -> { throw new BuildNotFoundException("Build with ID " + build.getId() + " was not found"); }
         );
         return build;

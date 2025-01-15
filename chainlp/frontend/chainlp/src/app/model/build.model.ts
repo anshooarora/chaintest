@@ -7,6 +7,7 @@ import { Tag } from "./tag.model";
 
 export class Build extends Page<Build> {
   id: number;
+  displayId: number;
   projectId: number;
   projectName: string;
   buildstats: BuildStats[];

@@ -37,6 +37,9 @@ public class Build {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "display_id")
+    private Long displayId;
+
     @Column(name = "project_id")
     private Integer projectId;
 
