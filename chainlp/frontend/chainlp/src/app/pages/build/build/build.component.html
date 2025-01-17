@@ -197,12 +197,6 @@
                       <span class="badge bg-light">{{child.durationMs | prettyTime}}</span>
                     </div>
                   </div>
-                  <div class="mt-2" *ngIf="child.logs && child.logs.length">
-                    <pre>{{child.logs.join('\n')}}</pre>
-                  </div>
-                  <div class="mt-2" *ngIf="child.error">
-                    <pre>{{child.error}}</pre>
-                  </div>
                   <div class="pt-3 mt-2 border-top" *ngIf="child.children && child.children.length">
                     <div *ngFor="let leaf of child.children">
                       <div class="d-flex justify-content-between">
@@ -229,6 +223,12 @@
                         <img *ngFor="let s of leaf.embeds" [src]="s.presigned || s.url" class="img-fluid" alt="screenshot" />
                       </div>
                     </div>
+                  </div>
+                  <div class="mt-2" *ngIf="child.logs && child.logs.length">
+                    <pre>{{child.logs.join('\n')}}</pre>
+                  </div>
+                  <div class="mt-2" *ngIf="child.error">
+                    <pre>{{child.error}}</pre>
                   </div>
                   <div class="mt-2 screenshots" *ngIf="child.embeds && child.embeds.length">
                     <img *ngFor="let s of child.embeds" [src]="s.presigned || s.url" class="img-fluid" alt="screenshot" />
