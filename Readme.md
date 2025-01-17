@@ -77,6 +77,8 @@ chaintest.generator.chainlp.host.url=<host:port>
 
 The chaintest-core client is the framework component that supports plugins to store embeds for each report. For example, with SimpleGenerator, the client saves all embeds relative to the report file in the `resources` folder.
 
+Storage support will be available with S3 start version `1.0.7` of plugins and `0.0.5` of ChainLP. At present, screenshots/embeds are not available with ChainLP
+
 For embeds to work with ChainLP, the client requires the following to be enabled:
 
 ```
@@ -88,12 +90,11 @@ chaintest.storage.service=azure-blob
 chaintest.storage.service.container-name=
 ```
 
-There is still some work to be done within this area but a few quick pointers if you're ready to explore further:
-
-* Storage has been tested to work with `aws-s3`
+* Storage support will be released in `1.0.7` and will initially be rolled out for `aws-s3` only
   * Storage parameters need to be configured on both client-side and on ChainLP
   * The client and ChainLP both use the [AWS Credential Chain](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html) to authenticate against the bucket and store/access blob data
   * For ChainLP, the secrets can be configured via `<host>/settings` by clicking the `Secrets` tab which will set these parameters as System properties and ChainLP will create a presigned URL for each embed
+* Future support will be available for Azure Blob and storing embed data directly in the database (which means, blob storage will not be required, more on this later)
 
 ## Is Docker required for all ChainTest reports?
 * Docker is not a requirement for any of the static reports (SimpleGenerator, EmailGenerator)
