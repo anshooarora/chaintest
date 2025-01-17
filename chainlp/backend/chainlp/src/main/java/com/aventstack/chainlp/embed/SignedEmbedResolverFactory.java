@@ -14,9 +14,9 @@ public class SignedEmbedResolverFactory {
     public SignedEmbedResolverFactory() { }
 
     public SignedUrlResolver getResolver(final String path) {
-        final boolean useSignedUrls = Boolean.parseBoolean(System.getenv(CHAINTEST_USE_SIGNED_URLS))
-                || Boolean.parseBoolean(System.getProperty(CHAINTEST_USE_SIGNED_URLS, "false"));
-        if (!useSignedUrls) {
+        if (!path.toLowerCase().contains(".amazonaws.")
+                && !path.toLowerCase().contains(".windows.")
+                && !path.toLowerCase().contains(".azure.")) {
             return defaultResolver;
         }
 

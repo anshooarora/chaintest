@@ -111,10 +111,15 @@ public class Test {
     @Column(columnDefinition = "TEXT")
     private String error;
 
-    @ElementCollection
-    @CollectionTable(name = "screenshot", joinColumns = @JoinColumn(name="id"))
-    @Column
-    private List<String> screenshotURL;
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
+    private List<Embed> embeds;
+
+    public void setEmbeds(final List<Embed> embeds) {
+        this.embeds = embeds;
+        if (embeds != null) {
+            embeds.forEach(x -> x.setTest(this));
+        }
+    }
 
     @ElementCollection
     @CollectionTable(name = "log", joinColumns = @JoinColumn(name="id"))

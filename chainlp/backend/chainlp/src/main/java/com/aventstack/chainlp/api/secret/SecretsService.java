@@ -43,7 +43,8 @@ public class SecretsService {
             },
             () -> log.debug("Creating new secret")
         );
-        System.setProperty(secret.getK(), secret.getV());
+        decode(secret);
+        System.setProperty(secret.getK(), secret.getDecoded());
         repository.save(secret);
     }
 

@@ -16,15 +16,20 @@ public class AwsS3SignedUrlResolver implements SignedUrlResolver {
 
     @Override
     public String resolve(final String path) {
-        log.debug("Resolving path: [{}]", path);
-        final URI uri = URI.create(path);
-        final S3Client s3Client = S3Client.create();
-        final S3Uri s3URI = s3Client.utilities().parseUri(uri);
-        final String bucket = s3URI.bucket()
-                .orElseThrow(() -> new IllegalArgumentException("Bucket not found"));
-        final String key = s3URI.key()
-                .orElseThrow(() -> new IllegalArgumentException("Key not found"));
-        return createPresignedGetUrl(bucket, key);
+        try {
+            log.debug("Resolving path: [{}]", path);
+            final URI uri = URI.create(path);
+            final S3Client s3Client = S3Client.create();
+            final S3Uri s3URI = s3Client.utilities().parseUri(uri);
+            final String bucket = s3URI.bucket()
+                    .orElseThrow(() -> new IllegalArgumentException("Bucket not found"));
+            final String key = s3URI.key()
+                    .orElseThrow(() -> new IllegalArgumentException("Key not found"));
+            return createPresignedGetUrl(bucket, key);
+        } catch (final Exception e) {
+            log.error("Failed to resolve path: [{}]", path, e);
+            return path;
+        }
     }
 
     public String createPresignedGetUrl(final String bucket, final String key) {

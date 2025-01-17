@@ -62,9 +62,10 @@ public class TestService {
     }
 
     private Test resolveEmbeds(final Test test) {
-        for (final String s : test.getScreenshotURL()) {
-            test.getScreenshotURL().set(test.getScreenshotURL().indexOf(s),
-                    embedResolver.getResolver(s).resolve(s));
+        for (final Embed embed : test.getEmbeds()) {
+            final String presigned = embedResolver.getResolver(embed.getUrl())
+                    .resolve(embed.getUrl());
+            embed.setPresigned(presigned);
         }
         test.getChildren().forEach(this::resolveEmbeds);
         return test;
