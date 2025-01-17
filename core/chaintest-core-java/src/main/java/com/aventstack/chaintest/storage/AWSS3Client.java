@@ -41,6 +41,7 @@ public class AWSS3Client implements StorageService {
 
     private S3Client _client;
     private String _bucket;
+    private String _prefix;
 
     @Override
     public boolean create(final Map<String, String> config) {
@@ -51,11 +52,16 @@ public class AWSS3Client implements StorageService {
                     .build();
             _bucket = config.getOrDefault(STORAGE_CONTAINER_NAME, DEFAULT_CONTAINER_NAME);
             _bucket = _bucket.isBlank() ? DEFAULT_CONTAINER_NAME : _bucket;
+            log.info("S3 client ready, using bucket: {}", _bucket);
             return true;
         } catch (final Exception e) {
             log.error("Failed to create AWS S3 client", e);
             return false;
         }
+    }
+
+    public void withPrefix(final String prefix) {
+        _prefix = prefix;
     }
 
     private void createBucket(final String bucketName) {
@@ -76,10 +82,11 @@ public class AWSS3Client implements StorageService {
 
     @Override
     public void upload(final Test test, final String key, final byte[] data) {
-        _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(key)
+        final String prefixKey = getPrefixKey(_prefix, key);
+        _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(prefixKey)
                         .build(),
                 RequestBody.fromBytes(data));
-        assignURL(test, key);
+        assignURL(test, prefixKey);
     }
 
     private void assignURL(final Test test, final String key) {
@@ -95,10 +102,11 @@ public class AWSS3Client implements StorageService {
 
     @Override
     public void upload(final Test test, final String key, final File file) {
-        _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(key)
+        final String prefixKey = getPrefixKey(_prefix, key);
+        _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(prefixKey)
                         .build(),
                 RequestBody.fromFile(file));
-        assignURL(test, key);
+        assignURL(test, prefixKey);
     }
 
     @Override

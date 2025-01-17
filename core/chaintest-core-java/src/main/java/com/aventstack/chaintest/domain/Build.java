@@ -61,8 +61,8 @@ public class Build implements ChainTestEntity {
      * @param testRunner the test runner
      */
     public Build(final int projectId, final String testRunner) {
+        this(testRunner);
         this.projectId = projectId;
-        this.testRunner = testRunner;
     }
 
     /**
@@ -72,8 +72,8 @@ public class Build implements ChainTestEntity {
      * @param testRunner  the test runner
      */
     public Build(final String projectName, final String testRunner) {
+        this(testRunner);
         this.projectName = projectName;
-        this.testRunner = testRunner;
     }
 
     /**

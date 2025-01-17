@@ -9,6 +9,7 @@ import com.aventstack.chaintest.generator.ChainTestPropertyKeys;
 import com.aventstack.chaintest.generator.Generator;
 import com.aventstack.chaintest.storage.StorageService;
 import com.aventstack.chaintest.storage.StorageServiceFactory;
+import com.aventstack.chaintest.util.DateTimeUtil;
 import com.aventstack.chaintest.util.RegexUtil;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ public class ChainPluginService {
     private static final String GEN_PATTERN = "chaintest.generator.[a-zA-Z]+.enabled";
     private static final String STORAGE_SERVICE = "chaintest.storage.service";
     private static final String STORAGE_SERVICE_ENABLED = STORAGE_SERVICE + ".enabled";
+    private static final String DATE_TIME_PATTERN = "yyyyMMddHHmmss";
     private static final Queue<Test> _tests = new ConcurrentLinkedQueue<>();
     private static final Map<String, Embed> _embeds = new ConcurrentHashMap<>();
     private static final Map<String, Queue<String>> _logs = new ConcurrentHashMap<>();
@@ -140,6 +142,8 @@ public class ChainPluginService {
             final StorageService storageService = StorageServiceFactory.getStorageService(name);
             if (storageService.create(config)) {
                 _storageService = storageService;
+                final String prefix = DateTimeUtil.toFormat(_build.getStartedAt(), DATE_TIME_PATTERN);
+                _storageService.withPrefix(prefix);
             }
         }
     }
@@ -178,7 +182,6 @@ public class ChainPluginService {
     }
 
     public void embed(final String externalId, final Embed embed) {
-        System.out.println("Setting embed for " + externalId);
         _embeds.put(externalId, embed);
         embed(_tests, externalId, embed);
     }

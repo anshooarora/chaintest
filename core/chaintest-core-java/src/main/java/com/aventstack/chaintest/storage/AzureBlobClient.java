@@ -41,6 +41,7 @@ public class AzureBlobClient implements StorageService {
     private static final String AZURE_CONTAINER_NAME = "AZURE_CONTAINER_NAME";
 
     private BlobContainerClient _containerClient;
+    private String _prefix;
 
     @Override
     public boolean create(final Map<String, String> config) {
@@ -84,11 +85,16 @@ public class AzureBlobClient implements StorageService {
         return serviceClient.getBlobContainerClient(containerName);
     }
 
+    public void withPrefix(final String prefix) {
+        _prefix = prefix;
+    }
+
     @Override
     public void upload(final Test test, final String key, final byte[] data) {
+        final String prefixKey = getPrefixKey(_prefix, key);
         try (final ByteArrayInputStream inputStream = new ByteArrayInputStream(data)) {
-            _containerClient.getBlobClient(key + ".png").upload(inputStream, data.length);
-            test.addScreenshotURL(_containerClient.getBlobClient(key + ".png").getBlobUrl());
+            _containerClient.getBlobClient(prefixKey).upload(inputStream, data.length);
+            test.addScreenshotURL(_containerClient.getBlobClient(key).getBlobUrl());
         } catch (Exception e) {
             log.error("Failed to upload key {} to Azure Blob Storage", key, e);
         }
@@ -102,8 +108,9 @@ public class AzureBlobClient implements StorageService {
 
     @Override
     public void upload(final Test test, final String key, final File file) {
+        final String prefixKey = getPrefixKey(_prefix, key);
         try {
-            _containerClient.getBlobClient(key)
+            _containerClient.getBlobClient(prefixKey)
                     .uploadFromFile(file.getAbsolutePath());
             test.addScreenshotURL(_containerClient
                     .getBlobClient(key + ".png").getBlobUrl());

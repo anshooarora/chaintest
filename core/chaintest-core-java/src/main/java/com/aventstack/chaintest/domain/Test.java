@@ -4,6 +4,7 @@ import com.aventstack.chaintest.util.ExceptionsUtil;
 import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +20,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
 /**
@@ -132,7 +132,8 @@ public class Test implements ChainTestEntity {
     @JsonIgnore
     private Test parent;
 
-    private final List<String> screenshotURL = new ArrayList<>();
+    @JsonProperty("embeds")
+    private final List<BasicEmbed> basicEmbeds = new ArrayList<>();
 
     /**
      * Default constructor.
@@ -453,7 +454,11 @@ public class Test implements ChainTestEntity {
     }
 
     public void addScreenshotURL(final String url) {
-        screenshotURL.add(url);
+        addBasicEmbed(url);
+    }
+
+    public void addBasicEmbed(final String url) {
+        basicEmbeds.add(new BasicEmbed(url));
     }
 
 }
