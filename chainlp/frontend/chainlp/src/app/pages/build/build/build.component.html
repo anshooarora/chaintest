@@ -225,13 +225,13 @@
                       <div class="mt-2 mb-4" *ngIf="leaf.error">
                         <pre>{{leaf.error}}</pre>
                       </div>
-                      <div class="mt-2 screenshots" *ngIf="leaf.screenshotURL">
-                        <img *ngFor="let s of leaf.screenshotURL" [src]="s" class="img-fluid" alt="screenshot" />
+                      <div class="mt-2 mb-4 screenshots" *ngIf="leaf.embeds && leaf.embeds.length">
+                        <img *ngFor="let s of leaf.embeds" [src]="s.presigned || s.url" class="img-fluid" alt="screenshot" />
                       </div>
                     </div>
                   </div>
-                  <div class="mt-2 screenshots" *ngIf="child && child.screenshotURL">
-                    <img *ngFor="let s of child.screenshotURL" [src]="s" class="img-fluid" alt="screenshot" />
+                  <div class="mt-2 screenshots" *ngIf="child.embeds && child.embeds.length">
+                    <img *ngFor="let s of child.embeds" [src]="s.presigned || s.url" class="img-fluid" alt="screenshot" />
                   </div>
                 </div>
               </div>

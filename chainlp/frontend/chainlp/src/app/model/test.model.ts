@@ -1,5 +1,6 @@
 import { Page } from "./page.model";
 import { Tag } from "./tag.model";
+import { Embed } from "./embed.model";
 
 export class Test extends Page<Test> {
     id: number;
@@ -16,9 +17,9 @@ export class Test extends Page<Test> {
     children: Test[];
     error: string;
     bdd: boolean;
-    screenshotURL: string[];
     logs: string[];
     depth: number;
+    embeds: Embed[];
 
     history: Page<Test>;
 }

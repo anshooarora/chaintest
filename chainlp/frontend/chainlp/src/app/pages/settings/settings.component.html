@@ -43,13 +43,13 @@
                     <div class="row">
                       <div class="input-group">
                         <input type="password" class="form-control" placeholder="AWS_ACCESS_KEY_ID"
-                          aria-label="AWS_ACCESS_KEY_ID" [(ngModel)]="awsSecrets.AWS_ACCESS_KEY_ID"
+                          aria-label="AWS_ACCESS_KEY_ID" [(ngModel)]="awsSecrets['aws.accessKeyId']"
                           title="Specifies an AWS access key associated with an IAM account" />
                         <input type="password" class="form-control" placeholder="AWS_SECRET_ACCESS_KEY"
-                          aria-label="AWS_SECRET_ACCESS_KEY" [(ngModel)]="awsSecrets.AWS_SECRET_ACCESS_KEY"
+                          aria-label="AWS_SECRET_ACCESS_KEY" [(ngModel)]="awsSecrets['aws.secretAccessKey']"
                           title="Specifies the secret key associated with the access key. This is essentially the password for the access key" />
                         <input type="text" class="form-control" placeholder="AWS_REGION"
-                          aria-label="AWS_REGION" [(ngModel)]="awsSecrets.AWS_REGION"
+                          aria-label="AWS_REGION" [(ngModel)]="awsSecrets['aws.region']"
                           title="Identifies the AWS Region whose servers you want to send your requests to by default" />
                         <button class="btn btn-primary" type="button" (click)="saveSecrets(awsSecrets)">Save</button>
                       </div>

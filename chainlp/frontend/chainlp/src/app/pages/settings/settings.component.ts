@@ -28,9 +28,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   /* aws credentials */
   awsSecrets: any = {
-    AWS_ACCESS_KEY_ID: '',
-    AWS_SECRET_ACCESS_KEY: '',
-    AWS_REGION: ''
+    'aws.accessKeyId': '',
+    'aws.secretAccessKey': '',
+    'aws.region': ''
   };
 
   /* azure credentials */
