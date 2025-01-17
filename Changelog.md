@@ -1,3 +1,9 @@
+## 1.0.7
+
+* [#42](../../issues/42) EmailGenerator: Fails to save file in a location other than target/chaintest
+* [#37](../../issues/37) ChainTest Core: Improve handling of embed storage
+* [#34](../../issues/34) Unable to see the logs in the static report using ChainTestListener.log() method
+
 ## 1.0.6
 
 * [#25](../../issues/25) Prevent duplication from repeated test inputs to Stats (RunStats, TagStats)
