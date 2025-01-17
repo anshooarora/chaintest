@@ -90,11 +90,10 @@ chaintest.storage.service.container-name=
 
 There is still some work to be done within this area but a few quick pointers if you're ready to explore further:
 
-* Storage has been tested to work with both `azure-blob` and `aws-s3` if the bucket or container are `public` access enabled
-* For buckets/containers requiring auth, support for AWS S3 has been completed, and also supports pre-signed URLs when served to the frontend
-* Azure Blob is not fully supported (yet)
-* The client and ChainLP both use the [AWS Credential Chain](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html) to authenticate against the bucket and store/access blob data
-  * For ChainLP, the secrets can be configured via `<host>/settings` by clicking the `Secrets` tab
+* Storage has been tested to work with `aws-s3`
+  * Storage parameters need to be configured on both client-side and on ChainLP
+  * The client and ChainLP both use the [AWS Credential Chain](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html) to authenticate against the bucket and store/access blob data
+  * For ChainLP, the secrets can be configured via `<host>/settings` by clicking the `Secrets` tab which will set these parameters as System properties and ChainLP will create a presigned URL for each embed
 
 ## Is Docker required for all ChainTest reports?
 * Docker is not a requirement for any of the static reports (SimpleGenerator, EmailGenerator)
