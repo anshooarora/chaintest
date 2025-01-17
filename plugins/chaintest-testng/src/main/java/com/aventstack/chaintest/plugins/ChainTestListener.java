@@ -97,7 +97,7 @@ public class ChainTestListener implements
 
     @Override
     public void beforeInvocation(final IInvokedMethod method, final ITestResult result) {
-        if (method.isConfigurationMethod() && method.getTestMethod().isBeforeMethodConfiguration()) {
+        if (method.isConfigurationMethod() && method.getTestMethod().isBeforeMethodConfiguration() || method.isTestMethod()) {
             _allowLog.set(true);
         }
         if (method.isTestMethod()) {
