@@ -17,6 +17,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   error: any;
   active: number = 1;
+  version: string = '0.0.5';
 
   /* theme */
   themes: Theme[] = [
