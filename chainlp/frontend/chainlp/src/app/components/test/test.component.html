@@ -11,7 +11,7 @@
         <span class="badge rounded-pill text-bg-secondary me-1" *ngFor="let tag of test.tags">{{tag.name}}</span>
       </div>
       <div class="mt-3" *ngIf="showMeta">
-        <a [routerLink]="['builds', test.buildId]">
+        <a [routerLink]="['/', 'builds', test.buildId]">
           <span class="btn btn-outline-primary">Go to build {{test.buildId}} <i class="ms-1 bi bi-arrow-up-right-square"></i></span></a>
       </div>
     </div>
