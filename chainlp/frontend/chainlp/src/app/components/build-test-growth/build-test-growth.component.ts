@@ -57,7 +57,7 @@ export class BuildTestGrowthComponent {
     const builds: Build[] = this.builds.content;
     for (let i = 0; i < builds.length; i++) {
       if (builds[i].buildstats.length > 0) {
-        this.data.labels?.push('#' + builds[i].id);
+        this.data.labels?.push('#' + builds[i].displayId);
         this.data.datasets[0].data.push(builds[i].buildstats[0].total);
       }
     }

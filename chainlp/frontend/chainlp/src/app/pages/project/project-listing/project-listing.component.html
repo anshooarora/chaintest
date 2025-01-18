@@ -58,8 +58,8 @@
                 <a class="status-bar" 
                   *ngFor="let build of project.builds.content | slice:0:12"
                   [ngClass]="{'status-success': build.result.toString() == 'PASSED', 'status-failure': build.result.toString() != 'PASSED'}"
-                  [routerLink]="['/', 'projects', project.id, 'builds', build.id]"
-                  ngbTooltip="{{build.result}}, {{build.startedAt | timeago}} - Took {{moment.utc(build.durationMs).format('HH:mm:ss')}}"
+                  [routerLink]="['/', 'projects', project.id, 'builds', build.displayId]"
+                  ngbTooltip="#{{build.displayId}} {{build.result}}, {{build.startedAt | timeago}} - Took {{moment.utc(build.durationMs).format('HH:mm:ss')}}"
                   tooltipClass="text-sm">
                 </a>
                 <div class="ms-auto pointer d-on-hover-target" ngbDropdown>

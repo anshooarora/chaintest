@@ -47,6 +47,16 @@ public class Test {
     @Column(name = "build_id")
     private Long buildId;
 
+    @Column(name = "build_display_id")
+    private Long buildDisplayId;
+
+    public void setBuildDisplayId(final Long buildDisplayId) {
+        this.buildDisplayId = buildDisplayId;
+        if (children != null) {
+            children.forEach(x -> x.setBuildDisplayId(buildDisplayId));
+        }
+    }
+
     @Column(name = "project_id")
     private Integer projectId;
 

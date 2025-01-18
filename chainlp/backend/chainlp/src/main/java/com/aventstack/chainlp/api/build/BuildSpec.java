@@ -24,6 +24,7 @@ public class BuildSpec implements Specification<Build> {
         final List<Predicate> predicates = new ArrayList<>();
 
         addPredicateIfNotZero(predicates, cb, root.get(Build_.id), _build.getId());
+        addPredicateIfNotZero(predicates, cb, root.get(Build_.displayId), _build.getDisplayId());
         addPredicateIfNotNull(predicates, cb, root.get(Build_.projectId), _build.getProjectId());
         addPredicateIfNotNullAndEmpty(predicates, cb, root.get(Build_.result), _build.getResult());
 

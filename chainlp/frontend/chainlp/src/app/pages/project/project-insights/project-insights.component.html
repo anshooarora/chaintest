@@ -60,7 +60,7 @@
                     <td>{{ project.name }}</td>
                     <ng-container *ngIf="project.builds && project.builds.content">
                       <td *ngFor="let build of project.builds.content">
-                        <span class="" role="button" [routerLink]="['/', 'projects', project.id, 'builds', build.id]">
+                        <span class="" role="button" [routerLink]="['/', 'projects', project.id, 'builds', build.displayId]">
                           <i class="bi bi-check-circle-fill text-success" *ngIf="build.result == 'PASSED'"></i>
                           <i class="bi bi-x-circle-fill text-danger" *ngIf="build.result != 'PASSED'"></i>
                         </span>

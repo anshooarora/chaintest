@@ -36,4 +36,11 @@ export class BuildService extends BaseService<Build> {
     return this.query(params);
   }
 
+  findByDisplayId(projectId: number, displayId: number): Observable<Page<Build>> {
+    const params = new HttpParams()
+      .set('projectId', projectId)
+      .set('displayId', displayId);
+      return this.query(params);
+  }
+
 }

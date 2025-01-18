@@ -5,6 +5,8 @@ import { Embed } from "./embed.model";
 export class Test extends Page<Test> {
     id: number;
     buildId: number;
+    buildDisplayId: number;
+    projectId: number;
     startedAt: Date;
     endedAt: Date;
     durationMs: number;

@@ -1,5 +1,6 @@
 package com.aventstack.chainlp.api.test;
 
+import com.aventstack.chainlp.api.build.Build;
 import com.aventstack.chainlp.api.build.BuildService;
 import com.aventstack.chainlp.api.project.ProjectService;
 import com.aventstack.chainlp.api.tag.Tag;
@@ -134,11 +135,18 @@ public class TestService {
 
         // if client does not provide a project-id, we will try to find the project-id from the build
         if (null == test.getProjectId() || 0L == test.getProjectId()) {
-            final Integer projectId = buildService.findById(test.getBuildId()).getProjectId();
+            final Build build = buildService.findById(test.getBuildId());
+            final Integer projectId = build.getProjectId();
             test.setProjectId(projectId);
+            test.setBuildDisplayId(build.getDisplayId());
         } else {
             // else, we will check if the project exists
             projectService.findById(test.getProjectId());
+        }
+
+        if (null == test.getBuildDisplayId() || 0L == test.getBuildDisplayId()) {
+            final Build build = buildService.findById(test.getBuildId());
+            test.setBuildDisplayId(build.getDisplayId());
         }
 
         test.getChildren().forEach(x -> x.setProjectId(test.getProjectId()));

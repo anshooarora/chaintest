@@ -34,7 +34,9 @@ export class BuildComponent implements OnInit, OnDestroy {
     'testng': ['Suite', 'Class', 'Method']
   };
 
+  projectId: number;
   buildId: number;
+  buildDisplayId: number;
   build: Build;
   page: Page<Test>;
   displaySummary: boolean = true;
@@ -56,14 +58,14 @@ export class BuildComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(val => {
+      this.projectId = parseInt(this.route.snapshot.paramMap.get('projectId') || '0');
       let id = this.route.snapshot.paramMap.get('buildId') || '0';
-      if (this.buildId == parseInt(id)) {
+      if (this.buildDisplayId == parseInt(id)) {
         return;
       }
       this.resetAll();
-      this.buildId = parseInt(id);
+      this.buildDisplayId = parseInt(id);
       this.findBuild();
-      this.findTests();
     });
   }
 
@@ -157,10 +159,13 @@ export class BuildComponent implements OnInit, OnDestroy {
   }
 
   findBuild(): void {
-    this._buildService.find(this.buildId)
+    this._buildService.findByDisplayId(this.projectId, this.buildDisplayId)
     .pipe(takeUntil(this._destroy$))
     .subscribe({
-      next: (build: Build) => {
+      next: (page: Page<Build>) => {
+        const build = page.content[0];
+        this.buildId = build.id;
+        this.findTests();
         if (build.testRunner.indexOf('cucumber') > -1) {
           this.tagDepth = 1;
         } else {
@@ -207,7 +212,7 @@ export class BuildComponent implements OnInit, OnDestroy {
 
   findTestsByStatus(result: string, depth: number): void {
     const test = new Test();
-    test.buildId = this.buildId;
+    test.buildId = this.buildDisplayId;
     test.depth = 0;
     if (depth === 0) {
       test.result = result;
@@ -215,13 +220,13 @@ export class BuildComponent implements OnInit, OnDestroy {
     if (depth >= 1) {
       test.result = '';
       test.children = [new Test()];
-      test.children[0].buildId = this.buildId;
+      test.children[0].buildId = this.buildDisplayId;
       if (depth >= 2) {
         test.children[0].result = '';
         test.children[0].children = [new Test()];
         test.children[0].children[0].depth = 2;
         test.children[0].children[0].result = result;
-        test.children[0].children[0].buildId = this.buildId;
+        test.children[0].children[0].buildId = this.buildDisplayId;
       } else {
         test.children[0].depth = 1;
         test.children[0].result = result;
@@ -270,7 +275,7 @@ export class BuildComponent implements OnInit, OnDestroy {
 
   filterTag(tag: string): void {
     this.page = new Page<Test>();
-    this._testService.search(0, '', -1, this.buildId, 0, '', tag, '', 0, 'AND')
+    this._testService.search(0, '', -1, this.buildDisplayId, 0, '', tag, '', 0, 'AND')
     .pipe(takeUntil(this._destroy$))
     .subscribe({
       next: (page: Page<Test>) => {

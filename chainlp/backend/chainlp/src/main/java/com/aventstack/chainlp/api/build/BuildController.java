@@ -24,12 +24,13 @@ public class BuildController {
 
     @GetMapping
     public ResponseEntity<Page<Build>> findAll(@RequestParam(required = false, defaultValue = "0") final long id,
+                                               @RequestParam(required = false, defaultValue = "0") final Long displayId,
                                                @RequestParam(required = false) final Integer projectId,
                                                @RequestParam(required = false) final String result,
                                                @RequestParam(required = false) final Long startedAfter,
                                                @RequestParam(required = false) final Long endedBefore,
                                                final Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(id, projectId, result, startedAfter, endedBefore, pageable));
+        return ResponseEntity.ok(service.findAll(id, displayId, projectId, result, startedAfter, endedBefore, pageable));
     }
 
     @GetMapping("/{id}")

@@ -88,12 +88,11 @@
 						(click)="selectBuild(build)">
 					<div class="card-body d-on-hover">
 						<div class="ms-1 mb-2 d-flex justify-content-between">
-							<div class="build-name pointer" routerLink="{{build.id}}">
+							<div class="build-name pointer" routerLink="{{build.displayId}}">
 								<i class="bi bi-check-circle-fill text-success" *ngIf="build.result.toString() == 'PASSED'"></i>
 								<i class="bi bi-x-circle-fill text-danger" *ngIf="build.result.toString() != 'PASSED'"></i>
 								<span class="ms-2 fw-semibold">
-									<span *ngIf="!build.displayId || build.displayId == 0">#{{build.id}}</span>
-									<span *ngIf="build.displayId && build.displayId > 0">#{{build.displayId}}</span> - {{build.testRunner}}</span>
+									<span>#{{build.displayId}}</span> - {{build.testRunner}}</span>
 							</div>
 							<div class="d-flex">
 								<div class="pointer me-2" ngbDropdown>
@@ -139,7 +138,7 @@
 					<ng-container *ngIf="selectedBuild && selectedBuild.buildstats && selectedBuild.buildstats.length">
 						<div class="card">
 							<div class="card-header pb-0">
-								<h6 class="mb-0">#{{selectedBuild.id}} - {{statsTitle}}</h6>
+								<h6 class="mb-0">#{{selectedBuild.displayId}} - {{statsTitle}}</h6>
 							</div>
 							<div class="card-body py-0">
 								<div class="mx-auto" style="width: 150px;max-height: 150px;">

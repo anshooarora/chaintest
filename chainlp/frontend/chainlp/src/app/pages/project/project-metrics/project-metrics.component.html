@@ -24,7 +24,7 @@
                 <tr>
                   <th></th>
                   <th scope="col" *ngFor="let build of buildPage.content">
-                    #{{build.id}}
+                    #{{build.displayId}}
                   </th>
                 </tr>
               </thead>
@@ -32,7 +32,7 @@
                 <tr style="border-bottom-color: transparent;">
                   <td>Result</td>
                   <td *ngFor="let build of buildPage.content">
-                    <span role="button" [routerLink]="['/', 'projects', projectId, 'builds', build.id]">
+                    <span role="button" [routerLink]="['/', 'projects', projectId, 'builds', build.displayId]">
                       <i class="bi" [ngClass]="{
                         'bi-check-circle-fill text-success': build.result === 'PASSED',
                         'bi-x-circle-fill text-danger': build.result === 'FAILED'
@@ -87,8 +87,8 @@
                   <td>{{test.startedAt | date:'yyyy-MM-dd h:m:s a'}}</td>
                   <td>{{test.endedAt | date:'yyyy-MM-dd h:m:s a'}}</td>
                   <td>
-                    <span class="badge badge-outline" role="button" [routerLink]="['/', 'projects', projectId, 'builds', test.buildId]">
-                      <i class="bi bi-box-arrow-up-right me-2"></i>Build {{test.buildId}}</span>
+                    <span class="badge badge-outline" role="button" [routerLink]="['/', 'projects', projectId, 'builds', test.buildDisplayId]">
+                      <i class="bi bi-box-arrow-up-right me-2"></i>Build {{test.buildDisplayId}}</span>
                   </td>
                 </tr>
               </tbody>
