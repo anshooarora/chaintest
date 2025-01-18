@@ -1,6 +1,10 @@
+## 0.0.6
+
+* [#43](../../issues/43) Build Id in the Header is invalid
+
 ## 0.0.5
 
-* [#41](../../issues/41) fix navigation from test search drawer
+* [#41](../../issues/41) Fix navigation from test search drawer
 * [#39](../../issues/39) UI: Change behavior of embeds when retrieved from blob storage
 * [#38](../../issues/38) S3Client only: Change default behavior to always presign URLs
 * [#33](../../issues/33) Add navigation to build option from search drawer
