@@ -42,7 +42,7 @@ export class BuildTestGrowthComponent {
       if (elements && elements.length > 0) {
         const idx = elements[0].index;
         const buildId = e.chart.data.labels[idx].replace('#', '');
-        this.router.navigate(['/builds', buildId]);
+        this.router.navigate(['/', 'projects', this.builds.content[idx].projectId, 'builds', buildId]);
       }
     }
   };

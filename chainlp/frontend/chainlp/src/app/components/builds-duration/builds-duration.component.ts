@@ -64,7 +64,7 @@ export class BuildsDurationComponent {
       if (elements && elements.length > 0) {
         const idx = elements[0].index;
         const buildId = e.chart.data.labels[idx].replace('#', '');
-        this.router.navigate(['/builds', buildId]);
+        this.router.navigate(['/', 'projects', this.builds.content[idx].projectId, 'builds', buildId]);
       }
     }
   };
@@ -77,9 +77,9 @@ export class BuildsDurationComponent {
   }
 
   showTrends() {
-    const builds:Build[] = this.builds.content.slice().reverse();
+    const builds:Build[] = this.builds.content;
     for (let i = 0; i < builds.length; i++) {
-      this.data.labels?.push('#' + builds[i].id);
+      this.data.labels?.push('#' + builds[i].displayId);
       this.data.datasets[0].data.push(builds[i].durationMs / 1000);
     }
   }
