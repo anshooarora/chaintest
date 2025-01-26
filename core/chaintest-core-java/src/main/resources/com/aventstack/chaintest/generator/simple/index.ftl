@@ -1,28 +1,28 @@
 <#if build.isBDD()>
   <#assign
-    title1 = 'Features', title2 = 'Scenarios', title3 = 'Steps', tagStatsLevel = 1
+    title1 = 'Features', title2 = 'Scenarios', title3 = 'Steps', statLevel = 1
   >
 <#elseif build.testRunner == 'testng'>
   <#if build.runStats?size gte 3>
     <#assign
-      title1 = 'Suites', title2 = 'Classes', title3 = 'Methods', tagStatsLevel = 2
+      title1 = 'Suites', title2 = 'Classes', title3 = 'Methods', statLevel = 2
     >
     <#else>
       <#assign
-        title1 = 'Classes', title2 = 'Methods', tagStatsLevel = 1
+        title1 = 'Classes', title2 = 'Methods', statLevel = 1
       >
   </#if>
 <#elseif build.testRunner == 'junit' || build.testRunner == 'junit-jupiter'>
   <#assign
-    title1 = 'Classes', title2 = 'Methods', tagStatsLevel = 1
+    title1 = 'Classes', title2 = 'Methods', statLevel = 1
   >
 <#else>
     <#assign
-        title1 = 'Tests', title2 = 'Methods', title3 = 'Events', tagStatsLevel = 1
+        title1 = 'Tests', title2 = 'Methods', title3 = 'Events', statLevel = 1
     >
 </#if>
-<#if build.runStats?? && build.runStats?has_content && (tagStatsLevel gte build.runStats?size) && build.runStats?size gte 1>
-    <#assign tagStatsLevel = build.runStats?size - 1>
+<#if build.runStats?? && build.runStats?has_content && (statLevel gte build.runStats?size) && build.runStats?size gte 1>
+    <#assign statLevel = build.runStats?size - 1>
 </#if>
 
 <!DOCTYPE html>
@@ -191,7 +191,7 @@
               </thead>
               <tbody>
                 <#list build.tagStats as tag>
-                  <#if tag.depth == tagStatsLevel>
+                  <#if tag.depth == statLevel>
                   <tr>
                     <td><a href="#" class="secondary tag">${tag.name}</a></td>
                     <td>${tag.total}</td>
@@ -212,17 +212,15 @@
   </div>
 
   <div class="container-fluid">
-    <div class="border-bottom py-3 mb-5">
+    <div class="py-3 mb-5">
       <div class="container d-flex justify-content-between">
-        <div id="status-filter" aria-label="Filter tests with status">
-          <button type="button" id="passed" class="btn btn-outline-success btn-sm">Passed</button>
-          <button type="button" id="skipped" class="btn btn-outline-warning btn-sm">Skipped</button>
-          <button type="button" id="failed" class="btn btn-outline-danger btn-sm">Failed</button>
-          <button id="clear-filters" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-x-lg me-1"></i>Clear all filters</button>
-        </div>
-        <div>
-          <button type="button" id="summary-toggle" class="btn btn-outline-primary btn-sm">Toggle Summary Section</button>
+        <div class="input-group">
+          <input type="text" id="q" class="form-control border" placeholder="Search..." aria-label="Search...">
+          <button class="btn border btn-sm text-success status-filter" id="passed" type="button">Passed</button>
+          <button class="btn border btn-sm text-warning status-filter" id="skipped" type="button">Skipped</button>
+          <button class="btn border btn-sm text-danger status-filter" id="failed" type="button">Failed</button>
+          <button id="clear-filters" class="btn border btn-sm"><i class="bi bi-x-lg me-1"></i>Clear all filters</button>
+          <button type="button" id="summary-toggle" class="btn border btn-sm"><i class="bi bi-toggle-on me-1"></i> Toggle Summary Section</button>
         </div>
       </div>
     </div>
@@ -231,7 +229,7 @@
         <div class="container">
           <div class="row">
             <div class="col-4">
-              <h6 class="mb-3 testname ${test.result?lower_case}">${test.name}</h6>
+              <h6 class="mb-3 testname fs-6 ${test.result?lower_case}">${test.name}</h6>
               <div class="small">
                 <span class="badge badge-outline"><i class="bi bi-hourglass me-1"></i> ${test.durationPretty}</span>
                 <span class="badge text-bg-info"><i class="bi bi-clock me-1"></i>
@@ -250,7 +248,7 @@
             </div>
             <div class="col-8">
               <#list test.children as child>
-                <div class="card mb-1 result ${child.result?lower_case}">
+                <div class="card mb-2 result ${child.result?lower_case}">
                   <div class="card-body">
                     <div class="d-flex justify-content-between">
                       <div>
@@ -259,7 +257,7 @@
                           <#else>
                             <i class="bi bi-exclamation-octagon-fill text-danger"></i>
                         </#if>
-                        <span class="ms-2">${child.name}</span>
+                        <span class="fs-6 ms-2">${child.name}</span>
                       </div>
                       <div>
                         <#if child.tags?has_content>

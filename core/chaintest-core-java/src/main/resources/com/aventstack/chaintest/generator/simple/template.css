@@ -22,9 +22,16 @@ pre {
   background-color: #f8f9fa;
   white-space: pre-wrap;
   margin-bottom: 0;
-  max-height: 15rem;
+  height: 15rem;
   word-break: break-all;
   padding: 1rem;
+  resize: vertical;
+}
+.form-control {
+  font-size: inherit;
+}
+input.form-control {
+  -webkit-text-fill-color: #696969 !important;
 }
 
 /* container */
@@ -52,6 +59,9 @@ th {
 }
 .smaller {
   font-size: 10px;
+}
+.fs-6 {
+  font-size: 0.95rem;
 }
 
 /* navbar */
@@ -140,14 +150,24 @@ th {
 .embed img {
   max-width: 100%;
 }
+p.desc {
+  margin-top: .15rem;
+  margin-left: 1.5rem;
+  color: var(--bs-secondary);
+}
 
 /* dark theme */
+body[data-bs-theme="dark"] {
+  --failed-border-color: rgba(210, 130, 130, .5);
+}
 body[data-bs-theme="dark"],
 body[data-bs-theme="dark"] .card,
+body[data-bs-theme="dark"] .form-control,
 body[data-bs-theme="dark"] .table>:not(caption)>*>* {
   background-color: rgb(19, 25, 34);
 }
-body[data-bs-theme="dark"] .card,
+body[data-bs-theme="dark"] .card:not(.failed),
+body[data-bs-theme="dark"] .border,
 body[data-bs-theme="dark"] .border-bottom,
 body[data-bs-theme="dark"] .badge.badge-outline:not(.badge-outline-primary),
 body[data-bs-theme="dark"] .rounded-pill,

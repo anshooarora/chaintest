@@ -109,7 +109,7 @@ depth3Chart();
 
 // init::statusFilters
 const statusFilters = [];
-document.querySelectorAll('#status-filter > button').forEach((e) => {
+document.querySelectorAll('.status-filter').forEach((e) => {
   statusFilters.push(e);
 });
 
@@ -152,8 +152,21 @@ const filterTests = (_status) => {
     results.forEach(x => x != status && document.querySelector('#' + status).classList.remove('active'));
     document.querySelector(`#${status}`).classList.toggle('active');
   }
+  leafs.forEach((leaf) => {
+    leaf.className.indexOf(status) == -1 ? leaf.classList.add('d-none') : leaf.classList.remove('d-none');
+  });
   tests.forEach((card) => {
-    card.className.indexOf(status) == -1 ? card.classList.add('d-none') : card.classList.remove('d-none');
+    const leafNodes = Array.from(card.querySelectorAll('.leaf'));
+    if (leafNodes.length > 0) {
+      const hasVisibleChildren = leafNodes.some(leaf => !leaf.classList.contains('d-none'));
+      if (hasVisibleChildren) {
+        card.classList.remove('d-none');
+      } else {
+        card.classList.add('d-none');
+      }
+    } else {
+      card.className.indexOf(status) == -1 ? card.classList.add('d-none') : card.classList.remove('d-none');
+    }
   });
   testContainers.forEach((container) => {
     container.querySelectorAll('.result').length == container.querySelectorAll('.result.d-none').length
@@ -162,12 +175,11 @@ const filterTests = (_status) => {
 }
 
 // filter all tests based on their status
-document.querySelectorAll('#status-filter > button').forEach((e) => {
+document.querySelectorAll('.status-filter').forEach((e) => {
   e.addEventListener('click', el => {
     // remove any other buttons with .active class
     statusFilters.forEach(x => el.target.id != x.id && x.classList.remove('active'));
     // gets the toggle result: true if toggled
-    const toggleResult = el.target.classList.toggle('active');
     const status = el.target.innerText.toLowerCase();
     if (status.indexOf('clear') > -1) {
       filterTests('');
@@ -248,6 +260,9 @@ const resetState = () => {
 
 // on key down events (shortcuts)
 window.onkeydown = evt => {
+  if (evt.target.tagName.toLowerCase() === 'input') {
+    return;
+  }
   if (evt.metaKey) {
     return;
   }
@@ -324,7 +339,8 @@ document.querySelector('body').addEventListener('click', el => {
 
 // toggle summary section
 document.querySelector('#summary-toggle').addEventListener('click', el => {
-  el.target.classList.toggle('active');
+  el.target.children[0].classList.toggle('bi-toggle-on');
+  el.target.children[0].classList.toggle('bi-toggle-off');
   const summary = document.querySelector('#summary');
   summary.classList.toggle('d-none');
 })
