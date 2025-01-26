@@ -1,7 +1,7 @@
 <#if child.children?has_content>
   <div class="mt-3 border-top">
     <#list child.children as leaf>
-    <div class="leaf ${leaf.result?lower_case}">
+    <div class="leaf ${leaf.result?lower_case} pb-1">
       <div class="d-flex justify-content-between mt-3">
         <div>
           <#if leaf.result=='PASSED'>
@@ -9,7 +9,7 @@
           <#else>
             <i class="bi bi-exclamation-octagon-fill text-danger"></i>
           </#if>
-          <span class="ms-2">${leaf.name}</span>
+          <span class="fs-6 ms-2">${leaf.name}</span>
         </div>
         <div>
           <#if leaf.tags?has_content>
@@ -23,7 +23,7 @@
           <span class="badge text-dark bg-light">${leaf.durationPretty}</span>
         </div>
       </div>
-      <#if leaf.description??><code class="ms-4 small">${leaf.description}</code></#if>
+      <#if leaf.description??><p class="desc">${leaf.description}</p></#if>
       <#if leaf.error??>
         <pre class="py-2 mt-2 mb-4">${leaf.error}</pre>
       </#if>

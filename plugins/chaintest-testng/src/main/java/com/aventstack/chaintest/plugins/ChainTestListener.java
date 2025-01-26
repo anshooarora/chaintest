@@ -44,19 +44,19 @@ public class ChainTestListener implements
 
     public static void embed(final byte[] data, final String mimeType) {
         if (null != _allowLog.get() && _allowLog.get() && _currentTest.get() != null) {
-            ChainPluginService.getInstance().embed(_currentTest.get(), new Embed(data, mimeType));
+            _service.embed(_currentTest.get(), new Embed(data, mimeType));
         }
     }
 
     public static void embed(final File file, final String mimeType) {
         if (null != _allowLog.get() && _allowLog.get() && _currentTest.get() != null) {
-            ChainPluginService.getInstance().embed(_currentTest.get(), new Embed(file, mimeType));
+            _service.embed(_currentTest.get(), new Embed(file, mimeType));
         }
     }
 
     public static void embed(final String base64, final String mimeType) {
         if (null != _allowLog.get() && _allowLog.get() && _currentTest.get() != null) {
-            ChainPluginService.getInstance().embed(_currentTest.get(), new Embed(base64, mimeType));
+            _service.embed(_currentTest.get(), new Embed(base64, mimeType));
         }
     }
 
@@ -104,6 +104,7 @@ public class ChainTestListener implements
             final Test testMethod = new Test(result.getMethod().getMethodName(),
                     Optional.of(result.getTestClass().getName()),
                     List.of(result.getMethod().getGroups()));
+            testMethod.setDescription(method.getTestMethod().getDescription());
             testMethod.setExternalId(result.getMethod().getQualifiedName() + "_" + result.id());
             while (!_logs.get().isEmpty()) {
                 testMethod.addLog(_logs.get().poll());
@@ -118,7 +119,9 @@ public class ChainTestListener implements
                         .map(Object::toString)
                         .toArray(String[]::new));
                 if (!params.isEmpty()) {
-                    testMethod.setDescription("[" + params + "]");
+                    final String desc = null == testMethod.getDescription() || testMethod.getDescription().isBlank()
+                            ? "" : testMethod.getDescription() + "<br>";
+                    testMethod.setDescription(desc + "[" + params + "]");
                 }
             }
         }
