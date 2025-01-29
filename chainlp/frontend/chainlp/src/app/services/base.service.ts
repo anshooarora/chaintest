@@ -49,8 +49,7 @@ export abstract class BaseService<T> {
   }
 
   delete(t: any): Observable<any> {
-    const url = new URL(t.id.toString(), this._path + '/');
-    return this.http.delete<any>(url.href);
+    return this.http.delete<any>(this._path + `/${t.id}`);
   }
 
 }
