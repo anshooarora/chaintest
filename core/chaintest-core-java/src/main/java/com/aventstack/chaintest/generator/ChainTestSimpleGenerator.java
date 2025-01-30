@@ -35,13 +35,10 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String RESOURCES_DIR = "/resources";
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss a";
     private static final List<String> OFFLINE_RESOURCE_LIST = List.of(
-            "bootstrap.min.css",
-            "bootstrap-icons.css",
             "bootstrap-icons.woff",
             "bootstrap-icons.woff2",
-            "chart.umd.js",
-            "template.css",
-            "template.js"
+            "chaintest-pkg.css",
+            "chaintest-pkg.js"
     );
     private static final Map<String, String> SHORTCUTS = Map.of(
             "L", "Toggle theme (light/dark)",
