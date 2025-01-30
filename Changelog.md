@@ -1,8 +1,14 @@
+## 1.0.8
+
+* [#50](../../issues/50) Test description is not displayed
+* [#56](../../issues/56) SimpleGen: Deep filter leaf nodes by status
+* [#59](../../issues/59) SimpleGen: Offline: Package all artifacts to reduce file footprint
+
 ## 1.0.7
 
-* [#42](../../issues/42) EmailGenerator: Fails to save file in a location other than target/chaintest
 * [#37](../../issues/37) ChainTest Core: Improve handling of embed storage
 * [#34](../../issues/34) Unable to see the logs in the static report using ChainTestListener.log() method
+* [#42](../../issues/42) EmailGenerator: Fails to save file in a location other than target/chaintest
 
 ## 1.0.6
 
