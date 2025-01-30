@@ -1,3 +1,8 @@
+## 0.0.7
+
+* [#44](../../issues/44) Project's metrics: Build Duration and Test Growth graph link to invalid buildId
+* [#55](../../issues/55) ChainLP: Not able to delete Project
+
 ## 0.0.6
 
 * [#43](../../issues/43) Build Id in the Header is invalid
