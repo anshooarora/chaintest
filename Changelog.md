@@ -1,3 +1,9 @@
+## 1.0.9
+
+* [#36](../../issues/36) Test Count details incorrect in EmailGen
+* [#61](../../issues/61) SimpleGen: Filters broken in 1.0.8 for CucumberJVM
+* [#62](../../issues/62) SimpleGen: Basic search
+
 ## 1.0.8
 
 * [#50](../../issues/50) Test description is not displayed
