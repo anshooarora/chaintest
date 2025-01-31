@@ -4,7 +4,7 @@ A comprehensive reporting framework supporting multiple generators - static, ema
 
 ## Generators
 
-* Simple: [Dark](https://chaintestblob.blob.core.windows.net/chaintest/dark/Index.html) | [Light](https://chaintestblob.blob.core.windows.net/chaintest/light/Index.html)
+* Simple: [Dark](https://chaintest.s3.us-east-2.amazonaws.com/samples/SimpleDark.html) | [Light](https://chaintest.s3.us-east-2.amazonaws.com/samples/SimpleLight.html)
 * Email: [Sample](https://chaintestblob.blob.core.windows.net/chaintest/email/Email.html)
 * ChainLP: https://chaintest.onrender.com/ 
 
