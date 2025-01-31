@@ -1,28 +1,28 @@
 <#if build.isBDD()>
   <#assign
-    title1 = 'Features', title2 = 'Scenarios', title3 = 'Steps', tagStatsLevel = 1
+    title1 = 'Features', title2 = 'Scenarios', title3 = 'Steps', statLevel = 1
   >
 <#elseif build.testRunner == 'testng'>
   <#if build.runStats?size gte 3>
     <#assign
-      title1 = 'Suites', title2 = 'Classes', title3 = 'Methods', tagStatsLevel = 2
+      title1 = 'Suites', title2 = 'Classes', title3 = 'Methods', statLevel = 2
     >
     <#else>
       <#assign
-        title1 = 'Classes', title2 = 'Methods', tagStatsLevel = 1
+        title1 = 'Classes', title2 = 'Methods', statLevel = 1
       >
   </#if>
-<#elseif build.testRunner == 'junit' || build.testRunner == 'junit5' || build.testRunner == 'junit-jupiter'>
+<#elseif build.testRunner == 'junit' || build.testRunner == 'junit-jupiter'>
   <#assign
-    title1 = 'Classes', title2 = 'Methods', tagStatsLevel = 1
+    title1 = 'Classes', title2 = 'Methods', statLevel = 1
   >
 <#else>
     <#assign
-        title1 = 'Tests', title2 = 'Methods', title3 = 'Events', tagStatsLevel = 1
+        title1 = 'Tests', title2 = 'Methods', title3 = 'Events', statLevel = 1
     >
 </#if>
-<#if build.runStats?? && build.runStats?has_content && (tagStatsLevel gte build.runStats?size) && build.runStats?size gte 1>
-    <#assign tagStatsLevel = build.runStats?size - 1>
+<#if build.runStats?? && build.runStats?has_content && (statLevel gte build.runStats?size) && build.runStats?size gte 1>
+    <#assign statLevel = build.runStats?size - 1>
 </#if>
 
 <!DOCTYPE html>
@@ -79,19 +79,19 @@
 	            <tr>
 	              <td width="100" style="padding:30px 40px 20px;">
 	                <p style="font-weight:500;color:#7E7E7E;margin:0;">Tests</p>
-	                <h1 style="font-size:34px;">${build.runStats[0].total}</h1>
+	                <h1 style="font-size:34px;">${build.runStats[statLevel].total}</h1>
 	              </td>
                 <td width="100" style="padding:30px 40px 20px;">
 	                <p style="font-weight:500;color:#7E7E7E;margin:0;color:#79B530">Passed</p>
-	                <h1 style="font-size:34px;">${build.runStats[0].passed}</h1>
+	                <h1 style="font-size:34px;">${build.runStats[statLevel].passed}</h1>
 	              </td>
                 <td width="100" style="padding:30px 40px 20px;">
 	                <p style="font-weight:500;color:#7E7E7E;margin:0;color:#e64b5d">Failed</p>
-	                <h1 style="font-size:34px;">${build.runStats[0].failed}</h1>
+	                <h1 style="font-size:34px;">${build.runStats[statLevel].failed}</h1>
 	              </td>
                 <td width="100" style="padding:30px 40px 20px;">
 	                <p style="font-weight:500;color:#7E7E7E;margin:0;color:#e6e04c">Skipped</p>
-	                <h1 style="font-size:34px;">${build.runStats[0].skipped}</h1>
+	                <h1 style="font-size:34px;">${build.runStats[statLevel].skipped}</h1>
 	              </td>
 	            </tr>
 	          </tbody>
@@ -123,7 +123,7 @@
                     <td style="" width="60">Skip</td>
                   </tr>
                   <#list build.tagStats as tag>
-                  <#if tag.depth == tagStatsLevel>
+                  <#if tag.depth == statLevel>
                   <tr style="height:10px;"></tr>
                   <tr>
                     <td width="350">${tag.name}</td>
