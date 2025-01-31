@@ -45,7 +45,7 @@
  }
  .form-control::placeholder {
    font-size: 12px;
-   opacity: 0.5;
+   opacity: 0.75;
  }
  input.form-control {
    -webkit-text-fill-color: #696969 !important;

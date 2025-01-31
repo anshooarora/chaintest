@@ -158,6 +158,9 @@ document.querySelectorAll('#tag-summary .tag').forEach((e) => {
   tags.push(e);
 });
 
+// init::search
+const searchInput = document.querySelector('#q');
+
 // clear-filters btn event
 const clearFiltersBtn = document.querySelector('#clear-filters');
 clearFiltersBtn.addEventListener('click', el => {
@@ -210,6 +213,41 @@ document.querySelectorAll('.status-filter').forEach((e) => {
     }
     filterTests(status);
   })
+});
+
+// filters tests based on search criteria
+searchInput.addEventListener('keyup', el => {
+  const query = el.target.value.toLowerCase();
+  leafs.forEach((leaf) => {
+    const text = leaf.innerText.toLowerCase();
+    text.indexOf(query) == -1 ? leaf.classList.add('d-none') : leaf.classList.remove('d-none');
+  });
+  tests.forEach((card) => {
+    const text = card.innerText.toLowerCase();
+    if (text.indexOf(query) == -1) {
+      card.classList.add('d-none');
+    } else {
+      if (card.querySelectorAll('.leaf').length == card.querySelectorAll('.leaf.d-none').length) {
+        card.querySelectorAll('.leaf').forEach((l) => {
+          l.classList.remove('d-none');
+        });
+      }
+      card.classList.remove('d-none');
+    }
+  });
+  testContainers.forEach((container) => {
+    const text = container.innerText.toLowerCase();
+    if (text.indexOf(query) == -1) {
+      container.classList.add('d-none');
+    } else {
+      if (container.querySelectorAll('.result').length == container.querySelectorAll('.result.d-none').length) {
+        container.querySelectorAll('.result, .leaf').forEach((l) => {
+          l.classList.remove('d-none');
+        });
+      }
+      container.classList.remove('d-none');
+    }
+  });
 });
 
 // redraw charts on tag click
