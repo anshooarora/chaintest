@@ -1,7 +1,7 @@
 <#if child.children?has_content>
   <div class="mt-2">
       <#list child.children as leaf>
-        <div class="mt-1 leaf">
+        <div class="mt-1">
           <#if leaf.result=='PASSED'>
             <i class="bi bi-check-circle-fill text-success"></i>
             <#elseif leaf.result=='FAILED'>

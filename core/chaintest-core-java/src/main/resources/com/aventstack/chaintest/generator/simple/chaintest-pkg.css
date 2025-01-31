@@ -35,7 +35,7 @@
    background-color: #f8f9fa;
    white-space: pre-wrap;
    margin-bottom: 0;
-   height: 15rem;
+   max-height: 15rem;
    word-break: break-all;
    padding: 1rem;
    resize: vertical;
