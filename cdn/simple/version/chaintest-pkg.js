@@ -26,7 +26,7 @@ const labels = ['Passed', 'Failed', 'Skipped'];
 const getOptions = (data) => {
   const label = (Math.floor(data.passed / data.total * 100)) + '%';
   const options = {
-    cutout: '65%',
+    cutout: '70%',
     plugins: {
       responsive: true,
       legend: {

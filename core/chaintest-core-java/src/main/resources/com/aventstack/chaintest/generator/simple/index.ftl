@@ -36,8 +36,8 @@
     <link id="style" href="resources/chaintest-pkg.css" rel="stylesheet">
   <#else>
     <link href="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@79044ea10c384dd879159238d82cf1212f87c9e5/cdn/simple/version/chaintest-pkg.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   </#if>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <#if config['css']??><style>${config['css']}</style></#if>
 </head>
 
@@ -50,16 +50,14 @@
       </div>
       <div>
         <span class="badge badge-outline text-lg"><i class="bi bi-hourglass me-1"></i> ${build.durationPretty}</span>
-        <span class="badge badge-outline text-lg"><i class="bi bi-clock me-1"></i> Started ${build.startedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
-        <span class="badge badge-outline text-lg"><i class="bi bi-clock me-1"></i> Ended ${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
-      </div>
-      <div>
+        <span class="badge badge-outline text-lg"><i class="bi bi-clock me-1 text-success"></i> ${build.startedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
+        <span class="badge badge-outline text-lg me-3"><i class="bi bi-clock me-1 text-danger"></i> ${build.endedAt?number_to_datetime?string(config['datetimeFormat'])}</span>
         <#if build.systemInfo?? && build.systemInfo?has_content>
           <button role="button" id="sys-info" class="btn btn-outline-primary smaller" title="View System Info">
             <i class="bi bi-pc-display-horizontal"></i></button>
         </#if>
         <button role="button" id="shortcuts" class="btn btn-outline-primary smaller" title="Shortcuts">
-            <i class="bi bi-info-circle"></i></button>
+          <i class="bi bi-info-circle"></i></button>
       </div>
     </div>
   </nav>
@@ -246,7 +244,7 @@
             </div>
             <div class="col-8">
               <#list test.children as child>
-                <div class="card mb-2 result ${child.result?lower_case}">
+                <div class="card mb-3 result ${child.result?lower_case}">
                   <div class="card-body">
                     <div class="d-flex justify-content-between">
                       <div>
