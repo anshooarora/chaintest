@@ -41,6 +41,11 @@ const getOptions = (data) => {
           }
         }
       }
+    },
+    onClick: (event, clickedElements) => {
+      const { dataIndex } = clickedElements[0].element.$context
+      const label = event.chart.data.labels[dataIndex]
+      filterTests(label.toLowerCase());
     }
   };
   return options;
