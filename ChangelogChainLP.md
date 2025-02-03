@@ -1,3 +1,7 @@
+# 0.0.8
+
+* [#46](../../issues/46) org.h2.jdbc.JdbcSQLDataException for SystemInfo and Log
+
 ## 0.0.7
 
 * [#44](../../issues/44) Project's metrics: Build Duration and Test Growth graph link to invalid buildId
