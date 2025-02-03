@@ -1,3 +1,8 @@
+## 1.0.10
+
+* [#36](../../issues/46) org.h2.jdbc.JdbcSQLDataException for SystemInfo and Log
+* [#64](../../issues/64) SimpleGen: Filter tests on chart click
+
 ## 1.0.9
 
 * [#36](../../issues/36) Test Count details incorrect in EmailGen
