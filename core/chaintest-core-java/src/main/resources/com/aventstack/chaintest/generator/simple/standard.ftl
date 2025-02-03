@@ -31,7 +31,7 @@
         <div class="mt-3">
           <pre class="pb-0">
           <#list leaf.logs as log>
-${log}
+${log.message}
           </#list>
           </pre>
         </div>

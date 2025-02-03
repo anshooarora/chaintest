@@ -111,7 +111,7 @@ public class Test implements ChainTestEntity {
     /**
      * The logs associated with the test.
      */
-    private final List<String> logs = Collections.synchronizedList(new ArrayList<>());
+    private final List<Log> logs = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * The embedded media associated with the test.
@@ -401,7 +401,7 @@ public class Test implements ChainTestEntity {
      * @param log the log entry to add
      */
     public void addLog(final String log) {
-        logs.add(log);
+        logs.add(new Log(log));
     }
 
     /**

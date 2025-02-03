@@ -1,6 +1,7 @@
 import { Page } from "./page.model";
 import { Tag } from "./tag.model";
 import { Embed } from "./embed.model";
+import { Log } from "./log.model";
 
 export class Test extends Page<Test> {
     id: number;
@@ -19,7 +20,7 @@ export class Test extends Page<Test> {
     children: Test[];
     error: string;
     bdd: boolean;
-    logs: string[];
+    logs: Log[];
     depth: number;
     embeds: Embed[];
 

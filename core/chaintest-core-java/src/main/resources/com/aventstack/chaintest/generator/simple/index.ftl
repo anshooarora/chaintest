@@ -35,7 +35,7 @@
   <#if config['offline']>
     <link id="style" href="resources/chaintest-pkg.css" rel="stylesheet">
   <#else>
-    <link href="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@79044ea10c384dd879159238d82cf1212f87c9e5/cdn/simple/version/chaintest-pkg.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@bbbb48b4917cda8777352fb04725cd69c6db2983/cdn/simple/version/chaintest-pkg.css" rel="stylesheet">
   </#if>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <#if config['css']??><style>${config['css']}</style></#if>
@@ -280,7 +280,7 @@
                       <div class="mt-3">
                         <pre class="pb-0">
                           <#list child.logs as log>
-${log}
+${log.message}
                           </#list>
                         </pre>
                       </div>
@@ -345,7 +345,7 @@ ${log}
   <#if config['offline']>
     <script src="resources/chaintest-pkg.js"></script>
   <#else>
-    <script src="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@79044ea10c384dd879159238d82cf1212f87c9e5/cdn/simple/version/chaintest-pkg.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@bbbb48b4917cda8777352fb04725cd69c6db2983/cdn/simple/version/chaintest-pkg.js"></script>
   </#if>
 
   <#if build.systemInfo?? && build.systemInfo?has_content>
