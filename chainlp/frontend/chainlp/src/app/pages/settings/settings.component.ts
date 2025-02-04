@@ -5,6 +5,7 @@ import { ThemeService } from '../../services/theme.service';
 import { SecretsService } from '../../services/secrets.service';
 import { Secret } from '../../model/secret.model';
 import { ErrorHandlerService } from '../../services/error-handler.service';
+import { CacheService } from '../../services/cache.service';
 
 @Component({
   selector: 'app-settings',
@@ -14,10 +15,14 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 export class SettingsComponent implements OnInit, OnDestroy {
 
   private readonly _secrets$: Subject<any> = new Subject<any>();
+  private readonly _cache$: Subject<any> = new Subject<any>();
+  private readonly _caches$: Subject<any> = new Subject<any>();
 
   error: any;
   active: number = 1;
   version: string = '0.0.8';
+  isCacheCleared: boolean = false;
+  areCachesCleared: boolean = false;
 
   /* theme */
   themes: Theme[] = [
@@ -48,6 +53,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   constructor(private themeService: ThemeService, 
     private secretsService: SecretsService,
+    private cacheService: CacheService,
     private errorService: ErrorHandlerService) { }
 
   ngOnInit(): void {}
@@ -60,6 +66,38 @@ export class SettingsComponent implements OnInit, OnDestroy {
   changeTheme($event: any) {
     const theme = $event.target.value;
     this.themeService.setTheme(theme);
+  }
+
+  clearCache(name: string) {
+    this.cacheService.clear(name)
+    .pipe(takeUntil(this._cache$))
+    .subscribe({
+      next: (response: any) => {
+        this.isCacheCleared = true;
+        setTimeout(() => {
+          this.isCacheCleared = false;
+        }, 2000);
+      },
+      error: (err) => {
+        this.error = this.errorService.getError(err);
+      }
+    });
+  }
+
+  clearAllCaches() {
+    this.cacheService.clearAll()
+    .pipe(takeUntil(this._caches$))
+    .subscribe({
+      next: (response: any) => {
+        this.areCachesCleared = true;
+        setTimeout(() => {
+          this.areCachesCleared = false;
+        }, 2000);
+      },
+      error: (err) => {
+        this.error = this.errorService.getError(err);
+      }
+    });
   }
 
   saveSecrets(obj: any) {

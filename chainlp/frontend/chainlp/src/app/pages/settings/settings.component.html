@@ -30,6 +30,43 @@
               </ng-template>
             </li>
             <li [ngbNavItem]="2">
+              <button ngbNavLink>Cache</button>
+              <ng-template ngbNavContent>
+                <div class="row">
+                  <div class="col-3">
+                    <h5>Clear Individual Caches</h5>
+                    <div class="text-secondary">
+                      Clear individual caches in the app. This action cannot be undone.
+                    </div>
+                  </div>
+                  <div class="col-1"></div>
+                  <div class="col-5">
+                    <button class="btn btn-primary mb-1 me-1" type="button" (click)="clearCache('projects');clearCache('project');">Clear Projects Cache</button>
+                    <button class="btn btn-primary mb-1 me-1" type="button" (click)="clearCache('builds');clearCache('build');">Clear Builds Cache</button>
+                    <button class="btn btn-primary mb-1 me-1" type="button" (click)="clearCache('tests');clearCache('test');">Clear Tests Cache</button>
+                    <div class="mt-2">
+                      <span *ngIf="isCacheCleared" class="text-success">Cache cleared!</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-5">
+                  <div class="col-3">
+                    <h5>Clear All Caches</h5>
+                    <div class="text-secondary">
+                      Clears all caches in the app. This action cannot be undone and may require additional time to rebuild the cache.
+                    </div>
+                  </div>
+                  <div class="col-1"></div>
+                  <div class="col-3">
+                    <button class="btn btn-danger" type="button" (click)="clearAllCaches()">Clear all</button>
+                    <div class="mt-2">
+                      <span *ngIf="areCachesCleared" class="text-success">All caches cleared!</span>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="3">
               <button ngbNavLink>Secrets</button>
               <ng-template ngbNavContent>
                 <div class="row mb-5">
