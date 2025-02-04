@@ -22,7 +22,6 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String GENERATOR_NAME = "simple";
     private static final String BASE_PROPERTY = "chaintest.generator.simple";
     private static final String PROP_ENABLED = BASE_PROPERTY + ".enabled";
-    private static final String PROP_OUT_FILE_NAME = BASE_PROPERTY + ".output-file";
     private static final String PROP_SAVE_OFFLINE = BASE_PROPERTY + ".offline";
     private static final String PROP_DATETIME_FORMAT = BASE_PROPERTY + ".datetime-format";
     private static final String PROP_DOCUMENT_TITLE = BASE_PROPERTY + ".document-title";
@@ -30,8 +29,6 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private static final String PROP_JS = BASE_PROPERTY + ".js";
     private static final String PROP_CSS = BASE_PROPERTY + ".css";
     private static final String BASE_TEMPLATE_NAME = "index.ftl";
-    private static final String DEFAULT_OUT_FILE_NAME = "Simple.html";
-    private static final String DEFAULT_OUT_DIR = "target/chaintest/";
     private static final String RESOURCES_DIR = "/resources";
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss a";
     private static final List<String> OFFLINE_RESOURCE_LIST = List.of(
@@ -48,6 +45,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
             "esc", "Reset all filters"
     );
 
+    private Map<String, String> _config;
     private boolean _started;
     private Build _build;
     private String _projectName;
@@ -59,6 +57,10 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     private boolean _offline;
     private boolean _darkTheme = false;
 
+    public ChainTestSimpleGenerator() {
+        super(GENERATOR_NAME);
+    }
+
     @Override
     public void start(final Optional<Map<String, String>> config, final String testRunner, final Build build) {
         if (config.isEmpty()) {
@@ -67,33 +69,29 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
             return;
         }
 
-        if (!Boolean.parseBoolean(config.get().get(PROP_ENABLED))) {
+        _config = config.get();
+
+        if (!Boolean.parseBoolean(_config.get(PROP_ENABLED))) {
             log.debug("{} generator was not enabled. To enable, set property {}=true in your configuration", GENERATOR_NAME, PROP_ENABLED);
             return;
         }
 
-        String outputFileName = Optional.ofNullable(config.get().get(PROP_OUT_FILE_NAME))
-                .filter(name -> !name.isEmpty())
-                .orElse(DEFAULT_OUT_DIR + DEFAULT_OUT_FILE_NAME);
-        if (!(outputFileName.endsWith("htm") || outputFileName.endsWith("html"))) {
-            outputFileName += "/" + DEFAULT_OUT_FILE_NAME;
-        }
-        _outFile = new File(outputFileName);
+        _outFile = getOutFile(_config);
 
-        _offline = Boolean.parseBoolean(config.get().get(PROP_SAVE_OFFLINE));
+        _offline = Boolean.parseBoolean(_config.get(PROP_SAVE_OFFLINE));
         if (_offline) {
             saveResources();
         }
 
-        _projectName = Optional.ofNullable(config.get().get(ChainTestPropertyKeys.PROJECT_NAME)).orElse("");
-        _datetimeFormat = Optional.ofNullable(config.get().get(PROP_DATETIME_FORMAT))
+        _projectName = Optional.ofNullable(_config.get(ChainTestPropertyKeys.PROJECT_NAME)).orElse("");
+        _datetimeFormat = Optional.ofNullable(_config.get(PROP_DATETIME_FORMAT))
                 .filter(DateTimeUtil::isPatternValid)
                 .orElse(DATETIME_FORMAT);
-        _documentTitle = Optional.ofNullable(config.get().get(PROP_DOCUMENT_TITLE))
+        _documentTitle = Optional.ofNullable(_config.get(PROP_DOCUMENT_TITLE))
                 .orElse(ChainTestPropertyKeys.CHAINTEST);
-        _darkTheme = Boolean.parseBoolean(config.get().get(PROP_DARK_THEME));
-        _js = config.get().get(PROP_JS);
-        _css = config.get().get(PROP_CSS);
+        _darkTheme = Boolean.parseBoolean(_config.get(PROP_DARK_THEME));
+        _js = _config.get(PROP_JS);
+        _css = _config.get(PROP_CSS);
         _build = build;
 
         log.trace("Start was called for testRunner: {}", testRunner);
@@ -111,6 +109,7 @@ public class ChainTestSimpleGenerator extends FileGenerator implements Generator
     }
 
     private void saveResources() {
+        _outFile = getOutFile(_config);
         final File parentDir = _outFile.getParentFile();
         new File(parentDir.getPath() + RESOURCES_DIR).mkdirs();
 
