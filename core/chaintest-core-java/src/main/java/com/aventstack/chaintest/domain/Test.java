@@ -4,7 +4,6 @@ import com.aventstack.chaintest.util.ExceptionsUtil;
 import com.aventstack.chaintest.util.TimeUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,9 +27,9 @@ import java.util.stream.Stream;
  * class name, start and end times, result, tags, error details, and child tests.
  * It also provides methods to complete the test and update its statistics.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Test implements ChainTestEntity {
 
     /**
@@ -116,7 +115,6 @@ public class Test implements ChainTestEntity {
     /**
      * The embedded media associated with the test.
      */
-    @JsonIgnore
     private final List<Embed> embeds = new ArrayList<>();
 
     /**
@@ -131,9 +129,6 @@ public class Test implements ChainTestEntity {
 
     @JsonIgnore
     private Test parent;
-
-    @JsonProperty("embeds")
-    private final List<BasicEmbed> basicEmbeds = new ArrayList<>();
 
     /**
      * Default constructor.
@@ -451,14 +446,6 @@ public class Test implements ChainTestEntity {
      */
     public void addEmbed(final Embed embed) {
         embeds.add(embed);
-    }
-
-    public void addScreenshotURL(final String url) {
-        addBasicEmbed(url);
-    }
-
-    public void addBasicEmbed(final String url) {
-        basicEmbeds.add(new BasicEmbed(url));
     }
 
 }

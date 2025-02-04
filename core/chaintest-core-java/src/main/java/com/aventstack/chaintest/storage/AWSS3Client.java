@@ -81,45 +81,46 @@ public class AWSS3Client implements StorageService {
     }
 
     @Override
-    public void upload(final Test test, final String key, final byte[] data) {
+    public String upload(final Test test, final String key, final byte[] data) {
         final String prefixKey = getPrefixKey(_prefix, key);
         _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(prefixKey)
                         .build(),
                 RequestBody.fromBytes(data));
-        assignURL(test, prefixKey);
+        return getUrl(test, prefixKey);
     }
 
-    private void assignURL(final Test test, final String key) {
-        test.addScreenshotURL(
-                _client.utilities().getUrl(builder -> builder.bucket(_bucket).key(key)).toExternalForm());
+    private String getUrl(final Test test, final String key) {
+        return _client.utilities().getUrl(builder -> builder.bucket(_bucket).key(key)).toExternalForm();
     }
 
     @Override
-    public void upload(final Test test, String key, String base64) {
+    public String upload(final Test test, String key, String base64) {
         final byte[] data = Base64.getDecoder().decode(base64.getBytes());
-        upload(test, key, data);
+        return upload(test, key, data);
     }
 
     @Override
-    public void upload(final Test test, final String key, final File file) {
+    public String upload(final Test test, final String key, final File file) {
         final String prefixKey = getPrefixKey(_prefix, key);
         _client.putObject(PutObjectRequest.builder().bucket(_bucket).key(prefixKey)
                         .build(),
                 RequestBody.fromFile(file));
-        assignURL(test, prefixKey);
+        return getUrl(test, prefixKey);
     }
 
     @Override
     public void upload(final Test test, Embed embed) {
+        String url = null;
         if (null != embed.getBytes()) {
-            upload(test, embed.getName(), embed.getBytes());
+            url = upload(test, embed.getName(), embed.getBytes());
         } else if (null != embed.getBase64() && !embed.getBase64().isBlank()) {
-            upload(test, embed.getName(), embed.getBase64());
+            url = upload(test, embed.getName(), embed.getBase64());
         } else if (null != embed.getFile()) {
-            upload(test, embed.getName(), embed.getFile());
+            url = upload(test, embed.getName(), embed.getFile());
         } else {
             log.error("Unable to upload Embed to Azure Blob Storage. Source missing");
         }
+        embed.setUrl(url);
     }
 
     @Override

@@ -21,6 +21,7 @@ chaintest.generator.chainlp.host.url=http://localhost/
 chaintest.generator.chainlp.client.request-timeout-s=30
 chaintest.generator.chainlp.client.expect-continue=false
 chaintest.generator.chainlp.client.max-retries=3
+chaintest.generator.chainlp.persist-embeds=true
 
 ## simple
 chaintest.generator.simple.enabled=true

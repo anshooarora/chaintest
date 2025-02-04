@@ -40,7 +40,7 @@ public class AwsS3SignedUrlResolver implements SignedUrlResolver {
                     .key(key)
                     .build();
             final GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(10))
+                    .signatureDuration(Duration.ofDays(1))
                     .getObjectRequest(objectRequest)
                     .build();
             final PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);

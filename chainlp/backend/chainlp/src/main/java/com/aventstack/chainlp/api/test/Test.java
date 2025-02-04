@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = { "parent" })
+@ToString(exclude = { "parent", "embeds" })
 @Table(name = "test")
 public class Test {
 
@@ -125,7 +126,19 @@ public class Test {
     public void setEmbeds(final List<Embed> embeds) {
         this.embeds = embeds;
         if (embeds != null) {
-            embeds.forEach(x -> x.setTest(this));
+            for (final Embed embed : embeds) {
+                embed.setTest(this);
+                if (embed.isStore()) {
+                    if (null != embed.getBase64() && !embed.getBase64().isEmpty()) {
+                        final byte[] data = Base64.getDecoder().decode(embed.getBase64().getBytes());
+                        embed.setBytes(data);
+                        embed.setBase64(null);
+                    }
+                } else {
+                    embed.setBase64(null);
+                    embed.setBytes(null);
+                }
+            }
         }
     }
 

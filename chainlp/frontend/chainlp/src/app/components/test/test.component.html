@@ -60,12 +60,18 @@
                 <pre>{{leaf.error}}</pre>
               </div>
               <div class="mt-2 screenshots" *ngIf="leaf.embeds && leaf.embeds.length">
-                <img *ngFor="let s of leaf.embeds" [src]="s.presigned || s.url" class="img-fluid" alt="screenshot" />
+                <ng-container *ngFor="let s of leaf.embeds">
+                  <img *ngIf="s.presigned || s.url" [src]="s.presigned || s.url" class="img-fluid" alt="screenshot" />
+                  <img *ngIf="s.bytes || s.base64" [src]="'data:image/png;base64,' + s.bytes || s.base64" class="img-fluid" alt="screenshot" />
+                </ng-container>
               </div>
             </div>
           </div>
           <div class="mt-2 screenshots" *ngIf="child.embeds && child.embeds.length">
-            <img *ngFor="let s of child.embeds" [src]="s.presigned || s.url" class="img-fluid" alt="screenshot" />
+            <ng-container *ngFor="let s of child.embeds">
+              <img *ngIf="s.presigned || s.url" [src]="s.presigned || s.url" class="img-fluid" alt="screenshot" />
+              <img *ngIf="s.bytes || s.base64" [src]="'data:image/png;base64,' + s.bytes || s.base64" class="img-fluid" alt="screenshot" />
+            </ng-container>
           </div>
         </div>
       </div>

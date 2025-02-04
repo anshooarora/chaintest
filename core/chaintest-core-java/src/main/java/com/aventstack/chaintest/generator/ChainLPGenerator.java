@@ -23,6 +23,7 @@ public class ChainLPGenerator implements Generator {
     private static final Logger log = LoggerFactory.getLogger(ChainLPGenerator.class);
     private static final String NAME = "chainlp";
     private static final String HTTP_CLIENT_ENABLED = "chaintest.generator.chainlp.enabled";
+    private static final String SEND_EMBEDS = "chaintest.generator.chainlp.persist-embeds";
     private static final ConcurrentHashMap<String, WrappedResponseAsync<Test>> _wrappedResponses = new ConcurrentHashMap<>();
     private static final AtomicBoolean CALLBACK_INVOKED = new AtomicBoolean();
 
@@ -32,6 +33,7 @@ public class ChainLPGenerator implements Generator {
     private ChainTestApiClient _client;
     private Build _build;
     private Queue<Test> _tests;
+    private boolean _sendEmbeds = true;
 
     public ChainLPGenerator(final String testRunner) {
         _testRunner = testRunner;
@@ -101,6 +103,11 @@ public class ChainLPGenerator implements Generator {
                 _build.setProjectId(buildReq.getProjectId());
                 CALLBACK_INVOKED.set(true);
                 log.debug("All tests in this run will be associated with buildId: {}", _build.getId());
+
+                final String sendEmbeds = config.get().get(SEND_EMBEDS);
+                if (null != sendEmbeds && !sendEmbeds.isEmpty()) {
+                    _sendEmbeds = Boolean.parseBoolean(sendEmbeds);
+                }
             }
         } catch (final IOException | InterruptedException e) {
             log.debug("Failed to send Build. PluginService will shutdown and " +
@@ -149,6 +156,10 @@ public class ChainLPGenerator implements Generator {
 
         updateAttributes(test);
 
+        if (!_sendEmbeds) {
+            setEmbedStorableState(test);
+        }
+
         final WrappedResponseAsync<Test> wrapper = new WrappedResponseAsync<>(test);
         _wrappedResponses.put(test.getClientId().toString(), wrapper);
         try {
@@ -157,6 +168,11 @@ public class ChainLPGenerator implements Generator {
         } catch (final IOException e) {
             log.error("Exception sending test", e);
         }
+    }
+
+    private void setEmbedStorableState(final Test test) {
+        test.getEmbeds().forEach(embed -> embed.setStore(false));
+        test.getChildren().forEach(this::setEmbedStorableState);
     }
 
     private void updateAttributes(final Test test) {

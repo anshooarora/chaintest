@@ -1,7 +1,9 @@
 package com.aventstack.chaintest.domain;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,8 +15,10 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Embed {
 
     private static final Logger log = LoggerFactory.getLogger(Embed.class);
@@ -30,10 +34,12 @@ public class Embed {
     );
 
     private final UUID uuid = UUID.randomUUID();
+    private String url;
     private String base64;
     private File file;
     private byte[] bytes;
     private String mediaType;
+    private boolean store = true;
 
     public Embed(final String base64, final String mediaType) {
         this.base64 = base64;

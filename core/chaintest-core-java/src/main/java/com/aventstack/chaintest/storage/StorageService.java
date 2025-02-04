@@ -15,9 +15,9 @@ public interface StorageService {
 
     void withPrefix(final String prefix);
 
-    void upload(final Test test, final String key, final byte[] data);
-    void upload(final Test test, final String key, final String base64);
-    void upload(final Test test, final String key, final File file);
+    String upload(final Test test, final String key, final byte[] data);
+    String upload(final Test test, final String key, final String base64);
+    String upload(final Test test, final String key, final File file);
     void upload(final Test test, final Embed embed);
 
     void close();

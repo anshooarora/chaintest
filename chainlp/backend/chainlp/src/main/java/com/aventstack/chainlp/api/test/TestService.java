@@ -63,10 +63,12 @@ public class TestService {
     }
 
     private Test resolveEmbeds(final Test test) {
-        for (final Embed embed : test.getEmbeds()) {
-            final String presigned = embedResolver.getResolver(embed.getUrl())
-                    .resolve(embed.getUrl());
-            embed.setPresigned(presigned);
+        if (test.getEmbeds().stream().anyMatch(x -> null != x.getUrl() && !x.getUrl().isBlank())) {
+            for (final Embed embed : test.getEmbeds()) {
+                final String presigned = embedResolver.getResolver(embed.getUrl())
+                        .resolve(embed.getUrl());
+                embed.setPresigned(presigned);
+            }
         }
         test.getChildren().forEach(this::resolveEmbeds);
         return test;
