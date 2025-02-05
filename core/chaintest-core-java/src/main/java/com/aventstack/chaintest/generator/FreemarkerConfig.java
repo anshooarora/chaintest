@@ -8,7 +8,7 @@ public class FreemarkerConfig {
     private static final String BASE_PACKAGE_PATH = "/";
 
     public Configuration getConfig(final Class<?> classForTemplateLoading, final String basePackagePath) {
-        final Configuration cfg = new Configuration(Configuration.VERSION_2_3_33);
+        final Configuration cfg = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         cfg.setClassForTemplateLoading(classForTemplateLoading, basePackagePath);
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
