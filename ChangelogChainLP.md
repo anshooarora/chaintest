@@ -1,3 +1,8 @@
+# 0.0.9
+
+* [#66](../../issues/66) ChainLP: Storage support: DB
+* [#69](../../issues/69) ChainLP: Cache control
+
 # 0.0.8
 
 * [#46](../../issues/46) org.h2.jdbc.JdbcSQLDataException for SystemInfo and Log

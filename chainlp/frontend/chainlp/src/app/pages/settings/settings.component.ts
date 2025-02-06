@@ -20,7 +20,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   error: any;
   active: number = 1;
-  version: string = '0.0.8';
+  version: string = '0.0.9';
   isCacheCleared: boolean = false;
   areCachesCleared: boolean = false;
 
