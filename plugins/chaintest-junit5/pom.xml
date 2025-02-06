@@ -6,7 +6,7 @@
 
     <groupId>com.aventstack</groupId>
     <artifactId>chaintest-junit5</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
     <url>https://github.com/anshooarora/chaintest</url>
     <name>${artifactId}</name>
     <description>ChainTest plugin for JUnit-5</description>

@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>chaintest-cucumber-jvm-example</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -40,6 +40,11 @@
             <groupId>com.aventstack</groupId>
             <artifactId>chaintest-cucumber-jvm</artifactId>
             <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jmeter</groupId>
+            <artifactId>ApacheJMeter_core</artifactId>
+            <version>5.6.3</version>
         </dependency>
     </dependencies>
 

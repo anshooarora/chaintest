@@ -1,3 +1,8 @@
+## 1.0.11
+
+* [#57](../../issues/57) Static generators: Dynamically set output file name
+* [#70](../../issues/70) java.lang.NoSuchFieldError: VERSION_2_3_33
+
 ## 1.0.10
 
 * [#36](../../issues/46) org.h2.jdbc.JdbcSQLDataException for SystemInfo and Log
