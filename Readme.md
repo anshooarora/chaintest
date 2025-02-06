@@ -80,7 +80,12 @@ chaintest.generator.chainlp.host.url=<host:port>
 
 The chaintest-core client is the framework component that supports plugins to store embeds for each report. For example, with SimpleGenerator, the client saves all embeds relative to the report file in the `resources` folder.
 
-As of `chaintest-core:1.0.11` and `ChainLP: 0.0.9`, embeds are stored in DB by default. This can be turned off in favor of S3 via `chaintest.storage.service.*` properties:
+As of `chaintest-core:1.0.11` and `ChainLP: 0.0.9`, embeds are stored in DB by default. This can be turned off using the below property in favor of S3 via `chaintest.storage.service.*` (next section).
+
+```
+# default: true (embeds will be persisted in db)
+chaintest.generator.chainlp.persist-embeds=true
+```
 
 #### AWS S3 for Screenshots/Embeds
 
