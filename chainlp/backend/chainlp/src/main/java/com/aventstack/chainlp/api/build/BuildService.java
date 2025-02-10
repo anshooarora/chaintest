@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class BuildService {
     private final TestService testService;
 
     public BuildService(final BuildRepository repository,
-                        final ProjectService projectService,
+                        @Lazy final ProjectService projectService,
                         final BuildStatsService buildStatsService,
                         final TagStatsService tagStatsService,
                         final TestRepository testRepository,
@@ -219,6 +220,17 @@ public class BuildService {
         log.debug("Deleting build with id {}", id);
         repository.deleteById(id);
         log.info("Build id: {} was deleted successfully", id);
+    }
+
+    @Transactional(propagation = Propagation.MANDATORY)
+    @Caching(evict = {
+            @CacheEvict(value = "builds", allEntries = true, condition = "#id > 0"),
+            @CacheEvict(value = "build", allEntries = true)
+    })
+    public void deleteForProject(final Integer id) {
+        log.debug("Deleting all builds for project with id {}", id);
+        repository.deleteByProjectId(id);
+        log.info("Builds for project with id {} were deleted", id);
     }
 
 }

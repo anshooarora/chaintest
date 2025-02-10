@@ -15,4 +15,6 @@ public interface TestRepository extends
 
     void deleteByBuildId(final long buildId);
 
+    void deleteByProjectId(final Integer projectId);
+
 }

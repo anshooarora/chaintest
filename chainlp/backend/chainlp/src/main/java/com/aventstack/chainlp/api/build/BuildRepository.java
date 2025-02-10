@@ -13,4 +13,6 @@ public interface BuildRepository extends
 
     Optional<Build> findFirstByProjectIdOrderByIdDesc(final Integer projectId);
 
+    void deleteByProjectId(final Integer projectId);
+
 }

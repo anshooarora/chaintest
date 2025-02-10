@@ -1,11 +1,15 @@
 package com.aventstack.chainlp.api.project;
 
+import com.aventstack.chainlp.api.build.BuildService;
+import com.aventstack.chainlp.api.test.TestService;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,13 @@ public class ProjectService {
 
     @Autowired
     private ProjectRepository repository;
+
+    @Autowired
+    private BuildService buildService;
+
+    @Autowired
+    @Lazy
+    private TestService testService;
 
     @Cacheable(value = "projects", unless = "#result == null || #result.size == 0")
     public Page<Project> findAll(final Pageable pageable) {
@@ -53,11 +64,14 @@ public class ProjectService {
         return project;
     }
 
+    @Transactional
     @Caching(evict = {
             @CacheEvict(value = "projects", allEntries = true, condition = "#id > 0"),
             @CacheEvict(value = "project", key = "#id", condition="#id > 0")
     })
     public void delete(final Integer id) {
+        buildService.deleteForProject(id);
+        testService.deleteForProject(id);
         log.info("Deleting project with id {}", id);
         repository.deleteById(id);
         log.info("Project id: {} was deleted successfully", id);

@@ -205,4 +205,15 @@ public class TestService {
         }
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
+    @Caching(evict = {
+            @CacheEvict(value = "tests", allEntries = true, condition = "#id > 0"),
+            @CacheEvict(value = "test", allEntries = true)
+    })
+    public void deleteForProject(final Integer id) {
+        log.debug("Deleting all tests for project with id {}", id);
+        repository.deleteByProjectId(id);
+        log.info("Builds for tests with id {} were deleted", id);
+    }
+
 }
