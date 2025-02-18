@@ -14,6 +14,24 @@
             <pre class="py-2 mt-2">${leaf.error}</pre>
           </#if>
         </div>
+        <#if leaf.logs?has_content>
+        <div>
+          <pre class="pb-0">
+          <#list leaf.logs as log>
+${log.message}
+          </#list>
+          </pre>
+        </div>
+      </#if>
+      <#if leaf.embeds?has_content>
+        <div class="row mt-1">
+          <#list leaf.embeds as embed>
+            <div class="embed col-2 mb-1">
+              <img src="resources/${embed.name}" />
+            </div>
+          </#list>
+        </div>
+      </#if>
       </#list>
   </div>
 </#if>

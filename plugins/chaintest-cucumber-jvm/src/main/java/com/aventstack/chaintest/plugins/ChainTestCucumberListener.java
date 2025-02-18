@@ -1,5 +1,6 @@
 package com.aventstack.chaintest.plugins;
 
+import com.aventstack.chaintest.conf.ConfigResolver;
 import com.aventstack.chaintest.domain.Test;
 import com.aventstack.chaintest.service.ChainPluginService;
 import io.cucumber.gherkin.GherkinParser;
@@ -36,6 +37,7 @@ public class ChainTestCucumberListener implements EventListener {
 
     private static final Logger log = LoggerFactory.getLogger(ChainTestCucumberListener.class);
     private static final String CUCUMBER_JVM = "cucumber-jvm";
+    private static final String PROP_ATTACH_TO_STEP = "chaintest.plugins.cucumber.attach-to-step";
 
     private final Map<URI, Test> _testSourceReadFeature = new HashMap<>();
     private final Map<URI, Test> _features = new HashMap<>();
@@ -146,11 +148,29 @@ public class ChainTestCucumberListener implements EventListener {
         }
     };
 
-    private final EventHandler<EmbedEvent> embedEventhandler = event ->
+    private final EventHandler<EmbedEvent> embedEventhandler = event -> {
+        final String attachToStep = ConfigResolver.get(PROP_ATTACH_TO_STEP);
+        if (null != attachToStep && attachToStep.equalsIgnoreCase("true")) {
+            final Test step = _scenarios.get(event.getTestCase().getId()).getChildren().peek();
+            if (null != step) {
+                _service.embed(step, event.getData(), event.getMediaType());
+                return;
+            }
+        }
         _service.embed(_scenarios.get(event.getTestCase().getId()), event.getData(), event.getMediaType());
+    };
 
-    private final EventHandler<WriteEvent> writeEventhandler = event ->
+    private final EventHandler<WriteEvent> writeEventhandler = event -> {
+        final String attachToStep = ConfigResolver.get(PROP_ATTACH_TO_STEP);
+        if (null != attachToStep && attachToStep.equalsIgnoreCase("true")) {
+            final Test step = _scenarios.get(event.getTestCase().getId()).getChildren().peek();
+            if (null != step) {
+                step.addLog(event.getText());
+                return;
+            }
+        }
         _scenarios.get(event.getTestCase().getId()).addLog(event.getText());
+    };
 
     private final EventHandler<TestRunFinished> runFinishedHandler = event -> {
         for (final Map.Entry<URI, Test> entry : _features.entrySet()) {
