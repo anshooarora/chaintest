@@ -6,6 +6,8 @@
         <div>
           <#if leaf.result=='PASSED'>
             <i class="bi bi-check-circle-fill text-success"></i>
+          <#elseif leaf.result=='SKIPPED'>
+            <i class="bi bi-exclamation-octagon-fill text-info"></i>
           <#else>
             <i class="bi bi-exclamation-octagon-fill text-danger"></i>
           </#if>

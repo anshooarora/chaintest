@@ -54,7 +54,7 @@ const getOptions = (data) => {
 const emptyStat = [
   { result: 'Passed', count: 0, bg: 'rgb(140, 197, 83)' },
   { result: 'Failed', count: 0, bg: 'rgb(233,80,113)' },
-  { result: 'Skipped', count: 0, bg: 'rgb(221, 91, 96)' }
+  { result: 'Skipped', count: 0, bg: 'rgb(13, 202, 240)' }
 ];
 
 var chart1, chart2, chart3;

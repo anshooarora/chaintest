@@ -250,8 +250,10 @@
                       <div>
                         <#if child.result=='PASSED'>
                           <i class="bi bi-check-circle-fill text-success"></i>
-                          <#else>
-                            <i class="bi bi-exclamation-octagon-fill text-danger"></i>
+                        <#elseif child.result=='SKIPPED'>
+                          <i class="bi bi-exclamation-octagon-fill text-info"></i>
+                        <#else>
+                          <i class="bi bi-exclamation-octagon-fill text-danger"></i>
                         </#if>
                         <span class="fs-6 ms-2">${child.name}</span>
                       </div>
@@ -315,14 +317,14 @@ ${log.message}
     const stats1 = [
       { result: 'Passed', count: ${ build.runStats[0].passed }, bg: 'rgb(140, 197, 83)' },
       { result: 'Failed', count: ${ build.runStats[0].failed }, bg: 'rgb(233,80,113)' },
-      { result: 'Skipped', count: ${ build.runStats[0].skipped }, bg: 'rgb(221, 91, 96)' }
+      { result: 'Skipped', count: ${ build.runStats[0].skipped }, bg: 'rgb(13, 202, 240)' }
     ];
     <#if build.runStats?size gte 2>
       const stats2Annotation = {'total': ${ build.runStats[1].total }, 'passed': ${ build.runStats[1].passed }};
       const stats2 = [
         { result: 'Passed', count: ${ build.runStats[1].passed }, bg: 'rgb(140, 197, 83)' },
         { result: 'Failed', count: ${ build.runStats[1].failed }, bg: 'rgb(233,80,113)' },
-        { result: 'Skipped', count: ${ build.runStats[1].skipped }, bg: 'rgb(221, 91, 96)' }
+        { result: 'Skipped', count: ${ build.runStats[1].skipped }, bg: 'rgb(13, 202, 240)' }
       ];
     <#else>
       const stats2 = null;
@@ -332,7 +334,7 @@ ${log.message}
       const stats3 = [
         { result: 'Passed', count: ${ build.runStats[2].passed }, bg: 'rgb(140, 197, 83)' },
         { result: 'Failed', count: ${ build.runStats[2].failed }, bg: 'rgb(233,80,113)' },
-        { result: 'Skipped', count: ${ build.runStats[2].skipped }, bg: 'rgb(221, 91, 96)' }
+        { result: 'Skipped', count: ${ build.runStats[2].skipped }, bg: 'rgb(13, 202, 240)' }
       ];
     <#else>
       const stats3 = null;

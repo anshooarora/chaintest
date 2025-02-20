@@ -158,6 +158,9 @@ public class ChainTestListener implements
         if (_methods.containsKey(result.getMethod().getQualifiedName())) {
             final Test completingMethod = _currentTest.get();
             completingMethod.complete(result.getThrowable());
+            if (result.getStatus() == ITestResult.SKIP) {
+                completingMethod.setResult("SKIPPED");
+            }
             while (!_logs.get().isEmpty()) {
                 completingMethod.addLog(_logs.get().poll());
             }
