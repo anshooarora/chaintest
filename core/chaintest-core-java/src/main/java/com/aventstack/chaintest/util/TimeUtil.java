@@ -19,8 +19,8 @@ public class TimeUtil {
         }
         return String.format("%dh %dm %ds",
                 TimeUnit.MILLISECONDS.toHours(millis),
-                TimeUnit.MILLISECONDS.toMinutes(millis),
-                TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+                TimeUnit.MILLISECONDS.toMinutes(millis) % 60,
+                TimeUnit.MILLISECONDS.toSeconds(millis) % 60);
     }
 
 }
