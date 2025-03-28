@@ -381,6 +381,13 @@ document.querySelectorAll('.embed img').forEach((e) => {
   });
 })
 
+// show/hide logs for passed nodes
+document.querySelectorAll('.bi-caret-down-fill').forEach((e) => {
+  e.addEventListener('click', el => {
+    el.target.closest('.logs-toggle').querySelector('.logs').classList.toggle('d-none');
+  });
+});
+
 // info modal
 const toggleInfoModal = (show) => {
   let display = 'none';

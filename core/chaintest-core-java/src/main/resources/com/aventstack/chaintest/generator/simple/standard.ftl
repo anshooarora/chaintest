@@ -1,7 +1,7 @@
 <#if child.children?has_content>
   <div class="mt-3 border-top">
     <#list child.children as leaf>
-    <div class="leaf ${leaf.result?lower_case} pb-1">
+    <div class="leaf ${leaf.result?lower_case} pb-1 <#if leaf.result=='PASSED' && leaf.logs?has_content>logs-toggle</#if>">
       <div class="d-flex justify-content-between mt-3">
         <div>
           <#if leaf.result=='PASSED'>
@@ -11,7 +11,7 @@
           <#else>
             <i class="bi bi-exclamation-octagon-fill text-danger"></i>
           </#if>
-          <span class="fs-6 ms-2">${leaf.name}</span>
+          <span class="fs-6 ms-2">${leaf.name} <#if leaf.result=='PASSED' && leaf.logs?has_content><i role="button" class="bi bi-caret-down-fill text-muted small"></i></#if></span>
         </div>
         <div>
           <#if leaf.tags?has_content>
@@ -30,7 +30,7 @@
         <pre class="py-2 mt-2 mb-4">${leaf.error}</pre>
       </#if>
       <#if leaf.logs?has_content>
-        <div class="mt-3">
+        <div class="mt-3 logs <#if leaf.result=='PASSED'>d-none</#if>">
           <pre class="pb-0">
           <#list leaf.logs as log>
 ${log.message}
