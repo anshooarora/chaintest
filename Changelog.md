@@ -1,3 +1,10 @@
+## 1.0.12
+
+* [#72](../../issues/72) Skipped test descriptions are not reported
+* [#77](../../issues/77) CucumberJVM plugin: attach screenshots at the step level
+* [#80](../../issues/80) ChainTest Report is showing incorrect time taken for the execution
+* [#85](../../issues/85) Ability to toggle test content
+
 ## 1.0.11
 
 * [#57](../../issues/57) Static generators: Dynamically set output file name

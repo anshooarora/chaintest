@@ -34,6 +34,25 @@ ChainTest plugin for [Cucumber-JVM](https://cucumber.io/docs/installation/java/)
     }
     ```
 
+#### Attaching Screenshots/Logs to Step instead of Scenarios
+
+Available via config start `1.0.12` from #77.
+
+It will now be possible to revert the default behavior where all embeds/logs are attached to Scenario. Instead, with this property enabled, the last executed Step is used for reference:
+
+```
+chaintest.plugins.cucumber.attach-to-step
+```
+
+The above can be supplied as a System Property or Environment variable. Example:
+
+```
+mvn clean test -Dchaintest.plugins.cucumber.attach-to-step=true
+
+// or
+System.setProperty("chaintest.plugins.cucumber.attach-to-step", "true");
+```
+
 ## License
 
 Cucumber-JVM plugin for ChainTest is open-source software and licensed under Apache-2.0.
