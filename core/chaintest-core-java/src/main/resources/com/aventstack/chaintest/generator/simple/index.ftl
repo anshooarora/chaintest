@@ -35,7 +35,7 @@
   <#if config['offline']>
     <link id="style" href="resources/chaintest-pkg.css" rel="stylesheet">
   <#else>
-    <link href="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@33cbbd425d16f15a26fb8aacaf4ed52442221746/cdn/simple/version/chaintest-pkg.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@976b9706b4d752a6262a041a68a6ea08012e0fcf/cdn/simple/version/chaintest-pkg.css" rel="stylesheet">
   </#if>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <#if config['css']??><style>${config['css']}</style></#if>
@@ -347,7 +347,7 @@ ${log.message}
   <#if config['offline']>
     <script src="resources/chaintest-pkg.js"></script>
   <#else>
-    <script src="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@33cbbd425d16f15a26fb8aacaf4ed52442221746/cdn/simple/version/chaintest-pkg.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/anshooarora/chaintest@976b9706b4d752a6262a041a68a6ea08012e0fcf/cdn/simple/version/chaintest-pkg.js"></script>
   </#if>
 
   <#if build.systemInfo?? && build.systemInfo?has_content>

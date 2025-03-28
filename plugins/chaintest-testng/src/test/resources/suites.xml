@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="allSuites">
+    <suite-files>
+        <suite-file path="add.xml" />
+        <suite-file path="subtract.xml" />
+        <suite-file path="dataprovider.xml" />
+    </suite-files>
+</suite>
